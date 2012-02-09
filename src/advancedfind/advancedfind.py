@@ -2,7 +2,7 @@
 
 
 # findadvance.py
-# v0.2.0
+# v0.2.1
 #
 # Copyright 2010 swatch
 #
@@ -48,7 +48,7 @@ ui_str = """<ui>
 	<menubar name="MenuBar">
 		<menu name="SearchMenu" action="Search">
 			<placeholder name="SearchOps_2">
-				<menuitem name="advanced_find" action="advanced_find"/>
+				<menuitem name="advanced_find_active" action="advanced_find_active"/>
 			</placeholder>
 		</menu>
 	</menubar>
@@ -122,8 +122,8 @@ class AdvancedFindWindowHelper:
 		manager = self._window.get_ui_manager()
 
 		# Create a new action group
-		self._action_group = gtk.ActionGroup("FindAdvanceActions")
-		self._action_group.add_actions( [("advanced_find", None, _("Advanced Find / Replace"), self.active_shortcut, _("Advanced Find / Replace"), self.advanced_find_active)]) 
+		self._action_group = gtk.ActionGroup("AdvancedFindReplaceActions")
+		self._action_group.add_actions( [("advanced_find_active", None, _("Advanced Find / Replace"), self.active_shortcut, _("Advanced Find / Replace"), self.advanced_find_active)]) 
 
 		# Insert the action group
 		manager.insert_action_group(self._action_group, -1)
@@ -318,7 +318,8 @@ class AdvancedFindWindowHelper:
 		self.result_highlight_off(doc)
 		start, end = doc.get_bounds()
 		text = unicode(doc.get_text(start, end), 'utf-8')
-		lines = re.findall('.*\\n', text)
+		lines = re.findall('.*\\n', text + u'\n')
+		print lines
 
 		tree_it = None
 		new_text = list(text)

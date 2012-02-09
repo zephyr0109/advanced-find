@@ -27,7 +27,7 @@ import gtk
 from advancedfind import AdvancedFindWindowHelper
 from advancedfind_ui import AdvancedFindUI
 
-class FindAdvancePlugin(gedit.Plugin):
+class AdvancedFindReplacePlugin(gedit.Plugin):
 	def __init__(self):
 		gedit.Plugin.__init__(self)
 		self._instances = {}

@@ -2,7 +2,7 @@
 
 
 # find_result.py
-# v0.1.2
+# v0.2.0
 #
 # Copyright 2010 swatch
 #
