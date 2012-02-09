@@ -52,9 +52,7 @@ import gconf
 class AdvancedFindUI(object):
 	def __init__(self, plugin):
 		try:
-			self._plugin = plugin
-			self._instance = self._plugin.get_instance()
-			self._window = self._instance._window
+			self._instance, self._window = plugin.get_instance()
 		except:
 			pass
 
@@ -191,7 +189,7 @@ class AdvancedFindUI(object):
 
 	def on_findDialog_destroy_action(self, object):
 		try:
-			self._instance.find_dialog = None
+			self._instance.find_ui = None
 		except:
 			pass
 

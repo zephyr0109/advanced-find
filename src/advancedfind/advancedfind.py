@@ -66,7 +66,7 @@ class AdvancedFindWindowHelper:
 	def __init__(self, plugin, window):
 		self._window = window
 		self._plugin = plugin
-		self.find_dialog = None
+		self.find_ui = None
 		self.find_list = []
 		self.replace_list = []
 		self.filter_list = []
@@ -96,10 +96,18 @@ class AdvancedFindWindowHelper:
 				self.options[key] = True
 			elif self.options[key] == 'False':
 				self.options[key] = False
+
 		self.shortcuts = self.config_manager.load_configure('shortcut')
 		self.result_highlight = self.config_manager.load_configure('result_highlight')
+		
+		self.show_button = self.config_manager.load_configure('show_button')
+		for key in self.show_button.keys():
+			if self.show_button[key] == 'True':
+				self.show_button[key] = True
+			elif self.show_button[key] == 'False':
+				self.show_button[key] = False
 
-		self._results_view = FindResultView(window)
+		self._results_view = FindResultView(window, self.show_button)
 		self._window.get_bottom_panel().add_item(self._results_view, _("Advanced Find/Replace"), "gtk-find-and-replace")
 		
 		self.msgDialog = gtk.MessageDialog(self._window, 
@@ -117,7 +125,7 @@ class AdvancedFindWindowHelper:
 
 		self._window = None
 		self._plugin = None
-		self.find_dialog = None
+		self.find_ui = None
 		self.find_list = None
 		self.replace_list = None
 		self.filter_list = None
@@ -127,6 +135,9 @@ class AdvancedFindWindowHelper:
 		self.config_manager.update_config_file(self.config_manager.config_file, 'search_option', self.options)
 		#self.config_manager.update_config_file(self.config_manager.config_file, 'shortcut', self.shortcuts)
 		self.config_manager.update_config_file(self.config_manager.config_file, 'result_highlight', self.result_highlight)
+		
+		self.show_button.update(self._results_view.get_show_button_option())
+		self.config_manager.update_config_file(self.config_manager.config_file, 'show_button', self.show_button)
 	
 	def _insert_menu(self):
 		# Get the GtkUIManager
@@ -176,20 +187,22 @@ class AdvancedFindWindowHelper:
 		except:
 			search_text = self.current_search_pattern
 
-		if self.find_dialog == None:
-			self.find_dialog = AdvancedFindUI(self._plugin)
+		if self.find_ui == None:
+			self.find_ui = AdvancedFindUI(self._plugin)
+		else:
+			self.find_ui.findDialog.present()
 			
 		if search_text != "":
-			self.find_dialog.findTextEntry.child.set_text(search_text)
+			self.find_ui.findTextEntry.child.set_text(search_text)
 		
 		if self.current_replace_text != "":
-			self.find_dialog.replaceTextEntry.child.set_text(self.current_replace_text)
+			self.find_ui.replaceTextEntry.child.set_text(self.current_replace_text)
 		'''	
 		if self.current_file_pattern != "":
-			self.find_dialog.filterComboboxentry.child.set_text(self.current_file_pattern)
+			self.find_ui.filterComboboxentry.child.set_text(self.current_file_pattern)
 			
 		if self.current_path != "":
-			self.find_dialog.pathComboboxentry.child.set_text(self.current_path)
+			self.find_ui.pathComboboxentry.child.set_text(self.current_path)
 		#'''
 
 	def create_regex(self, pattern, options):
@@ -219,9 +232,9 @@ class AdvancedFindWindowHelper:
 			match = regex.search(doc.get_text(selection_start, selection_end))
 			if match and replace_flg == True:
 				if options['REGEX_SEARCH'] == False:
-					replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+					replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
 				else:
-					replace_text = match.expand(unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8'))
+					replace_text = match.expand(unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8'))
 				doc.delete_selection(False, False)
 				doc.insert_at_cursor(replace_text)
 				replace_flg = False
@@ -246,9 +259,9 @@ class AdvancedFindWindowHelper:
 					
 					if replace_flg == True:
 						if options['REGEX_SEARCH'] == False:
-							replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+							replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
 						else:
-							replace_text = match.expand(unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8'))
+							replace_text = match.expand(unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8'))
 						doc.delete_selection(False, False)
 						doc.insert_at_cursor(replace_text)
 						replace_end = doc.get_iter_at_mark(doc.get_insert())
@@ -289,9 +302,9 @@ class AdvancedFindWindowHelper:
 					
 					if replace_flg == True:
 						if options['REGEX_SEARCH'] == False:
-							replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+							replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
 						else:
-							replace_text = match.expand(unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8'))
+							replace_text = match.expand(unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8'))
 						doc.delete_selection(False, False)
 						doc.insert_at_cursor(replace_text)
 						replace_end = doc.get_iter_at_mark(doc.get_insert())
@@ -400,9 +413,9 @@ class AdvancedFindWindowHelper:
 					result_offset_start = line_start_pos + match.start() + match_pos
 					result_len = len(match.group(0))
 					if options['REGEX_SEARCH'] == False:
-						replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+						replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
 					else:
-						replace_text = match.expand(unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8'))
+						replace_text = match.expand(unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8'))
 					replace_text_len = len(replace_text)
 					replace_offset = result_len - replace_text_len
 					

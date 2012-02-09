@@ -42,9 +42,10 @@ import config_manager
 
 
 class FindResultView(gtk.HBox):
-	def __init__(self, window):
+	def __init__(self, window, show_button_option):
 		gtk.HBox.__init__(self)
 		self._window = window
+		self.show_button_option = show_button_option
 		
 		# initialize find result treeview
 		self.findResultTreeview = gtk.TreeView()
@@ -58,6 +59,7 @@ class FindResultView(gtk.HBox):
 		self.findResultTreemodel = gtk.TreeStore(int, str, str, object, int, int, str)
 		self.findResultTreemodel.set_sort_column_id(0, gtk.SORT_ASCENDING)
 		self.findResultTreeview.connect("cursor-changed", self.on_findResultTreeview_cursor_changed_action)
+		self.findResultTreeview.connect("button-press-event", self.on_findResultTreeview_button_press_action)
 		self.findResultTreeview.set_model(self.findResultTreemodel)
 
 		# initialize scrolled window
@@ -74,15 +76,21 @@ class FindResultView(gtk.HBox):
 		v_buttonbox.set_layout(gtk.BUTTONBOX_END)
 		v_buttonbox.set_spacing(5)
 		self.selectNextButton = gtk.Button(_("Next"))
+		self.selectNextButton.set_no_show_all(True)
 		self.selectNextButton.connect("clicked", self.on_selectNextButton_clicked_action)
 		self.expandAllButton = gtk.Button(_("Expand All"))
+		self.expandAllButton.set_no_show_all(True)
 		self.expandAllButton.connect("clicked", self.on_expandAllButton_clicked_action)
 		self.collapseAllButton = gtk.Button(_("Collapse All"))
+		self.collapseAllButton.set_no_show_all(True)
 		self.collapseAllButton.connect("clicked", self.on_collapseAllButton_clicked_action)
 		self.clearHighlightButton = gtk.Button(_("Clear Highlight"))
+		self.clearHighlightButton.set_no_show_all(True)
 		self.clearHighlightButton.connect("clicked", self.on_clearHightlightButton_clicked_action)
 		self.clearButton = gtk.Button(_("Clear"))
+		self.clearButton.set_no_show_all(True)
 		self.clearButton.connect("clicked", self.on_clearButton_clicked_action)
+
 		v_buttonbox.pack_start(self.selectNextButton, False, False, 5)
 		v_buttonbox.pack_start(self.expandAllButton, False, False, 5)
 		v_buttonbox.pack_start(self.collapseAllButton, False, False, 5)
@@ -99,12 +107,72 @@ class FindResultView(gtk.HBox):
 		
 		self.show_all()
 		
+		#initialize context menu
+		self.contextMenu = gtk.Menu()
+		self.expandAllItem = gtk.MenuItem(_('Expand All'))
+		self.collapseAllItem = gtk.MenuItem(_('Collapse All'))
+		self.clearHighlightItem = gtk.MenuItem(_('Clear Highlight'))
+		self.clearItem = gtk.MenuItem(_('Clear'))
+		
+		self.contextMenu.append(self.expandAllItem)
+		self.contextMenu.append(self.collapseAllItem)
+		self.contextMenu.append(self.clearHighlightItem)
+		self.contextMenu.append(self.clearItem)
+		
+		self.expandAllItem.connect('activate', self.on_expandAllItem_activate)
+		self.collapseAllItem.connect('activate', self.on_collapseAllItem_activate)
+		self.clearHighlightItem.connect('activate', self.on_clearHighlightItem_activate)
+		self.clearItem.connect('activate', self.on_clearItem_activate)
+
+		self.expandAllItem.show()
+		self.collapseAllItem.show()
+		self.clearHighlightItem.show()
+		self.clearItem.show()
+		
+		self.contextMenu.append(gtk.SeparatorMenuItem())
+		
+		self.showButtonsItem = gtk.MenuItem(_('Show Buttons'))
+		self.contextMenu.append(self.showButtonsItem)
+		self.showButtonsItem.show()
+		
+		self.showButtonsSubmenu = gtk.Menu()
+		self.showNextButtonItem = gtk.CheckMenuItem(_('Next'))
+		self.showExpandAllButtonItem = gtk.CheckMenuItem(_('Expand All'))
+		self.showCollapseAllButtonItem = gtk.CheckMenuItem(_('Collapse All'))
+		self.showClearHighlightButtonItem = gtk.CheckMenuItem(_('Clear Highlight'))
+		self.showClearButtonItem = gtk.CheckMenuItem(_('Clear'))
+		
+		self.showButtonsSubmenu.append(self.showNextButtonItem)
+		self.showButtonsSubmenu.append(self.showExpandAllButtonItem)
+		self.showButtonsSubmenu.append(self.showCollapseAllButtonItem)
+		self.showButtonsSubmenu.append(self.showClearHighlightButtonItem)
+		self.showButtonsSubmenu.append(self.showClearButtonItem)
+		
+		self.showNextButtonItem.connect('activate', self.on_showNextButtonItem_activate)
+		self.showExpandAllButtonItem.connect('activate', self.on_showExpandAllButtonItem_activate)
+		self.showCollapseAllButtonItem.connect('activate', self.on_showCollapseAllButtonItem_activate)
+		self.showClearHighlightButtonItem.connect('activate', self.on_showClearHighlightButtonItem_activate)
+		self.showClearButtonItem.connect('activate', self.on_showClearButtonItem_activate)
+		
+		self.showNextButtonItem.show()
+		self.showExpandAllButtonItem.show()
+		self.showCollapseAllButtonItem.show()
+		self.showClearHighlightButtonItem.show()
+		self.showClearButtonItem.show()
+		
+		self.showButtonsItem.set_submenu(self.showButtonsSubmenu)
+		
+		self.show_buttons()
+
 		format_file = os.path.join(os.path.dirname(__file__), "result_format.xml")
 		self.result_format = config_manager.ConfigManager(format_file).load_configure('result_format')
 		
 	def do_events(self):
 		while gtk.events_pending():
 			gtk.main_iteration(False)
+			
+	def to_xml_text(self, text):
+		return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 		
 	def on_findResultTreeview_cursor_changed_action(self, object):
 		model, it = object.get_selection().get_selected()
@@ -147,6 +215,63 @@ class FindResultView(gtk.HBox):
 				doc.select_range(doc.get_iter_at_offset(result_start), doc.get_iter_at_offset(result_start + result_len))
 				view = tab.get_view()
 				view.scroll_to_cursor()
+				
+	def on_findResultTreeview_button_press_action(self, object, event):
+		if event.button == 3:
+			#right button click
+			self.contextMenu.popup(None, None, None, event.button, event.time)
+		
+	def on_expandAllItem_activate(self, object):
+		self.findResultTreeview.expand_all()
+		
+	def on_collapseAllItem_activate(self, object):
+		self.findResultTreeview.collapse_all()
+		
+	def on_clearHighlightItem_activate(self, object):
+		self.clear_highlight()
+		
+	def on_clearItem_activate(self, object):
+		self.clear_find_result()
+		
+	def on_showNextButtonItem_activate(self, object):
+		if self.showNextButtonItem.get_active() == True:
+			self.show_button_option['NEXT_BUTTON'] = True
+			self.selectNextButton.show()
+		else:
+			self.show_button_option['NEXT_BUTTON'] = False
+			self.selectNextButton.hide()
+
+	def on_showExpandAllButtonItem_activate(self, object):
+		if self.showExpandAllButtonItem.get_active() == True:
+			self.show_button_option['EXPAND_ALL_BUTTON'] = True
+			self.expandAllButton.show()
+		else:
+			self.show_button_option['EXPAND_ALL_BUTTON'] = False
+			self.expandAllButton.hide()
+		
+	def on_showCollapseAllButtonItem_activate(self, object):
+		if self.showCollapseAllButtonItem.get_active() == True:
+			self.show_button_option['COLLAPSE_ALL_BUTTON'] = True
+			self.collapseAllButton.show()
+		else:
+			self.show_button_option['COLLAPSE_ALL_BUTTON'] = False
+			self.collapseAllButton.hide()
+		
+	def on_showClearHighlightButtonItem_activate(self, object):
+		if self.showClearHighlightButtonItem.get_active() == True:
+			self.show_button_option['CLEAR_HIGHLIGHT_BUTTON'] = True
+			self.clearHighlightButton.show()
+		else:
+			self.show_button_option['CLEAR_HIGHLIGHT_BUTTON'] = False
+			self.clearHighlightButton.hide()
+		
+	def on_showClearButtonItem_activate(self, object):
+		if self.showClearButtonItem.get_active() == True:
+			self.show_button_option['CLEAR_BUTTON'] = True
+			self.clearButton.show()
+		else:
+			self.show_button_option['CLEAR_BUTTON'] = False
+			self.clearButton.hide()
 
 	def on_selectNextButton_clicked_action(self, object):
 		path, column = self.findResultTreeview.get_cursor()
@@ -163,7 +288,10 @@ class FindResultView(gtk.HBox):
 			if not it2:
 				it2 = self.findResultTreemodel.iter_parent(it1)
 				it3 = self.findResultTreemodel.iter_next(it2)
-				path = self.findResultTreemodel.get_path(it3)
+				if not it3:
+					return
+				else:
+					path = self.findResultTreemodel.get_path(it3)
 			else:
 		 		path = self.findResultTreemodel.get_path(it2)
 		else:
@@ -171,11 +299,7 @@ class FindResultView(gtk.HBox):
 		self.findResultTreeview.set_cursor(path, column, False)
 
 	def on_clearHightlightButton_clicked_action(self, object):
-		for doc in self._window.get_documents():
-			start, end = doc.get_bounds()
-			if doc.get_tag_table().lookup('result_highlight') == None:
-				tag = doc.create_tag("result_highlight", foreground='yellow', background='red')
-			doc.remove_tag_by_name('result_highlight', start, end)
+		self.clear_highlight()
 		
 	def on_expandAllButton_clicked_action(self, object):
 		self.findResultTreeview.expand_all()
@@ -191,10 +315,10 @@ class FindResultView(gtk.HBox):
 		idx = self.findResultTreemodel.iter_n_children(None)
 		header = '#' + str(idx) + ' -'
 		if replace_flg == True:
-			mode = self.result_format['MODE_REPLACE'] %{'HEADER' : header, 'PATTERN' : pattern, 'REPLACE_TEXT' : replace_text} 
+			mode = self.result_format['MODE_REPLACE'] %{'HEADER' : header, 'PATTERN' : self.to_xml_text(pattern), 'REPLACE_TEXT' : self.to_xml_text(replace_text)}
 			it = self.findResultTreemodel.append(None, [idx, mode, '', None, 0, 0, ''])
 		else:
-			mode = self.result_format['MODE_FIND'] %{'HEADER' : header, 'PATTERN' : pattern}
+			mode = self.result_format['MODE_FIND'] %{'HEADER' : header, 'PATTERN' : self.to_xml_text(pattern)}
 			it = self.findResultTreemodel.append(None, [idx, mode, '', None, 0, 0, ''])
 		return it
 	
@@ -207,11 +331,16 @@ class FindResultView(gtk.HBox):
 		result_line = self.result_format['LINE'] % {'LINE_NUM' : line}
 		markup_start = result_offset_start - line_start_pos
 		markup_end = markup_start + result_len + replace_offset
+		
+		text_header = self.to_xml_text(text[0:markup_start])
+		text_marked = self.to_xml_text(text[markup_start:markup_end])
+		text_footer = self.to_xml_text(text[markup_end:])
+
 		if replace_flg == False:
-			result_text = (text[0:markup_start] + self.result_format['FIND_RESULT_TEXT'] % {'RESULT_TEXT' : text[markup_start:markup_end]} + text[markup_end:]).strip()
+			result_text = (text_header + self.result_format['FIND_RESULT_TEXT'] % {'RESULT_TEXT' : text_marked} + text_footer).strip()
 			self.findResultTreemodel.append(parent_it, [int(line), result_line, result_text, tab, result_offset_start, result_len, uri])
 		else:
-			result_text = (text[0:markup_start] + self.result_format['REPLACE_RESULT_TEXT'] % {'RESULT_TEXT' : text[markup_start:markup_end]} + text[markup_end:]).strip()
+			result_text = (text_header + self.result_format['REPLACE_RESULT_TEXT'] % {'RESULT_TEXT' : text_marked} + text_footer).strip()
 			self.findResultTreemodel.append(parent_it, [int(line), result_line, result_text, tab, result_offset_start, result_len, uri])
 		
 	def show_find_result(self):
@@ -230,9 +359,37 @@ class FindResultView(gtk.HBox):
 			self.findResultTreemodel.set_value(it1, 2, hits_str)
 		total_hits_str = self.result_format['TOTAL_HITS'] % {'TOTAL_HITS': str(total_hits), 'FILES_CNT' : str(file_cnt)}
 		self.findResultTreemodel.set_value(pattern_it, 2, total_hits_str)
+
+	def clear_highlight(self):
+		for doc in self._window.get_documents():
+			start, end = doc.get_bounds()
+			if doc.get_tag_table().lookup('result_highlight') == None:
+				tag = doc.create_tag("result_highlight", foreground='yellow', background='red')
+			doc.remove_tag_by_name('result_highlight', start, end)
 		
 	def clear_find_result(self):
 		self.findResultTreemodel.clear()
+		
+	def get_show_button_option(self):
+		return self.show_button_option
+		
+	def show_buttons(self):
+		if self.show_button_option['NEXT_BUTTON'] == True:
+			self.selectNextButton.show()
+			self.showNextButtonItem.set_active(True)
+		if self.show_button_option['EXPAND_ALL_BUTTON'] == True:
+			self.expandAllButton.show()
+			self.showExpandAllButtonItem.set_active(True)
+		if self.show_button_option['COLLAPSE_ALL_BUTTON'] == True:
+			self.collapseAllButton.show()
+			self.showCollapseAllButtonItem.set_active(True)
+		if self.show_button_option['CLEAR_HIGHLIGHT_BUTTON'] == True:
+			self.clearHighlightButton.show()
+			self.showClearHighlightButtonItem.set_active(True)
+		if self.show_button_option['CLEAR_BUTTON'] == True:
+			self.clearButton.show()
+			self.showClearButtonItem.set_active(True)
+		
 	
 
 

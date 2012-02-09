@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-23 10:58+0800\n"
+"POT-Creation-Date: 2011-02-24 20:26+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,44 +16,48 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../advancedfind.py:103 ../advancedfind.py:137 ../FindDialog.glade:24
+#: ../advancedfind.py:111 ../advancedfind.py:148 ../FindDialog.glade:24
 msgid "Advanced Find/Replace"
 msgstr ""
 
-#: ../advancedfind.py:138
+#: ../advancedfind.py:149
 msgid "Select and Find Next"
 msgstr ""
 
-#: ../advancedfind.py:139
+#: ../advancedfind.py:150
 msgid "Select and Find Previous"
 msgstr ""
 
-#: ../advancedfind.py:268 ../advancedfind.py:312
+#: ../advancedfind.py:279 ../advancedfind.py:323
 msgid "Nothing is found."
 msgstr ""
 
-#: ../advancedfind_ui.py:315
+#: ../advancedfind_ui.py:314
 msgid "Replace in this scope is not supported."
 msgstr ""
 
-#: ../find_result.py:76
+#: ../find_result.py:78 ../find_result.py:139
 msgid "Next"
 msgstr ""
 
-#: ../find_result.py:78
+#: ../find_result.py:81 ../find_result.py:112 ../find_result.py:140
 msgid "Expand All"
 msgstr ""
 
-#: ../find_result.py:80
+#: ../find_result.py:84 ../find_result.py:113 ../find_result.py:141
 msgid "Collapse All"
 msgstr ""
 
-#: ../find_result.py:82
+#: ../find_result.py:87 ../find_result.py:114 ../find_result.py:142
 msgid "Clear Highlight"
 msgstr ""
 
-#: ../find_result.py:84
+#: ../find_result.py:90 ../find_result.py:115 ../find_result.py:143
 msgid "Clear"
+msgstr ""
+
+#: ../find_result.py:134
+msgid "Show Buttons"
 msgstr ""
 
 #: ../config.glade:6

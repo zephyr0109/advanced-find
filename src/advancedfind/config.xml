@@ -12,4 +12,9 @@
 	<shortcut name="SELECT_FIND_PREVIOUS">&lt;ctrl&gt;&lt;shift&gt;F3</shortcut>
 	<result_highlight name="FOREGROUND_COLOR">#ffffffff0000</result_highlight>
 	<result_highlight name="BACKGROUND_COLOR">red</result_highlight>
+	<show_button name="NEXT_BUTTON">False</show_button>
+	<show_button name="EXPAND_ALL_BUTTON">False</show_button>
+	<show_button name="COLLAPSE_ALL_BUTTON">False</show_button>
+	<show_button name="CLEAR_HIGHLIGHT_BUTTON">False</show_button>
+	<show_button name="CLEAR_BUTTON">False</show_button>
 </manifest>
