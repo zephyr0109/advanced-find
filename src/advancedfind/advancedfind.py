@@ -93,16 +93,16 @@ class AdvancedFindWindowHelper:
 		configfile = os.path.join(os.path.dirname(__file__), "config.xml")
 		self.config_manager = config_manager.ConfigManager(configfile)
 		self.options = self.config_manager.load_configure('search_option')
-		self.to_bool(self.options)
+		self.config_manager.to_bool(self.options)
 		
 		self.find_dlg_setting = self.config_manager.load_configure('find_dialog')
-		self.to_bool(self.find_dlg_setting)
+		self.config_manager.to_bool(self.find_dlg_setting)
 
 		self.shortcuts = self.config_manager.load_configure('shortcut')
 		self.result_highlight = self.config_manager.load_configure('result_highlight')
 		
 		self.show_button = self.config_manager.load_configure('show_button')
-		self.to_bool(self.show_button)
+		self.config_manager.to_bool(self.show_button)
 
 		self._results_view = FindResultView(window, self.show_button)
 		self._window.get_bottom_panel().add_item(self._results_view, _("Advanced Find/Replace"), "gtk-find-and-replace")
@@ -170,14 +170,7 @@ class AdvancedFindWindowHelper:
 
 	def update_ui(self):
 		self._action_group.set_sensitive(self._window.get_active_document() != None)
-		
-	def boolean(self, string):
-		return string.lower() in ['true', 'yes', 't', 'y', 'ok', '1']
-		
-	def to_bool(self, dic):
-		for key in dic.keys():
-			dic[key] = self.boolean(dic[key])
-		
+
 	def show_message_dialog(self, dlg, text):
 		dlg.set_property('text', text)
 		dlg.run()
@@ -371,6 +364,8 @@ class AdvancedFindWindowHelper:
 					line_num = doc.get_iter_at_offset(match.start()).get_line()
 					line_start_pos = doc.get_iter_at_line(line_num).get_offset()
 					line_end_pos = doc.get_iter_at_line(doc.get_iter_at_offset(match.end()).get_line()+1).get_offset()
+					if line_end_pos == line_start_pos:
+						line_end_pos = end_pos
 					line_text = text[line_start_pos:line_end_pos]
 					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, tab, match.start(), match.end()-match.start(), "", line_start_pos)
 					start_pos = match.end() + 1
@@ -399,15 +394,23 @@ class AdvancedFindWindowHelper:
 				
 				start, end = doc.get_bounds()
 				text = unicode(doc.get_text(start, end), 'utf-8')
-				for i in range(len(results)):
-					line_num = doc.get_iter_at_offset(results[i][0]).get_line()
+
+				for result in results:
+					line_num = doc.get_iter_at_offset(result[0]).get_line()
 					line_start_pos = doc.get_iter_at_line(line_num).get_offset()
-					line_end_pos = doc.get_iter_at_line(doc.get_iter_at_offset(results[i][0]+results[i][1]).get_line()+1).get_offset()
+					line_end_pos = result[0]+result[1]
 					line_text = text[line_start_pos:line_end_pos]
-					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, tab, results[i][0], results[i][1], "", line_start_pos, True)
+					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, tab, result[0], result[1], "", line_start_pos, True)
 			
 		self.result_highlight_on(tree_it)
-			
+	
+	def check_file_pattern(self,path, pattern_text):
+		pattern_list = re.split('\s*\|\s*', pattern_text)
+		for pattern in pattern_list:
+			if fnmatch.fnmatch(path, pattern):
+				return True
+		return False
+		
 	def find_all_in_dir(self, parent_it, dir_path, file_pattern, search_pattern, options, replace_flg = False):
 		if search_pattern == "":
 			return
@@ -430,7 +433,7 @@ class AdvancedFindWindowHelper:
 					path_list.append(f)
 					
 		for file_path in path_list:
-			if fnmatch.fnmatch(file_path, unicode(file_pattern, 'utf-8')):
+			if self.check_file_pattern(file_path, unicode(file_pattern, 'utf-8')):
 				if os.path.isfile(file_path):
 					pipe = subprocess.PIPE
 					p1 = subprocess.Popen(["file", "-i", file_path], stdout=pipe)
