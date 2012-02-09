@@ -24,19 +24,7 @@
 
 
 
-
-import sys
-try:
-	import pygtk
-	pygtk.require("2.0")
-except:
-	pass
-try:
-	import gtk
-	import gtk.glade
-except:
-	sys.exit(1)
-	
+from gi.repository import Gtk, Gedit
 import os.path
 	
 #from gettext import gettext as _
@@ -50,7 +38,7 @@ class ConfigUI(object):
 	
 		#Set the Glade file
 		gladefile = os.path.join(os.path.dirname(__file__),"config.glade")
-		UI = gtk.Builder()
+		UI = Gtk.Builder()
 		UI.set_translation_domain('advancedfind')
 		UI.add_from_file(gladefile)
 		self.configWindow = UI.get_object("configWindow")
@@ -59,8 +47,8 @@ class ConfigUI(object):
 		self.fgColorbutton = UI.get_object("fgColorbutton")
 		self.bgColorbutton = UI.get_object("bgColorbutton")
 		
-		self.fgColorbutton.set_color(gtk.gdk.color_parse(self._instance.result_highlight['FOREGROUND_COLOR']))
-		self.bgColorbutton.set_color(gtk.gdk.color_parse(self._instance.result_highlight['BACKGROUND_COLOR']))
+		self.fgColorbutton.set_color(Gtk.gdk.color_parse(self._instance.result_highlight['FOREGROUND_COLOR']))
+		self.bgColorbutton.set_color(Gtk.gdk.color_parse(self._instance.result_highlight['BACKGROUND_COLOR']))
 
 		self.rootFollowFilebrowserCheckbutton = UI.get_object("rootFollowFilebrowserCheckbutton")
 		self.rootFollowFilebrowserCheckbutton.set_active(self._instance.options['ROOT_FOLLOW_FILEBROWSER'])
@@ -91,5 +79,5 @@ class ConfigUI(object):
 
 if __name__ == '__main__':
 	dlg = ConfigUI(None)
-	gtk.main()
+	Gtk.main()
 	

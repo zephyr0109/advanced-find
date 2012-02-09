@@ -1,7 +1,7 @@
-[Gedit Plugin]
+[Plugin]
 Loader=python
 Module=advancedfind
-IAge=2
+IAge=3
 
 Name=Advanced Find/Replace
 Name[zh_TW]=Advanced Find/Replace

@@ -1,19 +1,6 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
-  <!-- interface-naming-policy project-wide -->
-  <object class="GtkListStore" id="findTextListstore">
-    <columns>
-      <!-- column-name gchararray1 -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
-  <object class="GtkListStore" id="replaceListstore">
-    <columns>
-      <!-- column-name gchararray1 -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
   <object class="GtkListStore" id="filterListstore">
     <columns>
       <!-- column-name gchararray1 -->
@@ -21,25 +8,29 @@
     </columns>
   </object>
   <object class="GtkWindow" id="findDialog">
+    <property name="can_focus">False</property>
     <property name="title" translatable="yes">Advanced Find/Replace</property>
     <property name="window_position">mouse</property>
     <property name="destroy_with_parent">True</property>
     <property name="icon_name">edit-find-replace</property>
-    <signal name="destroy" handler="on_findDialog_destroy"/>
-    <signal name="focus_in_event" handler="on_findDialog_focus_in_event"/>
-    <signal name="focus_out_event" handler="on_findDialog_focus_out_event"/>
+    <signal name="destroy" handler="on_findDialog_destroy" swapped="no"/>
+    <signal name="focus-in-event" handler="on_findDialog_focus_in_event" swapped="no"/>
+    <signal name="focus-out-event" handler="on_findDialog_focus_out_event" swapped="no"/>
     <child>
       <object class="GtkHBox" id="hbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <child>
           <object class="GtkTable" id="table1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="n_rows">7</property>
             <property name="column_spacing">5</property>
             <property name="row_spacing">5</property>
             <child>
               <object class="GtkHSeparator" id="hseparator2">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="top_attach">3</property>
@@ -50,6 +41,7 @@
             <child>
               <object class="GtkHSeparator" id="hseparator3">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="top_attach">5</property>
@@ -60,6 +52,7 @@
             <child>
               <object class="GtkTable" id="table2">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="n_rows">2</property>
                 <property name="n_columns">2</property>
                 <property name="column_spacing">5</property>
@@ -67,10 +60,12 @@
                 <child>
                   <object class="GtkLabel" id="label1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Find what : </property>
                   </object>
                   <packing>
                     <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"></property>
                     <property name="x_padding">5</property>
                     <property name="y_padding">5</property>
                   </packing>
@@ -78,41 +73,59 @@
                 <child>
                   <object class="GtkLabel" id="label2">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Replace with : </property>
                   </object>
                   <packing>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
                     <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"></property>
                     <property name="x_padding">5</property>
                     <property name="y_padding">5</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkComboBoxEntry" id="findTextComboboxentry">
+                  <object class="GtkComboBoxText" id="findTextComboboxtext">
                     <property name="visible">True</property>
-                    <property name="model">findTextListstore</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="comboboxtext-entry2">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
+                    <property name="y_options"></property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkComboBoxEntry" id="replaceTextComboboxentry">
+                  <object class="GtkComboBoxText" id="replaceTextComboboxtext">
                     <property name="visible">True</property>
-                    <property name="model">replaceListstore</property>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="comboboxtext-entry4">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
+                    <property name="y_options"></property>
                   </packing>
                 </child>
               </object>
               <packing>
-                <property name="y_options"></property>
+                <property name="y_options">GTK_FILL</property>
                 <property name="x_padding">5</property>
                 <property name="y_padding">5</property>
               </packing>
@@ -120,27 +133,32 @@
             <child>
               <object class="GtkHBox" id="hbox2">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkFrame" id="frame1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <object class="GtkAlignment" id="alignment1">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <object class="GtkVButtonBox" id="vbuttonbox1">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <child>
                               <object class="GtkRadioButton" id="forwardRadiobutton">
                                 <property name="label" translatable="yes">Forward</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="on_forwardRadiobutton_toggled"/>
+                                <signal name="toggled" handler="on_forwardRadiobutton_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -154,9 +172,10 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">forwardRadiobutton</property>
-                                <signal name="toggled" handler="on_backwardRadiobutton_toggled"/>
+                                <signal name="toggled" handler="on_backwardRadiobutton_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -167,6 +186,7 @@
                             <child>
                               <object class="GtkAlignment" id="alignment5">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <child>
                                   <placeholder/>
                                 </child>
@@ -187,6 +207,7 @@
                     <child type="label">
                       <object class="GtkLabel" id="label3">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">&lt;b&gt;Direction&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
@@ -194,30 +215,35 @@
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkFrame" id="frame2">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <object class="GtkAlignment" id="alignment2">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <object class="GtkVButtonBox" id="vbuttonbox2">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <child>
                               <object class="GtkRadioButton" id="currentFileRadiobutton">
                                 <property name="label" translatable="yes">Current Document</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="on_currentFileRadiobutton_toggled"/>
+                                <signal name="toggled" handler="on_currentFileRadiobutton_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -231,9 +257,10 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">currentFileRadiobutton</property>
-                                <signal name="toggled" handler="on_allFilesRadiobutton_toggled"/>
+                                <signal name="toggled" handler="on_allFilesRadiobutton_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -247,9 +274,10 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">currentFileRadiobutton</property>
-                                <signal name="toggled" handler="on_allFilesInPathRadiobutton_toggled"/>
+                                <signal name="toggled" handler="on_allFilesInPathRadiobutton_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -263,9 +291,10 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">currentFileRadiobutton</property>
-                                <signal name="toggled" handler="on_currentSelectionRadiobutton_toggled"/>
+                                <signal name="toggled" handler="on_currentSelectionRadiobutton_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -280,6 +309,7 @@
                     <child type="label">
                       <object class="GtkLabel" id="label4">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">&lt;b&gt;Scope&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
@@ -287,6 +317,7 @@
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -294,12 +325,13 @@
               <packing>
                 <property name="top_attach">6</property>
                 <property name="bottom_attach">7</property>
-                <property name="y_options">GTK_FILL</property>
+                <property name="y_options">GTK_SHRINK</property>
               </packing>
             </child>
             <child>
               <object class="GtkHSeparator" id="hseparator1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="top_attach">1</property>
@@ -314,6 +346,7 @@
                 <child>
                   <object class="GtkTable" id="table3">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="n_rows">3</property>
                     <property name="n_columns">2</property>
                     <child>
@@ -322,8 +355,9 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="on_matchWholeWordCheckbutton_toggled"/>
+                        <signal name="toggled" handler="on_matchWholeWordCheckbutton_toggled" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -332,8 +366,9 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="on_matchCaseCheckbutton_toggled"/>
+                        <signal name="toggled" handler="on_matchCaseCheckbutton_toggled" swapped="no"/>
                       </object>
                       <packing>
                         <property name="top_attach">1</property>
@@ -346,8 +381,9 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="on_wrapAroundCheckbutton_toggled"/>
+                        <signal name="toggled" handler="on_wrapAroundCheckbutton_toggled" swapped="no"/>
                       </object>
                       <packing>
                         <property name="top_attach">2</property>
@@ -360,8 +396,9 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="on_followCurrentDocCheckbutton_toggled"/>
+                        <signal name="toggled" handler="on_followCurrentDocCheckbutton_toggled" swapped="no"/>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -374,8 +411,9 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="on_includeSubfolderCheckbutton_toggled"/>
+                        <signal name="toggled" handler="on_includeSubfolderCheckbutton_toggled" swapped="no"/>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -390,10 +428,9 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="xalign">0.49000000953674316</property>
-                        <property name="yalign">0.47999998927116394</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="on_regexSearchCheckbutton_toggled"/>
+                        <signal name="toggled" handler="on_regexSearchCheckbutton_toggled" swapped="no"/>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -407,6 +444,7 @@
                 <child type="label">
                   <object class="GtkLabel" id="label5">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes">&lt;b&gt;Options&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
                   </object>
@@ -425,6 +463,7 @@
                 <child>
                   <object class="GtkTable" id="table4">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="n_rows">2</property>
                     <property name="n_columns">2</property>
                     <property name="column_spacing">5</property>
@@ -432,10 +471,12 @@
                     <child>
                       <object class="GtkLabel" id="label7">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Filter : </property>
                       </object>
                       <packing>
                         <property name="x_options">GTK_FILL</property>
+                        <property name="y_options">GTK_FILL</property>
                         <property name="x_padding">5</property>
                         <property name="y_padding">5</property>
                       </packing>
@@ -443,36 +484,38 @@
                     <child>
                       <object class="GtkLabel" id="label8">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Directory : </property>
                       </object>
                       <packing>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
                         <property name="x_options">GTK_FILL</property>
+                        <property name="y_options">GTK_FILL</property>
                         <property name="x_padding">5</property>
                         <property name="y_padding">5</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkComboBoxEntry" id="filterComboboxentry">
-                        <property name="visible">True</property>
-                        <property name="model">filterListstore</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
                       <object class="GtkHBox" id="hbox3">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="spacing">5</property>
                         <child>
-                          <object class="GtkComboBoxEntry" id="pathComboboxentry">
+                          <object class="GtkComboBoxText" id="pathComboboxtext">
                             <property name="visible">True</property>
-                            <property name="model">pathListstore</property>
+                            <property name="can_focus">False</property>
+                            <property name="has_entry">True</property>
+                            <child internal-child="entry">
+                              <object class="GtkEntry" id="comboboxtext-entry6">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                              </object>
+                            </child>
                           </object>
                           <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
@@ -482,10 +525,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                            <signal name="clicked" handler="on_selectPathButton_clicked"/>
+                            <property name="use_action_appearance">False</property>
+                            <signal name="clicked" handler="on_selectPathButton_clicked" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
+                            <property name="fill">True</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
@@ -495,6 +540,25 @@
                         <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
+                        <property name="y_options">GTK_FILL</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkComboBoxText" id="filterComboboxtext">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="has_entry">True</property>
+                        <child internal-child="entry">
+                          <object class="GtkEntry" id="comboboxtext-entry8">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="y_options">GTK_FILL</property>
                       </packing>
                     </child>
                   </object>
@@ -502,6 +566,7 @@
                 <child type="label">
                   <object class="GtkLabel" id="label6">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes">&lt;b&gt;Path&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
                   </object>
@@ -515,24 +580,30 @@
             </child>
           </object>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
           <object class="GtkVSeparator" id="vseparator1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
         <child>
           <object class="GtkVBox" id="vbox1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
               <object class="GtkVButtonBox" id="vbuttonbox3">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="spacing">5</property>
                 <child>
                   <object class="GtkButton" id="findButton">
@@ -540,7 +611,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_findButton_clicked"/>
+                    <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_findButton_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -554,7 +626,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_replaceButton_clicked"/>
+                    <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_replaceButton_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -568,7 +641,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_findAllButton_clicked"/>
+                    <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_findAllButton_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -582,7 +656,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_replaceAllButton_clicked"/>
+                    <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_replaceAllButton_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -596,7 +671,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_closeButton_clicked"/>
+                    <property name="use_action_appearance">False</property>
+                    <signal name="clicked" handler="on_closeButton_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -615,11 +691,14 @@
             <child>
               <object class="GtkAlignment" id="alignment4">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <placeholder/>
                 </child>
               </object>
               <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -629,6 +708,7 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="padding">5</property>
             <property name="position">2</property>
           </packing>
@@ -636,7 +716,26 @@
       </object>
     </child>
   </object>
+  <object class="GtkListStore" id="findTextListstore">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="pathListstore">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="replaceListstore">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkFileChooserDialog" id="selectPathFilechooserdialog">
+    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Select a directory</property>
     <property name="modal">True</property>
@@ -644,20 +743,18 @@
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">normal</property>
     <property name="transient_for">findDialog</property>
-    <property name="has_separator">False</property>
-    <property name="local_only">False</property>
     <property name="action">select-folder</property>
     <property name="create_folders">False</property>
+    <property name="local_only">False</property>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox1">
+      <object class="GtkBox" id="dialog-vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="spacing">2</property>
-        <child>
-          <placeholder/>
-        </child>
         <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area1">
+          <object class="GtkButtonBox" id="dialog-action_area1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="selectPathDialogCancelButton">
@@ -665,7 +762,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_selectPathDialogCancelButton_clicked"/>
+                <property name="use_action_appearance">False</property>
+                <signal name="clicked" handler="on_selectPathDialogCancelButton_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -679,7 +777,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_selectPathDialogOkButton_clicked"/>
+                <property name="use_action_appearance">False</property>
+                <signal name="clicked" handler="on_selectPathDialogOkButton_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -690,9 +789,13 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="pack_type">end</property>
             <property name="position">0</property>
           </packing>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>
@@ -700,11 +803,5 @@
       <action-widget response="0">selectPathDialogCancelButton</action-widget>
       <action-widget response="0">selectPathDialogOkButton</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkListStore" id="pathListstore">
-    <columns>
-      <!-- column-name gchararray1 -->
-      <column type="gchararray"/>
-    </columns>
   </object>
 </interface>

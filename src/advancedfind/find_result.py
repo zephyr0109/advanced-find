@@ -22,72 +22,60 @@
 #
 
 
-import sys
-try:
-    import pygtk
-    pygtk.require("2.0")
-except:
-    pass
-try:
-    import gtk
-    import gtk.glade
-except:
-    sys.exit(1)
-
-import gedit
+from gi.repository import Gtk, Gedit, Gio
 import os.path
 import urllib
 import re
 import config_manager
 
 
-class FindResultView(gtk.HBox):
+class FindResultView(Gtk.HBox):
 	def __init__(self, window, show_button_option):
-		gtk.HBox.__init__(self)
+		Gtk.HBox.__init__(self)
 		self._window = window
 		self.show_button_option = show_button_option
 		
 		# initialize find result treeview
-		self.findResultTreeview = gtk.TreeView()
-		self.findResultTreeview.append_column(gtk.TreeViewColumn("line", gtk.CellRendererText(), markup=1))
-		self.findResultTreeview.append_column(gtk.TreeViewColumn("content", gtk.CellRendererText(), markup=2))
-		#self.findResultTreeview.append_column(gtk.TreeViewColumn("result_start", gtk.CellRendererText(), text=4))
-		#self.findResultTreeview.append_column(gtk.TreeViewColumn("result_len", gtk.CellRendererText(), text=5))
-		self.findResultTreeview.append_column(gtk.TreeViewColumn("uri", gtk.CellRendererText(), text=6))
+		self.findResultTreeview = Gtk.TreeView()
+		self.findResultTreeview.append_column(Gtk.TreeViewColumn("line", Gtk.CellRendererText(), markup=1))
+		self.findResultTreeview.append_column(Gtk.TreeViewColumn("content", Gtk.CellRendererText(), markup=2))
+		#self.findResultTreeview.append_column(Gtk.TreeViewColumn("result_start", Gtk.CellRendererText(), text=4))
+		#self.findResultTreeview.append_column(Gtk.TreeViewColumn("result_len", Gtk.CellRendererText(), text=5))
+		self.findResultTreeview.append_column(Gtk.TreeViewColumn("uri", Gtk.CellRendererText(), text=6))
 		self.findResultTreeview.set_headers_visible(False)
 		self.findResultTreeview.set_rules_hint(True)
-		self.findResultTreemodel = gtk.TreeStore(int, str, str, object, int, int, str)
-		self.findResultTreemodel.set_sort_column_id(0, gtk.SORT_ASCENDING)
+		self.findResultTreemodel = Gtk.TreeStore(int, str, str, object, int, int, str)
+		self.findResultTreemodel.set_sort_column_id(0, Gtk.SortType.ASCENDING)
 		self.findResultTreeview.connect("cursor-changed", self.on_findResultTreeview_cursor_changed_action)
 		self.findResultTreeview.connect("button-press-event", self.on_findResultTreeview_button_press_action)
 		self.findResultTreeview.set_model(self.findResultTreemodel)
 
 		# initialize scrolled window
-		scrollWindow = gtk.ScrolledWindow()
-		scrollWindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		scrollWindow = Gtk.ScrolledWindow()
+		scrollWindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 		scrollWindow.add(self.findResultTreeview)
 		
 		# put a separator
-		v_separator1 = gtk.VSeparator()
+		v_separator1 = Gtk.VSeparator()
 		
 		# initialize button box
-		v_box = gtk.VBox()
-		v_buttonbox = gtk.VButtonBox()
-		v_buttonbox.set_layout(gtk.BUTTONBOX_END)
+		v_box = Gtk.VBox()
+		v_buttonbox = Gtk.VButtonBox()
+		v_buttonbox.set_layout(Gtk.ButtonBoxStyle.END)
 		v_buttonbox.set_spacing(5)
-		self.selectNextButton = gtk.Button(_("Next"))
+		self.selectNextButton = Gtk.Button(_("Next"))
 		self.selectNextButton.set_no_show_all(True)
 		self.selectNextButton.connect("clicked", self.on_selectNextButton_clicked_action)
-		self.expandAllButton = gtk.Button(_("Expand All"))
+		self.expandAllButton = Gtk.Button(_("Expand All"))
 		self.expandAllButton.set_no_show_all(True)
 		self.expandAllButton.connect("clicked", self.on_expandAllButton_clicked_action)
-		self.collapseAllButton = gtk.Button(_("Collapse All"))
+		self.collapseAllButton = Gtk.Button(_("Collapse All"))
 		self.collapseAllButton.set_no_show_all(True)
 		self.collapseAllButton.connect("clicked", self.on_collapseAllButton_clicked_action)
-		self.clearHighlightButton = gtk.Button(_("Clear Highlight"))
+		self.clearHighlightButton = Gtk.Button(_("Clear Highlight"))
 		self.clearHighlightButton.set_no_show_all(True)
 		self.clearHighlightButton.connect("clicked", self.on_clearHightlightButton_clicked_action)
-		self.clearButton = gtk.Button(_("Clear"))
+		self.clearButton = Gtk.Button(_("Clear"))
 		self.clearButton.set_no_show_all(True)
 		self.clearButton.connect("clicked", self.on_clearButton_clicked_action)
 
@@ -98,25 +86,25 @@ class FindResultView(gtk.HBox):
 		v_buttonbox.pack_start(self.clearButton, False, False, 5)
 		v_box.pack_end(v_buttonbox, False, False, 5)
 		
-		#self._status = gtk.Label()
+		#self._status = Gtk.Label()
 		#self._status.set_text('test')
 		#self._status.hide()
 		#v_box.pack_end(self._status, False)
 		
 		self.pack_start(scrollWindow, True, True, 5)
-		self.pack_start(v_separator1, False, False)
+		self.pack_start(v_separator1, False, False, 0)
 		self.pack_start(v_box, False, False, 5)
 		
 		self.show_all()
 		
 		#initialize context menu
-		self.contextMenu = gtk.Menu()
-		self.expandAllItem = gtk.MenuItem(_('Expand All'))
-		self.collapseAllItem = gtk.MenuItem(_('Collapse All'))
-		self.clearHighlightItem = gtk.MenuItem(_('Clear Highlight'))
-		self.clearItem = gtk.MenuItem(_('Clear'))
-		self.markupItem = gtk.MenuItem(_('Markup'))
-		
+		self.contextMenu = Gtk.Menu()
+		self.expandAllItem = Gtk.MenuItem.new_with_label(_('Expand All'))
+		self.collapseAllItem = Gtk.MenuItem.new_with_label(_('Collapse All'))
+		self.clearHighlightItem = Gtk.MenuItem.new_with_label(_('Clear Highlight'))
+		self.clearItem = Gtk.MenuItem.new_with_label(_('Clear'))
+		self.markupItem = Gtk.MenuItem.new_with_label(_('Markup'))
+
 		self.contextMenu.append(self.expandAllItem)
 		self.contextMenu.append(self.collapseAllItem)
 		self.contextMenu.append(self.clearHighlightItem)
@@ -135,19 +123,19 @@ class FindResultView(gtk.HBox):
 		self.clearItem.show()
 		#self.markupItem.show()
 		
-		self.contextMenu.append(gtk.SeparatorMenuItem())
+		self.contextMenu.append(Gtk.SeparatorMenuItem())
 		
-		self.showButtonsItem = gtk.MenuItem(_('Show Buttons'))
+		self.showButtonsItem = Gtk.MenuItem.new_with_label(_('Show Buttons'))
 		self.contextMenu.append(self.showButtonsItem)
 		self.showButtonsItem.show()
 		
-		self.showButtonsSubmenu = gtk.Menu()
-		self.showNextButtonItem = gtk.CheckMenuItem(_('Next'))
-		self.showExpandAllButtonItem = gtk.CheckMenuItem(_('Expand All'))
-		self.showCollapseAllButtonItem = gtk.CheckMenuItem(_('Collapse All'))
-		self.showClearHighlightButtonItem = gtk.CheckMenuItem(_('Clear Highlight'))
-		self.showClearButtonItem = gtk.CheckMenuItem(_('Clear'))
-		
+		self.showButtonsSubmenu = Gtk.Menu()
+		self.showNextButtonItem = Gtk.CheckMenuItem.new_with_label(_('Next'))
+		self.showExpandAllButtonItem = Gtk.CheckMenuItem.new_with_label(_('Expand All'))
+		self.showCollapseAllButtonItem = Gtk.CheckMenuItem.new_with_label(_('Collapse All'))
+		self.showClearHighlightButtonItem = Gtk.CheckMenuItem.new_with_label(_('Clear Highlight'))
+		self.showClearButtonItem = Gtk.CheckMenuItem.new_with_label(_('Clear'))
+
 		self.showButtonsSubmenu.append(self.showNextButtonItem)
 		self.showButtonsSubmenu.append(self.showExpandAllButtonItem)
 		self.showButtonsSubmenu.append(self.showCollapseAllButtonItem)
@@ -174,8 +162,8 @@ class FindResultView(gtk.HBox):
 		self.result_format = config_manager.ConfigManager(format_file).load_configure('result_format')
 		
 	def do_events(self):
-		while gtk.events_pending():
-			gtk.main_iteration(False)
+		while Gtk.events_pending():
+			Gtk.main_iteration()
 			
 	def to_xml_text(self, text):
 		return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
@@ -210,12 +198,13 @@ class FindResultView(gtk.HBox):
 		if not tab:
 			docs = self._window.get_documents()
 			for doc in docs:
-				if doc.get_uri() == uri:
-					tab = gedit.tab_get_from_document(doc)					
+				if doc.get_uri_for_display() == uri:
+					tab = Gedit.Tab.get_from_document(doc)					
 			
 		# Still nothing? Open the file then
 		if not tab:
-			tab = self._window.create_tab_from_uri(uri, None, line_num, False, False)
+			#tab = self._window.create_tab_from_uri(uri, None, line_num, False, False)
+			tab = self._window.create_tab_from_location(Gio.file_new_for_uri('file://' + uri), None, line_num, 0, False, False)
 			self.do_events()
 			
 		if tab:
@@ -228,7 +217,7 @@ class FindResultView(gtk.HBox):
 	def on_findResultTreeview_button_press_action(self, object, event):
 		if event.button == 3:
 			#right button click
-			self.contextMenu.popup(None, None, None, event.button, event.time)
+			self.contextMenu.popup(None, None, None, None, event.button, event.time)
 		
 	def on_expandAllItem_activate(self, object):
 		self.findResultTreeview.expand_all()
@@ -381,10 +370,10 @@ class FindResultView(gtk.HBox):
 			self.findResultTreemodel.append(parent_it, [int(line), result_line, result_text, tab, result_offset_start, result_len, uri])
 		
 	def show_find_result(self):
-		path = str(self.findResultTreemodel.iter_n_children(None) - 1)
+		path = Gtk.TreePath.new_from_string(str(self.findResultTreemodel.iter_n_children(None) - 1))
 		self.findResultTreeview.expand_row(path, True)
 		pattern_it = self.findResultTreemodel.get_iter(path)
-		self.findResultTreeview.set_cursor(self.findResultTreemodel.get_path(pattern_it))
+		self.findResultTreeview.set_cursor(self.findResultTreemodel.get_path(pattern_it), None, False)
 		
 		file_cnt = self.findResultTreemodel.iter_n_children(pattern_it)
 		total_hits = 0
@@ -433,9 +422,9 @@ class FindResultView(gtk.HBox):
 
 if __name__ == "__main__":
 	view = FindResultView(None)
-	window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+	window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
 	window.add(view)
 	window.show_all()
-	gtk.main()
+	Gtk.main()
 
 

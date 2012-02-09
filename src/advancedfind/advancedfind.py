@@ -23,15 +23,14 @@
 
 
 
-import gtk
-import gedit
+from gi.repository import Gtk, Gedit, Gio
 import os.path
 import os
 import fnmatch
 import subprocess
 import urllib
 import re
-#import pango
+
 
 from advancedfind_ui import AdvancedFindUI
 from find_result import FindResultView
@@ -81,7 +80,7 @@ class AdvancedFindWindowHelper:
 		self.scopeFlg = 0
 		
 		'''
-		self.result_highlight_tag = gtk.TextTag('result_highlight')
+		self.result_highlight_tag = Gtk.TextTag('result_highlight')
 		self.result_highlight_tag.set_properties(foreground='yellow',background='red')
 		self.result_highlight_tag.set_property('family', 'Serif')
 		self.result_highlight_tag.set_property('size-points', 12)
@@ -93,24 +92,25 @@ class AdvancedFindWindowHelper:
 		configfile = os.path.join(os.path.dirname(__file__), "config.xml")
 		self.config_manager = config_manager.ConfigManager(configfile)
 		self.options = self.config_manager.load_configure('search_option')
-		self.to_bool(self.options)
+		self.config_manager.to_bool(self.options)
 		
 		self.find_dlg_setting = self.config_manager.load_configure('find_dialog')
-		self.to_bool(self.find_dlg_setting)
+		self.config_manager.to_bool(self.find_dlg_setting)
 
 		self.shortcuts = self.config_manager.load_configure('shortcut')
 		self.result_highlight = self.config_manager.load_configure('result_highlight')
 		
 		self.show_button = self.config_manager.load_configure('show_button')
-		self.to_bool(self.show_button)
+		self.config_manager.to_bool(self.show_button)
 
 		self._results_view = FindResultView(window, self.show_button)
-		self._window.get_bottom_panel().add_item(self._results_view, _("Advanced Find/Replace"), "gtk-find-and-replace")
+		icon = Gtk.Image.new_from_stock(Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU)
+		self._window.get_bottom_panel().add_item(self._results_view, 'AdvancedFindBottomPanel', _("Advanced Find/Replace"), icon)
 		
-		self.msgDialog = gtk.MessageDialog(self._window, 
-						gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-						gtk.MESSAGE_INFO,
-						gtk.BUTTONS_CLOSE,
+		self.msgDialog = Gtk.MessageDialog(self._window, 
+						Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+						Gtk.MessageType.INFO,
+						Gtk.ButtonsType.CLOSE,
 						None)
 		
 		# Insert menu items
@@ -142,7 +142,7 @@ class AdvancedFindWindowHelper:
 		manager = self._window.get_ui_manager()
 
 		# Create a new action group
-		self._action_group = gtk.ActionGroup("AdvancedFindReplaceActions")
+		self._action_group = Gtk.ActionGroup("AdvancedFindReplaceActions")
 		self._action_group.add_actions( [("advanced_find_active", None, _("Advanced Find/Replace"), self.shortcuts['ACTIVATE'], _("Advanced Find/Replace"), self.advanced_find_active),
 										("find_next", None, _("Find Next"), self.shortcuts['FIND_NEXT'], _("Find Next"), self.find_next),
 										("find_previous", None, _("Find Previous"), self.shortcuts['FIND_PREVIOUS'], _("Find Previous"), self.find_previous),
@@ -171,26 +171,19 @@ class AdvancedFindWindowHelper:
 	def update_ui(self):
 		self._action_group.set_sensitive(self._window.get_active_document() != None)
 		
-	def boolean(self, string):
-		return string.lower() in ['true', 'yes', 't', 'y', 'ok', '1']
-		
-	def to_bool(self, dic):
-		for key in dic.keys():
-			dic[key] = self.boolean(dic[key])
-		
 	def show_message_dialog(self, dlg, text):
 		dlg.set_property('text', text)
 		dlg.run()
 		dlg.hide()
 		
-	def advanced_find_active(self, action):
+	def advanced_find_active(self, window, tab, data = None):
 		doc = self._window.get_active_document()
 		if not doc:
 			return
 			
 		try:
 			start, end = doc.get_selection_bounds()
-			search_text = unicode(doc.get_text(start,end))
+			search_text = unicode(doc.get_text(start,end,True))
 		except:
 			search_text = self.current_search_pattern
 
@@ -198,13 +191,14 @@ class AdvancedFindWindowHelper:
 			self.find_ui = AdvancedFindUI(self._plugin)
 		else:
 			self.find_ui.findDialog.present()
-			self.find_ui.findTextEntry.grab_focus()
+			self.find_ui.findTextComboboxtext.grab_focus()
 			
 		if search_text != "":
-			self.find_ui.findTextEntry.child.set_text(search_text)
+			self.find_ui.findTextComboboxtext.get_child().set_text(search_text)
 		
 		if self.current_replace_text != "":
-			self.find_ui.replaceTextEntry.child.set_text(self.current_replace_text)
+			self.find_ui.replaceTextComboboxtext.get_child().set_text(self.current_replace_text)
+
 		'''	
 		if self.current_file_pattern != "":
 			self.find_ui.filterComboboxentry.child.set_text(self.current_file_pattern)
@@ -237,12 +231,12 @@ class AdvancedFindWindowHelper:
 		
 		if doc.get_has_selection():
 			sel_start, sel_end = doc.get_selection_bounds()
-			match = regex.search(doc.get_text(sel_start, sel_end))
+			match = regex.search(doc.get_text(sel_start, sel_end, True))
 			if match and replace_flg == True:
 				if options['REGEX_SEARCH'] == False:
-					replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
+					replace_text = unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8')
 				else:
-					replace_text = match.expand(unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8'))
+					replace_text = match.expand(unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8'))
 				doc.delete_selection(False, False)
 				doc.insert_at_cursor(replace_text)
 				replace_flg = False
@@ -254,7 +248,7 @@ class AdvancedFindWindowHelper:
 			
 		view = self._window.get_active_view()
 		start, end = doc.get_bounds()
-		text = unicode(doc.get_text(start, end), 'utf-8')
+		text = unicode(doc.get_text(start, end, True), 'utf-8')
 		around_flg = False
 		
 		if forward_flg == True:
@@ -294,9 +288,9 @@ class AdvancedFindWindowHelper:
 				
 		if replace_flg == True and doc.get_has_selection():
 			if options['REGEX_SEARCH'] == False:
-				replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
+				replace_text = unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8')
 			else:
-				replace_text = match.expand(unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8'))
+				replace_text = match.expand(unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8'))
 			doc.delete_selection(False, False)
 			doc.insert_at_cursor(replace_text)
 			replace_end = doc.get_iter_at_mark(doc.get_insert())
@@ -308,12 +302,12 @@ class AdvancedFindWindowHelper:
 		doc = self._window.get_active_document()
 		if doc.get_has_selection():
 			start, end = doc.get_selection_bounds()
-			return doc.get_text(start, end)
+			return doc.get_text(start, end, True)
 		else:
 			current_iter = doc.get_iter_at_mark(doc.get_insert())
 			line_num = current_iter.get_line()
 			line_start = doc.get_iter_at_line(line_num)
-			line_text = doc.get_text(line_start, doc.get_iter_at_line(line_num + 1))
+			line_text = doc.get_text(line_start, doc.get_iter_at_line(line_num + 1), True)
 			line_start_pos = line_start.get_offset()
 			matches = re.finditer(pattern, line_text)
 			for match in matches:
@@ -321,17 +315,17 @@ class AdvancedFindWindowHelper:
 					return match.group(0)
 			return ''
 					
-	def find_next(self, action):
+	def find_next(self, window, tab, data = None):
 		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.options, True, False, False)
 	
-	def find_previous(self, action):	
+	def find_previous(self, window, tab, data = None):	
 		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.options, False, False, False)
 		
-	def select_find_next(self, action):
+	def select_find_next(self, window, tab, data = None):
 		#print self.auto_select_word()
 		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.options, True, False, False)
 
-	def select_find_previous(self, action):
+	def select_find_previous(self, window, tab, data = None):
 		#print self.auto_select_word()
 		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.options, False, False, False)
 		
@@ -343,7 +337,7 @@ class AdvancedFindWindowHelper:
 
 		self.result_highlight_off(doc)
 		start, end = doc.get_bounds()
-		text = unicode(doc.get_text(start, end), 'utf-8')
+		text = unicode(doc.get_text(start, end, True), 'utf-8')
 		
 		start_pos = 0
 		end_pos = end.get_offset()
@@ -358,13 +352,14 @@ class AdvancedFindWindowHelper:
 		match = regex.search(text, start_pos, end_pos)
 		if match:
 			if not tree_it:
-				doc_uri = doc.get_uri()
+				doc_uri = doc.get_uri_for_display()
+				#print doc_uri
 				if doc_uri == None:
 					uri = ''
 				else:
-					uri = urllib.unquote(doc.get_uri()).decode('utf-8')
+					uri = urllib.unquote(doc.get_uri_for_display()).decode('utf-8')
 				tree_it = self._results_view.append_find_result_filename(parent_it, doc.get_short_name_for_display(), uri)
-			tab = gedit.tab_get_from_document(doc)
+			tab = Gedit.Tab.get_from_document(doc)
 
 			if replace_flg == False:
 				while(match):
@@ -381,9 +376,9 @@ class AdvancedFindWindowHelper:
 				doc.begin_user_action()
 				while(match):
 					if options['REGEX_SEARCH'] == False:
-						replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
+						replace_text = unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8')
 					else:
-						replace_text = match.expand(unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8'))
+						replace_text = match.expand(unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8'))
 					replace_start_pos = match.start() + replace_offset
 					replace_end_pos = match.end() + replace_offset
 					replace_start = doc.get_iter_at_offset(replace_start_pos)
@@ -398,7 +393,7 @@ class AdvancedFindWindowHelper:
 				doc.end_user_action()
 				
 				start, end = doc.get_bounds()
-				text = unicode(doc.get_text(start, end), 'utf-8')
+				text = unicode(doc.get_text(start, end, True), 'utf-8')
 				for i in range(len(results)):
 					line_num = doc.get_iter_at_offset(results[i][0]).get_line()
 					line_start_pos = doc.get_iter_at_line(line_num).get_offset()
@@ -437,9 +432,9 @@ class AdvancedFindWindowHelper:
 					p2 = subprocess.Popen(["grep", "text"], stdin=p1.stdout, stdout=pipe)
 					output = p2.communicate()[0]
 					if output:
-						temp_doc = gedit.Document()
+						temp_doc = Gedit.Document()
 						file_uri = "file://" + urllib.pathname2url(file_path.encode('utf-8'))
-						temp_doc.load(file_uri, gedit.encoding_get_from_charset('utf-8'), 0, False)
+						temp_doc.load(Gio.file_new_for_uri(file_uri), Gedit.encoding_get_from_charset('utf-8'), 0, 0, False)
 						f_temp = open(file_path, 'r')
 						try:
 							text = unicode(f_temp.read(), 'utf-8')
@@ -487,9 +482,9 @@ class AdvancedFindWindowHelper:
 		else:
 			tab.get_parent().get_tab_label(tab).get_children()[0].get_child().get_children()[1].set_text(_("Advanced Find/Replace"))
 		if icon:
-			tab.get_parent().get_tab_label(tab).get_children()[0].get_child().get_children()[0].set_from_animation(icon)
+			tab.get_parent().get_tab_label(tab).get_children()[0].get_child().get_children()[0].set_from_file(icon)
 		else:
-			tab.get_parent().get_tab_label(tab).get_children()[0].get_child().get_children()[0].set_from_icon_name('gtk-find-and-replace', gtk.ICON_SIZE_MENU)
+			tab.get_parent().get_tab_label(tab).get_children()[0].get_child().get_children()[0].set_from_icon_name('gtk-find-and-replace', Gtk.IconSize.MENU)
 		
 		
 		

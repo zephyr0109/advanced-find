@@ -4,7 +4,7 @@
 PLUGIN_NAME="advancedfind"
 
 # gedit plugin directory
-PLUGIN_DEST=~/.gnome2/gedit/plugins/
+PLUGIN_DEST=~/.local/share/gedit/plugins/
 
 # create it
 mkdir -p ${PLUGIN_DEST}

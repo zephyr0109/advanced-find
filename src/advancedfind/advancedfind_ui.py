@@ -22,31 +22,18 @@
 #
 
 
-
-import sys
-try:
-	import pygtk
-	pygtk.require("2.0")
-except:
-	pass
-try:
-	import gtk
-	import gtk.glade
-	import gtk.gdk
-except:
-	sys.exit(1)
+from gi.repository import Gtk, Gedit
 
 import os.path
 import os
-#import pango
 import re
 #import config_manager
-import gconf
+#import gconf
 
 
-#gtk.glade.bindtextdomain('advancedfind', os.path.join(os.path.dirname(__file__), 'locale'))
-#gtk.glade.bindtextdomain('advancedfind', '/usr/share/locale')
-#gtk.glade.textdomain('advancedfind')
+#Gtk.glade.bindtextdomain('advancedfind', os.path.join(os.path.dirname(__file__), 'locale'))
+#Gtk.glade.bindtextdomain('advancedfind', '/usr/share/locale')
+#Gtk.glade.textdomain('advancedfind')
 
 
 
@@ -58,7 +45,7 @@ class AdvancedFindUI(object):
 			pass
 
 		gladefile = os.path.join(os.path.dirname(__file__),"FindDialog.glade")
-		ui = gtk.Builder()
+		ui = Gtk.Builder()
 		ui.set_translation_domain('advancedfind')
 		ui.add_from_file(gladefile)
 		ui.connect_signals({ "on_findDialog_destroy" : self.on_findDialog_destroy_action,
@@ -93,62 +80,64 @@ class AdvancedFindUI(object):
 		#self.findDialog.set_keep_above(True)
 		self.findDialog.set_transient_for(self._window)
 
-		accelgroup = gtk.AccelGroup()
-		#key, modifier = gtk.accelerator_parse('Escape')
-		#accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.esc_accel_action)
-		key, modifier = gtk.accelerator_parse('Return')
-		accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.return_accel_action)
-		key, modifier = gtk.accelerator_parse('KP_Enter')
-		accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.return_accel_action)
+		accelgroup = Gtk.AccelGroup()
+		#key, modifier = Gtk.accelerator_parse('Escape')
+		#accelgroup.connect(key, modifier, Gtk.ACCEL_VISIBLE, self.esc_accel_action)
+		key, modifier = Gtk.accelerator_parse('Return')
+		accelgroup.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.return_accel_action)
+		key, modifier = Gtk.accelerator_parse('KP_Enter')
+		accelgroup.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.return_accel_action)
 		self.findDialog.add_accel_group(accelgroup)
 
-		self.findTextEntry = ui.get_object("findTextComboboxentry")
+		self.findTextComboboxtext = ui.get_object("findTextComboboxtext")
 		#self.findTextListstore = ui.get_object("findTextListstore")
-		#find_cell = gtk.CellRendererText()
-		#self.findTextEntry.pack_start(find_cell, True)
-		#self.findTextEntry.add_attribute(find_cell, 'text', 0)
-		self.findTextEntry.set_text_column(0)
+		#find_cell = Gtk.CellRendererText()
+		#self.findTextComboboxtext.pack_start(find_cell, True)
+		#self.findTextComboboxtext.add_attribute(find_cell, 'text', 0)
+		self.findTextComboboxtext.set_entry_text_column(0)
 		try:
 			for find_text in self._instance.find_list:
-				self.findTextEntry.prepend_text(find_text)
+				self.findTextComboboxtext.prepend_text(find_text)
 		except:
 			pass
 
-		self.replaceTextEntry = ui.get_object("replaceTextComboboxentry")
+		self.replaceTextComboboxtext = ui.get_object("replaceTextComboboxtext")
 		#self.replaceTextListstore = ui.get_object("replaceTextListstore")
-		#replace_cell = gtk.CellRendererText()
-		#self.replaceTextEntry.pack_start(replace_cell, True)
-		#self.replaceTextEntry.add_attribute(replace_cell, 'text', 0)
-		self.replaceTextEntry.set_text_column(0)
+		#replace_cell = Gtk.CellRendererText()
+		#self.replaceTextComboboxtext.pack_start(replace_cell, True)
+		#self.replaceTextComboboxtext.add_attribute(replace_cell, 'text', 0)
+		self.replaceTextComboboxtext.set_entry_text_column(0)
 		try:
 			for replace_text in self._instance.replace_list:
-				self.replaceTextEntry.prepend_text(replace_text)
+				self.replaceTextComboboxtext.prepend_text(replace_text)
 		except:
 			pass
-			
-		self.filterComboboxentry = ui.get_object("filterComboboxentry")
-		self.filterComboboxentry.set_text_column(0)
-		self.filterComboboxentry.child.set_text("*")
-		#self.filterComboboxentry.prepend_text("*")
+		
+		self.filterComboboxtext = ui.get_object("filterComboboxtext")
+		self.filterComboboxtext.set_entry_text_column(0)
+		self.filterComboboxtext.get_child().set_text("*")
+		#self.filterComboboxtext.prepend_text("*")
 		try:
 			for file_filter in self._instance.filter_list:
-				self.filterComboboxentry.prepend_text(file_filter)
+				self.filterComboboxtext.prepend_text(file_filter)
 		except:
 			pass
 			
 		self.selectPathFilechooserdialog = ui.get_object("selectPathFilechooserdialog")
 		
-		self.pathComboboxentry = ui.get_object("pathComboboxentry")
-		self.pathComboboxentry.set_text_column(0)
+		self.pathComboboxtext = ui.get_object("pathComboboxtext")
+		self.pathComboboxtext.set_entry_text_column(0)
 		filebrowser_root = self.get_filebrowser_root()
+		'''
 		if filebrowser_root != None and self._instance.options['ROOT_FOLLOW_FILEBROWSER'] == True:
-			self.pathComboboxentry.child.set_text(filebrowser_root)
+			self.pathComboboxtext.get_child().set_text(filebrowser_root)
 		else:
-			self.pathComboboxentry.child.set_text(self.selectPathFilechooserdialog.get_filename())
+			self.pathComboboxtext.get_child().set_text(self.selectPathFilechooserdialog.get_filename())
+		#'''
 			
 		try:
 			for path in self._instance.path_list:
-				self.pathComboboxentry.prepend_text(path)
+				self.pathComboboxtext.prepend_text(path)
 		except:
 			pass
 		
@@ -201,8 +190,10 @@ class AdvancedFindUI(object):
 		self.includeSubfolderCheckbutton.set_active(self._instance.options['INCLUDE_SUBFOLDER'])
 		self.regexSearchCheckbutton.set_active(self._instance.options['REGEX_SEARCH'])
 
+		'''
 		if self._instance.options['FOLLOW_CURRENT_DOC'] == True:
-			self.pathComboboxentry.child.set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
+			self.pathComboboxtext.get_child().set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
+		#'''
 			
 	def on_findDialog_destroy_action(self, object):
 		try:
@@ -226,17 +217,17 @@ class AdvancedFindUI(object):
 		self.on_findAllButton_clicked_action(None)
 		
 	def main(self):
-		gtk.main()
+		Gtk.main()
 
 	def do_events(self):
-		while gtk.events_pending():
-			gtk.main_iteration(False)
+		while Gtk.events_pending():
+			Gtk.main_iteration()
 			
 	def append_combobox_list(self):
-		find_text = self.findTextEntry.get_active_text()
-		replace_text = self.replaceTextEntry.get_active_text()
-		file_pattern = self.filterComboboxentry.get_active_text()
-		path = self.pathComboboxentry.get_active_text()
+		find_text = self.findTextComboboxtext.get_active_text()
+		replace_text = self.replaceTextComboboxtext.get_active_text()
+		file_pattern = self.filterComboboxtext.get_active_text()
+		path = self.pathComboboxtext.get_active_text()
 		self._instance.current_search_pattern = find_text
 		self._instance.current_replace_text = replace_text
 		#self._instance.current_file_pattern = file_pattern
@@ -244,19 +235,19 @@ class AdvancedFindUI(object):
 		
 		if find_text != "" and find_text not in self._instance.find_list:
 			self._instance.find_list.append(find_text)
-			self.findTextEntry.prepend_text(find_text)
+			self.findTextComboboxtext.prepend_text(find_text)
 			
 		if replace_text != "" and replace_text not in self._instance.replace_list:
 			self._instance.replace_list.append(replace_text)
-			self.replaceTextEntry.prepend_text(replace_text)
+			self.replaceTextComboboxtext.prepend_text(replace_text)
 			
 		if file_pattern != "" and file_pattern not in self._instance.filter_list:
 			self._instance.filter_list.append(file_pattern)
-			self.filterComboboxentry.prepend_text(file_pattern)
+			self.filterComboboxtext.prepend_text(file_pattern)
 			
 		if path != "" and path not in self._instance.path_list:
 			self._instance.path_list.append(path)
-			self.pathComboboxentry.prepend_text(path)
+			self.pathComboboxtext.prepend_text(path)
 
 	# button actions       
 	def on_findButton_clicked_action(self, object):
@@ -264,7 +255,7 @@ class AdvancedFindUI(object):
 		if not doc:
 			return
 		
-		search_pattern = self.findTextEntry.get_active_text()
+		search_pattern = self.findTextComboboxtext.get_active_text()
 		if search_pattern == "":
 			return
 		
@@ -276,7 +267,7 @@ class AdvancedFindUI(object):
 		if not doc:
 			return
 			
-		search_pattern = self.findTextEntry.get_active_text()
+		search_pattern = self.findTextComboboxtext.get_active_text()
 		if search_pattern == "":
 			return
 		
@@ -284,11 +275,11 @@ class AdvancedFindUI(object):
 		self._instance.advanced_find_in_doc(doc, search_pattern, self._instance.options, self._instance.forwardFlg, True)
 
 	def on_findAllButton_clicked_action(self, object):
-		search_pattern = self.findTextEntry.get_active_text()
+		search_pattern = self.findTextComboboxtext.get_active_text()
 		if search_pattern == "":
 			return
 			
-		self._instance.set_bottom_panel_label(_('Finding...'), gtk.gdk.PixbufAnimation(os.path.join(os.path.dirname(__file__), 'loading.gif')))
+		self._instance.set_bottom_panel_label(_('Finding...'), os.path.join(os.path.dirname(__file__), 'loading.gif'))
 		self._instance._results_view.set_sensitive(False)
 		self._instance.show_bottom_panel()
 		self.findDialog.hide()
@@ -313,8 +304,8 @@ class AdvancedFindUI(object):
 				self.do_events()
 			self._instance._results_view.show_find_result()
 		elif self._instance.scopeFlg == 2: #files in directory
-			dir_path = self.pathComboboxentry.get_active_text()
-			file_pattern = self.filterComboboxentry.get_active_text()
+			dir_path = self.pathComboboxtext.get_active_text()
+			file_pattern = self.filterComboboxtext.get_active_text()
 			self._instance.find_all_in_dir(it, dir_path, file_pattern, search_pattern, self._instance.options)
 			self._instance._results_view.show_find_result()
 		elif self._instance.scopeFlg == 3: #current selected text
@@ -328,11 +319,11 @@ class AdvancedFindUI(object):
 		self._instance._results_view.set_sensitive(True)
 
 	def on_replaceAllButton_clicked_action(self, object):
-		search_pattern = self.findTextEntry.get_active_text()
+		search_pattern = self.findTextComboboxtext.get_active_text()
 		if search_pattern == "":
 			return
 			
-		self._instance.set_bottom_panel_label(_('Replacing...'), gtk.gdk.PixbufAnimation(os.path.join(os.path.dirname(__file__), 'loading.gif')))
+		self._instance.set_bottom_panel_label(_('Replacing...'), os.path.join(os.path.dirname(__file__), 'loading.gif'))
 		self._instance._results_view.set_sensitive(False)
 		self._instance.show_bottom_panel()
 		self.findDialog.hide()
@@ -340,7 +331,7 @@ class AdvancedFindUI(object):
 		
 		self.append_combobox_list()
 
-		it = self._instance._results_view.append_find_pattern(search_pattern, True, self.replaceTextEntry.child.get_text())
+		it = self._instance._results_view.append_find_pattern(search_pattern, True, self.replaceTextComboboxtext.get_child().get_text())
 		
 		if self._instance.scopeFlg == 0: #current document
 			doc = self._instance._window.get_active_document()
@@ -380,7 +371,7 @@ class AdvancedFindUI(object):
 	def on_selectPathDialogOkButton_clicked_action(self, object):
 		folder_path = self.selectPathFilechooserdialog.get_filename()
 		self.selectPathFilechooserdialog.select_filename(folder_path)
-		self.pathComboboxentry.child.set_text(folder_path)
+		self.pathComboboxtext.get_child().set_text(folder_path)
 		self.append_combobox_list()
 		self.selectPathFilechooserdialog.hide()
 		
@@ -400,13 +391,13 @@ class AdvancedFindUI(object):
 	def on_followCurrentDocCheckbutton_toggled_action(self, object):
 		self._instance.options['FOLLOW_CURRENT_DOC'] = object.get_active()
 		if object.get_active() == True:
-			self.pathComboboxentry.child.set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
+			self.pathComboboxtext.get_child().set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
 		else:
 			filebrowser_root = self.get_filebrowser_root()
 			if filebrowser_root != None and self._instance.options['ROOT_FOLLOW_FILEBROWSER'] == True:
-				self.pathComboboxentry.child.set_text(filebrowser_root)
+				self.pathComboboxtext.get_child().set_text(filebrowser_root)
 			else:
-				self.pathComboboxentry.child.set_text(self.selectPathFilechooserdialog.get_filename())
+				self.pathComboboxtext.get_child().set_text(self.selectPathFilechooserdialog.get_filename())
 			
 	def on_includeSubfolderCheckbutton_toggled_action(self, object):
 		self._instance.options['INCLUDE_SUBFOLDER'] = object.get_active()
@@ -431,6 +422,8 @@ class AdvancedFindUI(object):
 
 	# filebrowser integration
 	def get_filebrowser_root(self):
+		return 'none'
+		'''
 		base = u'/apps/gedit-2/plugins/filebrowser/on_load'
 		client = gconf.client_get_default()
 		client.add_dir(base, gconf.CLIENT_PRELOAD_NONE)
@@ -441,6 +434,7 @@ class AdvancedFindUI(object):
 			idx = path_string.find('://') + 3
 			return val.get_string()[idx:]
 		return None
+		#'''
 	
 
 
