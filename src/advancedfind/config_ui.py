@@ -63,7 +63,7 @@ class ConfigUI(object):
 		self.bgColorbutton.set_color(gtk.gdk.color_parse(self._instance.result_highlight['BACKGROUND_COLOR']))
 
 		self.rootFollowFilebrowserCheckbutton = UI.get_object("rootFollowFilebrowserCheckbutton")
-		self.rootFollowFilebrowserCheckbutton.set_active(self._instance.options['ROOT_FOLLOW_FILEBROWSER'])
+		self.rootFollowFilebrowserCheckbutton.set_active(self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'])
 		
 		self.configWindow.show_all()
 
@@ -85,7 +85,7 @@ class ConfigUI(object):
 		self._instance.result_highlight['BACKGROUND_COLOR'] = widget.get_color().to_string()
 		
 	def on_rootFollowFilebrowserCheckbutton_toggled(self, widget):
-		self._instance.options['ROOT_FOLLOW_FILEBROWSER'] = widget.get_active()
+		self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'] = widget.get_active()
 			
 
 

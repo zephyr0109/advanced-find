@@ -426,7 +426,7 @@ class AdvancedFindWindowHelper:
 			
 		d_list = []
 		f_list = []
-		file_path_history = []
+		file_list = []
 		
 		for root, dirs, files in os.walk(unicode(dir_path, 'utf-8')):
 			for d in dirs:
@@ -435,14 +435,14 @@ class AdvancedFindWindowHelper:
 				f_list.append(os.path.join(root, f))
 		
 		if find_options['INCLUDE_SUBFOLDER'] == True:
-			file_path_history = f_list
+			file_list = f_list
 		else:
 			for f in f_list:
 				if os.path.dirname(f) not in d_list:
-					file_path_history.append(f)
+					file_list.append(f)
 					
 		#temp_doc = gedit.Document()
-		for file_path in file_path_history:
+		for file_path in file_list:
 			if self.check_file_pattern(file_path, unicode(file_pattern, 'utf-8')):
 				if os.path.isfile(file_path):
 					pipe = subprocess.PIPE
