@@ -98,7 +98,7 @@ class AdvancedFindUI(object):
 		self.findTextEntry.set_text_column(0)
 		try:
 			for find_text in self._instance.find_list:
-				self.findTextEntry.append_text(find_text)
+				self.findTextEntry.prepend_text(find_text)
 		except:
 			pass
 
@@ -110,17 +110,17 @@ class AdvancedFindUI(object):
 		self.replaceTextEntry.set_text_column(0)
 		try:
 			for replace_text in self._instance.replace_list:
-				self.replaceTextEntry.append_text(replace_text)
+				self.replaceTextEntry.prepend_text(replace_text)
 		except:
 			pass
 			
 		self.filterComboboxentry = ui.get_object("filterComboboxentry")
 		self.filterComboboxentry.set_text_column(0)
 		self.filterComboboxentry.child.set_text("*")
-		#self.filterComboboxentry.append_text("*")
+		#self.filterComboboxentry.prepend_text("*")
 		try:
 			for file_filter in self._instance.filter_list:
-				self.filterComboboxentry.append_text(file_filter)
+				self.filterComboboxentry.prepend_text(file_filter)
 		except:
 			pass
 			
@@ -136,7 +136,7 @@ class AdvancedFindUI(object):
 			
 		try:
 			for path in self._instance.path_list:
-				self.pathComboboxentry.append_text(path)
+				self.pathComboboxentry.prepend_text(path)
 		except:
 			pass
 		
@@ -208,19 +208,19 @@ class AdvancedFindUI(object):
 		
 		if find_text != "" and find_text not in self._instance.find_list:
 			self._instance.find_list.append(find_text)
-			self.findTextEntry.append_text(find_text)
+			self.findTextEntry.prepend_text(find_text)
 			
 		if replace_text != "" and replace_text not in self._instance.replace_list:
 			self._instance.replace_list.append(replace_text)
-			self.replaceTextEntry.append_text(replace_text)
+			self.replaceTextEntry.prepend_text(replace_text)
 			
 		if file_pattern != "" and file_pattern not in self._instance.filter_list:
 			self._instance.filter_list.append(file_pattern)
-			self.filterComboboxentry.append_text(file_pattern)
+			self.filterComboboxentry.prepend_text(file_pattern)
 			
 		if path != "" and path not in self._instance.path_list:
 			self._instance.path_list.append(path)
-			self.pathComboboxentry.append_text(path)
+			self.pathComboboxentry.prepend_text(path)
 
 	# button actions       
 	def on_findButton_clicked_action(self, object):
@@ -262,7 +262,6 @@ class AdvancedFindUI(object):
 				return
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.options)
 			self._instance._results_view.show_find_result()
-			self._instance.show_bottom_panel()
 		elif self._instance.scopeFlg == 1: #all opened documents
 			docs = self._instance._window.get_documents()
 			if not docs:
@@ -270,18 +269,19 @@ class AdvancedFindUI(object):
 			for doc in docs:
 				self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.options)
 			self._instance._results_view.show_find_result()
-			self._instance.show_bottom_panel()
 		elif self._instance.scopeFlg == 2: #files in directory
 			dir_path = self.pathComboboxentry.get_active_text()
 			file_pattern = self.filterComboboxentry.get_active_text()
 			self._instance.find_all_in_dir(it, dir_path, file_pattern, search_pattern, self._instance.options)
+			self._instance._results_view.show_find_result()
 		elif self._instance.scopeFlg == 3: #current selected text
 			doc = self._instance._window.get_active_document()
 			if not doc:
 				return
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.options, False, True)
 			self._instance._results_view.show_find_result()
-			self._instance.show_bottom_panel()
+		self._instance.show_bottom_panel()
+		self.findDialog.hide()
 
 	def on_replaceAllButton_clicked_action(self, object):
 		search_pattern = self.findTextEntry.get_active_text()
@@ -298,7 +298,6 @@ class AdvancedFindUI(object):
 				return
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.options, True)
 			self._instance._results_view.show_find_result()
-			self._instance.show_bottom_panel()
 		elif self._instance.scopeFlg == 1: #all opened documents
 			docs = self._instance._window.get_documents()
 			if not docs:
@@ -306,10 +305,10 @@ class AdvancedFindUI(object):
 			for doc in docs:
 				self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.options, True)
 			self._instance._results_view.show_find_result()
-			self._instance.show_bottom_panel()
 		elif self._instance.scopeFlg == 2: #files in directory
 			path = str(self._instance._results_view.findResultTreemodel.iter_n_children(None) - 1)
 			it = self._instance._results_view.findResultTreemodel.get_iter(path)
+			self._instance._results_view.show_find_result()
 			self._instance._results_view.findResultTreemodel.set_value(it, 2, _("Replace in this scope is not supported."))
 		elif self._instance.scopeFlg == 3: #current selected text
 			doc = self._instance._window.get_active_document()
@@ -317,7 +316,8 @@ class AdvancedFindUI(object):
 				return
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.options, True, True)
 			self._instance._results_view.show_find_result()
-			self._instance.show_bottom_panel()
+		self._instance.show_bottom_panel()
+		self.findDialog.hide()
 
 	def on_closeButton_clicked_action(self, object):
 		self.findDialog.destroy()

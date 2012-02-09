@@ -113,21 +113,25 @@ class FindResultView(gtk.HBox):
 		self.collapseAllItem = gtk.MenuItem(_('Collapse All'))
 		self.clearHighlightItem = gtk.MenuItem(_('Clear Highlight'))
 		self.clearItem = gtk.MenuItem(_('Clear'))
+		self.markupItem = gtk.MenuItem(_('Markup'))
 		
 		self.contextMenu.append(self.expandAllItem)
 		self.contextMenu.append(self.collapseAllItem)
 		self.contextMenu.append(self.clearHighlightItem)
 		self.contextMenu.append(self.clearItem)
+		self.contextMenu.append(self.markupItem)
 		
 		self.expandAllItem.connect('activate', self.on_expandAllItem_activate)
 		self.collapseAllItem.connect('activate', self.on_collapseAllItem_activate)
 		self.clearHighlightItem.connect('activate', self.on_clearHighlightItem_activate)
 		self.clearItem.connect('activate', self.on_clearItem_activate)
+		self.markupItem.connect('activate', self.on_markupItem_activate)
 
 		self.expandAllItem.show()
 		self.collapseAllItem.show()
 		self.clearHighlightItem.show()
 		self.clearItem.show()
+		#self.markupItem.show()
 		
 		self.contextMenu.append(gtk.SeparatorMenuItem())
 		
@@ -174,6 +178,10 @@ class FindResultView(gtk.HBox):
 	def to_xml_text(self, text):
 		return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 		
+	def remove_markup(self, text):
+		regex = re.compile(r'<.+>([^ <>]+)</.+>')
+		return regex.sub(r'\1', text)
+		
 	def on_findResultTreeview_cursor_changed_action(self, object):
 		model, it = object.get_selection().get_selected()
 		if not it:
@@ -181,7 +189,7 @@ class FindResultView(gtk.HBox):
 		
 		try:
 			m = re.search('.+(<.+>)+([0-9]+)(<.+>)+.*', model.get_value(it, 1))
-			line = int(m.group(2))
+			line_num = int(m.group(2))
 		except:
 			return
 		
@@ -205,7 +213,7 @@ class FindResultView(gtk.HBox):
 			
 		# Still nothing? Open the file then
 		if not tab:
-			tab = self._window.create_tab_from_uri(uri, None, line, False, False)
+			tab = self._window.create_tab_from_uri(uri, None, line_num, False, False)
 			self.do_events()
 			
 		if tab:
@@ -233,6 +241,34 @@ class FindResultView(gtk.HBox):
 	def on_clearItem_activate(self, object):
 		self.clear_find_result()
 		
+	def on_markupItem_activate(self, object):
+		model, it = self.findResultTreeview.get_selection().get_selected()
+		if not it:
+			return
+
+		self.markup_row(model, it)
+	
+	def markup_row(self, model, it):
+		if not it:
+			return
+		
+		mark_head = '<span background="gray">'
+		mark_foot = '</span>'
+		line_str = model.get_value(it, 1)
+		text_str = model.get_value(it, 2)
+		if line_str.startswith(mark_head) and line_str.endswith(mark_foot):
+			model.set_value(it, 1, line_str[len(mark_head):-1*len(mark_foot)])
+		else:
+			model.set_value(it, 1, mark_head + line_str + mark_foot)
+		if text_str.startswith(mark_head) and text_str.endswith(mark_foot):
+			model.set_value(it, 2, text_str[len(mark_head):-1*len(mark_foot)])
+		else:
+			model.set_value(it, 2, mark_head + text_str + mark_foot)
+			
+		if self.findResultTreemodel.iter_has_child(it):
+			for i in range(0, self.findResultTreemodel.iter_n_children(it)):
+				self.markup_row(model, self.findResultTreemodel.iter_nth_child(it, i))
+				
 	def on_showNextButtonItem_activate(self, object):
 		if self.showNextButtonItem.get_active() == True:
 			self.show_button_option['NEXT_BUTTON'] = True
@@ -313,7 +349,7 @@ class FindResultView(gtk.HBox):
 	def append_find_pattern(self, pattern, replace_flg = False, replace_text = None):
 		self.findResultTreeview.collapse_all()
 		idx = self.findResultTreemodel.iter_n_children(None)
-		header = '#' + str(idx) + ' -'
+		header = '#' + str(idx) + ' - '
 		if replace_flg == True:
 			mode = self.result_format['MODE_REPLACE'] %{'HEADER' : header, 'PATTERN' : self.to_xml_text(pattern), 'REPLACE_TEXT' : self.to_xml_text(replace_text)}
 			it = self.findResultTreemodel.append(None, [idx, mode, '', None, 0, 0, ''])
@@ -327,20 +363,20 @@ class FindResultView(gtk.HBox):
 		it = self.findResultTreemodel.append(parent_it, [0, filename_str, '', None, 0, 0, uri])
 		return it
 		
-	def append_find_result(self, parent_it, line, text, tab, result_offset_start = 0, result_len = 0, uri = "", line_start_pos = 0, replace_offset = 0, replace_flg = False):
+	def append_find_result(self, parent_it, line, text, tab, result_offset_start = 0, result_len = 0, uri = "", line_start_pos = 0, replace_flg = False):
 		result_line = self.result_format['LINE'] % {'LINE_NUM' : line}
 		markup_start = result_offset_start - line_start_pos
-		markup_end = markup_start + result_len + replace_offset
+		markup_end = markup_start + result_len
 		
 		text_header = self.to_xml_text(text[0:markup_start])
 		text_marked = self.to_xml_text(text[markup_start:markup_end])
 		text_footer = self.to_xml_text(text[markup_end:])
 
 		if replace_flg == False:
-			result_text = (text_header + self.result_format['FIND_RESULT_TEXT'] % {'RESULT_TEXT' : text_marked} + text_footer).strip()
+			result_text = (text_header + self.result_format['FIND_RESULT_TEXT'] % {'RESULT_TEXT' : text_marked} + text_footer).rstrip()
 			self.findResultTreemodel.append(parent_it, [int(line), result_line, result_text, tab, result_offset_start, result_len, uri])
 		else:
-			result_text = (text_header + self.result_format['REPLACE_RESULT_TEXT'] % {'RESULT_TEXT' : text_marked} + text_footer).strip()
+			result_text = (text_header + self.result_format['REPLACE_RESULT_TEXT'] % {'RESULT_TEXT' : text_marked} + text_footer).rstrip()
 			self.findResultTreemodel.append(parent_it, [int(line), result_line, result_text, tab, result_offset_start, result_len, uri])
 		
 	def show_find_result(self):

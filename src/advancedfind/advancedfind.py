@@ -53,6 +53,8 @@ ui_str = """<ui>
 		<menu name="SearchMenu" action="Search">
 			<placeholder name="SearchOps_0">
 				<menuitem name="advanced_find_active" action="advanced_find_active"/>
+				<menuitem name="find_next" action="find_next"/>
+				<menuitem name="find_previous" action="find_previous"/>
 				<menuitem name="select_find_next" action="select_find_next"/>
 				<menuitem name="select_find_previous" action="select_find_previous"/>
 			</placeholder>
@@ -146,6 +148,8 @@ class AdvancedFindWindowHelper:
 		# Create a new action group
 		self._action_group = gtk.ActionGroup("AdvancedFindReplaceActions")
 		self._action_group.add_actions( [("advanced_find_active", None, _("Advanced Find/Replace"), self.shortcuts['ACTIVATE'], _("Advanced Find/Replace"), self.advanced_find_active),
+										("find_next", None, _("Find Next"), self.shortcuts['FIND_NEXT'], _("Find Next"), self.find_next),
+										("find_previous", None, _("Find Previous"), self.shortcuts['FIND_PREVIOUS'], _("Find Previous"), self.find_previous),
 										("select_find_next", None, _("Select and Find Next"), self.shortcuts['SELECT_FIND_NEXT'], _("Select and Find Next"), self.select_find_next),
 										("select_find_previous", None, _("Select and Find Previous"), self.shortcuts['SELECT_FIND_PREVIOUS'], _("Select and Find Previous"), self.select_find_previous)]) 
 
@@ -191,6 +195,7 @@ class AdvancedFindWindowHelper:
 			self.find_ui = AdvancedFindUI(self._plugin)
 		else:
 			self.find_ui.findDialog.present()
+			self.find_ui.findTextEntry.grab_focus()
 			
 		if search_text != "":
 			self.find_ui.findTextEntry.child.set_text(search_text)
@@ -215,9 +220,9 @@ class AdvancedFindWindowHelper:
 			pattern = '\\b%s\\b' % pattern
 			
 		if options['MATCH_CASE'] == True:
-			regex = re.compile(pattern)
+			regex = re.compile(pattern, re.MULTILINE)
 		else:
-			regex = re.compile(pattern, re.IGNORECASE)
+			regex = re.compile(pattern, re.IGNORECASE | re.MULTILINE)
 		
 		return regex
 		
@@ -228,8 +233,8 @@ class AdvancedFindWindowHelper:
 		regex = self.create_regex(search_pattern, options)
 		
 		if doc.get_has_selection():
-			selection_start, selection_end = doc.get_selection_bounds()
-			match = regex.search(doc.get_text(selection_start, selection_end))
+			sel_start, sel_end = doc.get_selection_bounds()
+			match = regex.search(doc.get_text(sel_start, sel_end))
 			if match and replace_flg == True:
 				if options['REGEX_SEARCH'] == False:
 					replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
@@ -238,93 +243,68 @@ class AdvancedFindWindowHelper:
 				doc.delete_selection(False, False)
 				doc.insert_at_cursor(replace_text)
 				replace_flg = False
-				#return		
-			else:			
+			else:
 				if forward_flg == True:
-					doc.place_cursor(selection_end)
+					doc.place_cursor(sel_end)
 				else:
-					doc.place_cursor(selection_start)
-		
-		view = self._window.get_active_view()
-		if forward_flg == True:
-			find_start = doc.get_iter_at_mark(doc.get_insert())
-			lines = unicode(doc.get_text(find_start, doc.get_end_iter()), 'utf-8').splitlines(True)
-			for line in lines:
-				match = regex.search(line)
-				if match:
-					result_start = doc.get_iter_at_offset(find_start.get_offset() + match.start())
-					result_end = doc.get_iter_at_offset(find_start.get_offset() + match.end())
-					doc.select_range(result_start, result_end)
-					view.scroll_to_cursor()
-					
-					if replace_flg == True:
-						if options['REGEX_SEARCH'] == False:
-							replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
-						else:
-							replace_text = match.expand(unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8'))
-						doc.delete_selection(False, False)
-						doc.insert_at_cursor(replace_text)
-						replace_end = doc.get_iter_at_mark(doc.get_insert())
-						replace_start = doc.get_iter_at_offset(replace_end.get_offset() - len(replace_text))
-						doc.select_range(replace_start, replace_end)
-						view.scroll_to_cursor()
-						
-					return
-				else:
-					find_start = doc.get_iter_at_offset(find_start.get_offset() + len(line))
-					
-			if options['WRAP_AROUND'] == True and around_flg == False:
-				find_start = doc.get_start_iter()
-				doc.place_cursor(find_start)
-				self.advanced_find_in_doc(doc, search_pattern, options, forward_flg, replace_flg, True)
-			else:
-				self.show_message_dialog(self.msgDialog, _("Nothing is found."))
-					
-		else:
-			find_end = doc.get_iter_at_mark(doc.get_insert())
-			lines = unicode(doc.get_text(doc.get_start_iter(), find_end), 'utf-8').splitlines(True)
-			back_lines = []
-			for i in range(-1, -1-len(lines), -1):
-				back_lines.append(lines[i])
-				
-			for line in back_lines:
-				line_start = doc.get_iter_at_offset(find_end.get_offset() - len(line))
-				result = regex.findall(line)
-				if result:
-					match_pos = 0
-					for idx in range(0, len(result)):
-						match = regex.search(line[match_pos:])
-						result_start = doc.get_iter_at_offset(line_start.get_offset() + match.start() + match_pos)
-						result_end = doc.get_iter_at_offset(line_start.get_offset() + match.end() + match_pos)
-						match_pos += match.end()
-					doc.select_range(result_start, result_end)
-					view.scroll_to_cursor()
-					
-					if replace_flg == True:
-						if options['REGEX_SEARCH'] == False:
-							replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
-						else:
-							replace_text = match.expand(unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8'))
-						doc.delete_selection(False, False)
-						doc.insert_at_cursor(replace_text)
-						replace_end = doc.get_iter_at_mark(doc.get_insert())
-						replace_start = doc.get_iter_at_offset(replace_end.get_offset() - len(replace_text))
-						doc.select_range(replace_start, replace_end)
-						view.scroll_to_cursor()
-						
-					return
-				else:
-					doc.place_cursor(doc.get_iter_at_offset(find_end.get_offset() - len(line)))
-					find_end = doc.get_iter_at_mark(doc.get_insert())
-
-			if options['WRAP_AROUND'] == True and around_flg == False:
-				find_end = doc.get_end_iter()
-				doc.place_cursor(find_end)
-				self.advanced_find_in_doc(doc, search_pattern, options, forward_flg, replace_flg, True)
-			else:
-				self.show_message_dialog(self.msgDialog, _("Nothing is found."))
+					doc.place_cursor(sel_start)
 			
+		view = self._window.get_active_view()
+		start, end = doc.get_bounds()
+		text = unicode(doc.get_text(start, end), 'utf-8')
+		around_flg = False
+		
+		if forward_flg == True:
+			start_pos = doc.get_iter_at_mark(doc.get_insert()).get_offset()
+			end_pos = doc.get_end_iter().get_offset()
+			match = regex.search(text, start_pos, end_pos)
+			if match:
+				result_start = doc.get_iter_at_offset(match.start())
+				result_end = doc.get_iter_at_offset(match.end())
+				doc.select_range(result_start, result_end)
+				view.scroll_to_cursor()
+		else:
+			start_pos = doc.get_start_iter().get_offset()
+			end_pos = doc.get_iter_at_mark(doc.get_insert()).get_offset()
+			results = []
+			match = regex.search(text, start_pos, end_pos)
+			last_start_pos = start_pos
+			while match:
+				start_pos = match.end()
+				if start_pos == last_start_pos:
+					break
+				last_start_pos = start_pos
+				results.append(match.span())
+				match = regex.search(text, start_pos, end_pos)
+			results_len = len(results)
+			if results_len > 0:
+				result_start = doc.get_iter_at_offset(results[results_len-1][0])
+				result_end = doc.get_iter_at_offset(results[results_len-1][1])
+				doc.select_range(result_start, result_end)
+				view.scroll_to_cursor()
 				
+		if not doc.get_has_selection():
+			if options['WRAP_AROUND'] == True and around_flg == False:
+				if forward_flg == True:
+					doc.place_cursor(doc.get_start_iter())
+				else:
+					doc.place_cursor(doc.get_end_iter())
+				self.advanced_find_in_doc(doc, search_pattern, options, forward_flg, replace_flg, True)
+			else:
+				self.show_message_dialog(self.msgDialog, _("Nothing is found."))
+				
+		if replace_flg == True and doc.get_has_selection():
+			if options['REGEX_SEARCH'] == False:
+				replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
+			else:
+				replace_text = match.expand(unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8'))
+			doc.delete_selection(False, False)
+			doc.insert_at_cursor(replace_text)
+			replace_end = doc.get_iter_at_mark(doc.get_insert())
+			replace_start = doc.get_iter_at_offset(replace_end.get_offset() - len(replace_text))
+			doc.select_range(replace_start, replace_end)
+			view.scroll_to_cursor()
+
 	def auto_select_word(self):
 		doc = self._window.get_active_document()
 		if doc.get_has_selection():
@@ -351,6 +331,12 @@ class AdvancedFindWindowHelper:
 						match_pos += match.end()
 			return select_text
 	
+	def find_next(self, action):
+		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.options, True, False, False)
+	
+	def find_previous(self, action):	
+		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.options, False, False, False)
+		
 	def select_find_next(self, action):
 		#print self.auto_select_word()
 		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.options, True, False, False)
@@ -358,7 +344,7 @@ class AdvancedFindWindowHelper:
 	def select_find_previous(self, action):
 		#print self.auto_select_word()
 		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.options, False, False, False)
-
+		
 	def advanced_find_all_in_doc(self, parent_it, doc, search_pattern, options, replace_flg = False, selection_only = False):
 		if search_pattern == "":
 			return
@@ -369,73 +355,76 @@ class AdvancedFindWindowHelper:
 		start, end = doc.get_bounds()
 		text = unicode(doc.get_text(start, end), 'utf-8')
 		
-		if selection_only == False:
-			lines = text.splitlines(True)
-			line_number_offset = 1
-		else:
-			selection_start, selection_end = doc.get_selection_bounds()
-			selection_text = unicode(doc.get_text(selection_start, selection_end), 'utf-8')
-			lines= selection_text.splitlines(True)
-			line_start_offset = selection_start.get_offset()
-			#print line_start_offset
-			line_number_offset = selection_start.get_line() + 1
-			#print line_number_offset
+		start_pos = 0
+		end_pos = end.get_offset()
+		if selection_only == True:
+			sel_start, sel_end = doc.get_selection_bounds()
+			if sel_start:
+				start_pos = sel_start.get_offset()
+			if sel_end:
+				end_pos = sel_end.get_offset()
 
 		tree_it = None
-		new_text = list(text)
-		text_changed = False
-		replace_cnt = 0
+		match = regex.search(text, start_pos, end_pos)
+		last_start_pos = start_pos
+		if match:
+			if not tree_it:
+				doc_uri = doc.get_uri()
+				if doc_uri == None:
+					uri = ''
+				else:
+					uri = urllib.unquote(doc.get_uri()[7:]).decode('utf-8')
+				tree_it = self._results_view.append_find_result_filename(parent_it, doc.get_short_name_for_display(), uri)
+			tab = gedit.tab_get_from_document(doc)
 
-		for i in range(len(lines)):
-			results = regex.findall(lines[i])
-			if selection_only == False:
-				line_start = doc.get_iter_at_line(i)
+			if replace_flg == False:
+				while(match):
+					start_pos = match.end()
+					if start_pos == last_start_pos:
+						break
+					last_start_pos = start_pos
+					line_num = doc.get_iter_at_offset(match.start()).get_line()
+					line_start_pos = doc.get_iter_at_line(line_num).get_offset()
+					line_end_pos = doc.get_iter_at_line(doc.get_iter_at_offset(match.end()).get_line()+1).get_offset()
+					line_text = text[line_start_pos:line_end_pos]
+					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, tab, match.start(), match.end()-match.start(), "", line_start_pos)
+					match = regex.search(text, start_pos, end_pos)
 			else:
-				if i > 0:
-					line_start_offset += len(lines[i-1])
-				#print line_start_offset
-				line_start = doc.get_iter_at_offset(line_start_offset)
-				
-			if results:
-				if not tree_it:
-					doc_uri = doc.get_uri()
-					if doc_uri == None:
-						uri = ''
-					else:
-						uri = urllib.unquote(doc.get_uri()[7:]).decode('utf-8')
-					tree_it = self._results_view.append_find_result_filename(parent_it, doc.get_short_name_for_display(), uri)
-				tab = gedit.tab_get_from_document(doc)
-
-				match_pos = 0
-				for cnt in range(0, len(results)):
-					match = regex.search(lines[i][match_pos:])
-					line_start_pos = line_start.get_offset()
-					result_offset_start = line_start_pos + match.start() + match_pos
-					result_len = len(match.group(0))
+				results = []
+				replace_offset = 0
+				doc.begin_user_action()
+				while(match):
 					if options['REGEX_SEARCH'] == False:
 						replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
 					else:
 						replace_text = match.expand(unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8'))
+					start_pos = match.end()
+					if start_pos == last_start_pos:
+						break
+					last_start_pos = start_pos
+					replace_start_pos = match.start() + replace_offset
+					replace_end_pos = match.end() + replace_offset
+					replace_start = doc.get_iter_at_offset(replace_start_pos)
+					replace_end = doc.get_iter_at_offset(replace_end_pos)
+					doc.delete(replace_start, replace_end)
+					doc.insert(replace_start, replace_text)
 					replace_text_len = len(replace_text)
-					replace_offset = result_len - replace_text_len
-					
-					if replace_flg == True:
-						self._results_view.append_find_result(tree_it, str(line_number_offset + i), lines[i], tab, result_offset_start - (replace_offset * replace_cnt), replace_text_len, "", line_start_pos - (replace_offset * replace_cnt), replace_offset, True)
-						replace_start_idx = result_offset_start - (replace_offset * replace_cnt)
-						new_text[replace_start_idx:replace_start_idx + result_len] = replace_text
-						replace_cnt += 1
-						text_changed = True
-					else:
-						self._results_view.append_find_result(tree_it, str(line_number_offset + i), lines[i], tab, result_offset_start, result_len, "", line_start_pos)
-					match_pos += match.end()
+					results.append([replace_start_pos, replace_text_len])
+					replace_offset += replace_text_len - (match.end() - match.start())
+					match = regex.search(text, start_pos, end_pos)
+				doc.end_user_action()
 				
-		if text_changed == True:
-			doc.begin_user_action()
-			doc.set_text("".join(new_text))
-			doc.end_user_action()
+				start, end = doc.get_bounds()
+				text = unicode(doc.get_text(start, end), 'utf-8')
+				for i in range(len(results)):
+					line_num = doc.get_iter_at_offset(results[i][0]).get_line()
+					line_start_pos = doc.get_iter_at_line(line_num).get_offset()
+					line_end_pos = doc.get_iter_at_line(doc.get_iter_at_offset(results[i][0]+results[i][1]).get_line()+1).get_offset()
+					line_text = text[line_start_pos:line_end_pos]
+					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, tab, results[i][0], results[i][1], "", line_start_pos, True)
 			
 		self.result_highlight_on(tree_it)
-
+			
 	def find_all_in_dir(self, parent_it, dir_path, file_pattern, search_pattern, options, replace_flg = False):
 		if search_pattern == "":
 			return
@@ -459,9 +448,7 @@ class AdvancedFindWindowHelper:
 
 		for file_path in path_list:
 			if fnmatch.fnmatch(file_path, unicode(file_pattern, 'utf-8')):
-
 				if os.path.isfile(file_path):
-					#print file_path
 					pipe = subprocess.PIPE
 					p1 = subprocess.Popen(["file", "-i", file_path], stdout=pipe)
 					p2 = subprocess.Popen(["grep", "text"], stdin=p1.stdout, stdout=pipe)
@@ -480,9 +467,6 @@ class AdvancedFindWindowHelper:
 						
 						self.advanced_find_all_in_doc(parent_it, temp_doc, search_pattern, options, replace_flg)
 
-		self._results_view.show_find_result()
-		self.show_bottom_panel()
-		
 	def result_highlight_on(self, file_it):
 		if file_it == None:
 			return
@@ -511,6 +495,5 @@ class AdvancedFindWindowHelper:
 		if panel.get_property("visible") == False:
 			panel.set_property("visible", True)
 		panel.activate_item(self._results_view)
-		
 		
 		

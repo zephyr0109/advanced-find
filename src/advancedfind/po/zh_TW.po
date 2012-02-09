@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-09 23:20+0800\n"
+"POT-Creation-Date: 2011-03-13 17:00+0800\n"
 "PO-Revision-Date: 2010-10-17 20:15+0800\n"
 "Last-Translator: swatch <swatch.code@gmail.com>\n"
 "Language-Team: none\n"
@@ -15,47 +15,59 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../advancedfind.py:111 ../advancedfind.py:148 ../FindDialog.glade:24
+#: ../advancedfind.py:113 ../advancedfind.py:150 ../FindDialog.glade:24
 msgid "Advanced Find/Replace"
 msgstr "進階搜尋/取代"
 
-#: ../advancedfind.py:149
+#: ../advancedfind.py:151
+msgid "Find Next"
+msgstr "尋找下一個"
+
+#: ../advancedfind.py:152
+msgid "Find Previous"
+msgstr "尋找上一個"
+
+#: ../advancedfind.py:153
 msgid "Select and Find Next"
 msgstr "選取並尋找下一個"
 
-#: ../advancedfind.py:150
+#: ../advancedfind.py:154
 msgid "Select and Find Previous"
 msgstr "選取並尋找上一個"
 
-#: ../advancedfind.py:281 ../advancedfind.py:325
+#: ../advancedfind.py:290
 msgid "Nothing is found."
 msgstr "找不到符合的字詞"
 
-#: ../advancedfind_ui.py:313
+#: ../advancedfind_ui.py:312
 msgid "Replace in this scope is not supported."
 msgstr "取代功能不支援所選擇的範圍"
 
-#: ../find_result.py:78 ../find_result.py:139
+#: ../find_result.py:78 ../find_result.py:143
 msgid "Next"
 msgstr "下一個"
 
-#: ../find_result.py:81 ../find_result.py:112 ../find_result.py:140
+#: ../find_result.py:81 ../find_result.py:112 ../find_result.py:144
 msgid "Expand All"
 msgstr "全部展開"
 
-#: ../find_result.py:84 ../find_result.py:113 ../find_result.py:141
+#: ../find_result.py:84 ../find_result.py:113 ../find_result.py:145
 msgid "Collapse All"
 msgstr "全部收合"
 
-#: ../find_result.py:87 ../find_result.py:114 ../find_result.py:142
+#: ../find_result.py:87 ../find_result.py:114 ../find_result.py:146
 msgid "Clear Highlight"
 msgstr "清除標示"
 
-#: ../find_result.py:90 ../find_result.py:115 ../find_result.py:143
+#: ../find_result.py:90 ../find_result.py:115 ../find_result.py:147
 msgid "Clear"
 msgstr "清除"
 
-#: ../find_result.py:134
+#: ../find_result.py:116
+msgid "Markup"
+msgstr ""
+
+#: ../find_result.py:138
 msgid "Show Buttons"
 msgstr "顯示按鈕"
 
@@ -72,7 +84,6 @@ msgid "Background color : "
 msgstr "背景顏色"
 
 #: ../config.glade:102
-#, fuzzy
 msgid "<b>Result Highlighting</b>"
 msgstr "<b>高亮度標示設定</b>"
 
@@ -81,7 +92,6 @@ msgid "Root Follow Filebrowser"
 msgstr "使用檔案瀏覽器的根資料夾路徑"
 
 #: ../config.glade:173
-#, fuzzy
 msgid "<b>Others</b>"
 msgstr "<b>其他設定</b>"
 

@@ -6,7 +6,7 @@
 	<result_format name='HITS_CNT'>&lt;span foreground="#FF7900"&gt;%(HITS_CNT)s&lt;/span&gt; hits</result_format>
 	<result_format name='TOTAL_HITS'>&lt;span foreground="#FF7900"&gt;%(TOTAL_HITS)s&lt;/span&gt; hits in &lt;span foreground="#FF7900"&gt;%(FILES_CNT)s&lt;/span&gt; files</result_format>
 	<result_format name='FIND_RESULT_TEXT'>&lt;span foreground="blue"&gt;&lt;b&gt;%(RESULT_TEXT)s&lt;/b&gt;&lt;/span&gt;</result_format>
-	<result_format name='REPLACE_RESULT_TEXT'>&lt;span foreground="red"&gt;&lt;b&gt;&lt;s&gt;%(RESULT_TEXT)s&lt;/s&gt;&lt;/b&gt;&lt;/span&gt;</result_format>
+	<result_format name='REPLACE_RESULT_TEXT'>&lt;span foreground="red"&gt;&lt;b&gt;%(RESULT_TEXT)s&lt;/b&gt;&lt;/span&gt;</result_format>
 </manifest>
 
 

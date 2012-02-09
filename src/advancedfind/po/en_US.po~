@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-24 20:26+0800\n"
+"POT-Creation-Date: 2011-03-09 23:21+0800\n"
 "PO-Revision-Date: 2010-10-17 19:33+0800\n"
 "Last-Translator: swatch <swatch.code@gmail.com>\n"
 "Language-Team: none\n"
@@ -28,11 +28,11 @@ msgstr "Select and Find Next"
 msgid "Select and Find Previous"
 msgstr "Select and Find Previous"
 
-#: ../advancedfind.py:279 ../advancedfind.py:323
+#: ../advancedfind.py:281 ../advancedfind.py:325
 msgid "Nothing is found."
 msgstr "Nothing is found."
 
-#: ../advancedfind_ui.py:314
+#: ../advancedfind_ui.py:313
 msgid "Replace in this scope is not supported."
 msgstr "Replace in this scope is not supported."
 
@@ -74,8 +74,8 @@ msgstr "Background color : "
 
 #: ../config.glade:102
 #, fuzzy
-msgid "<b>Highlight Settings</b>"
-msgstr "<b>Highlight Settings</b>"
+msgid "<b>Result Highlighting</b>"
+msgstr "<b>Result Highlighting</b>"
 
 #: ../config.glade:137
 msgid "Root Follow Filebrowser"
@@ -83,8 +83,8 @@ msgstr "Root Follow Filebrowser"
 
 #: ../config.glade:173
 #, fuzzy
-msgid "<b>Other Settings</b>"
-msgstr "<b>Other Settings</b>"
+msgid "<b>Others</b>"
+msgstr "<b>Others</b>"
 
 #: ../FindDialog.glade:67
 msgid "Find what : "
