@@ -417,7 +417,9 @@ class AdvancedFindWindowHelper:
 					match_pos += match.end()
 				
 		if text_changed == True:
+			doc.begin_user_action()
 			doc.set_text("".join(new_text))
+			doc.end_user_action()
 			
 		self.result_highlight_on(tree_it)
 

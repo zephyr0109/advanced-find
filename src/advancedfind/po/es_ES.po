@@ -1,161 +1,162 @@
-# Chinese translations for .gnome package.
+# Spanish translations for .gnome package.
 # Copyright (C) 2010 THE .gnome'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the .gnome package.
-# swatch <swatch.code@gmail.com>, 2010.
+# Javier Alfonso <PhoneixSegovia@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-11 20:01+0800\n"
-"PO-Revision-Date: 2010-10-17 20:15+0800\n"
-"Last-Translator: swatch <swatch.code@gmail.com>\n"
+"POT-Creation-Date: 2011-01-06 22:41+0800\n"
+"PO-Revision-Date: 2011-01-13 16:33+0100\n"
+"Last-Translator: Javier Alfonso <PhoneixSegovia@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Language: es_ES\n"
+"X-Source-Language: en_US\n"
 
-#: ../advancedfind.py:103 ../advancedfind.py:137 ../FindDialog.glade:24
+#: ../advancedfind.py:104 ../advancedfind.py:138 ../FindDialog.glade:24
 msgid "Advanced Find/Replace"
-msgstr "進階搜尋/取代"
-
-#: ../advancedfind.py:138
-msgid "Select and Find Next"
-msgstr "選取並尋找下一個"
+msgstr "Buscar/Reemplazar avanzado"
 
 #: ../advancedfind.py:139
-msgid "Select and Find Previous"
-msgstr "選取並尋找上一個"
+msgid "Select and Find Next"
+msgstr "Seleccionar y buscar siguiente"
 
-#: ../advancedfind.py:268 ../advancedfind.py:312
+#: ../advancedfind.py:140
+msgid "Select and Find Previous"
+msgstr "Seleccionar y buscar anterior"
+
+#: ../advancedfind.py:269 ../advancedfind.py:313
 msgid "Nothing is found."
-msgstr "找不到符合的字詞"
+msgstr "No se encontró nada."
 
 #: ../advancedfind_ui.py:315
 msgid "Replace in this scope is not supported."
-msgstr "取代功能不支援所選擇的範圍"
-
-#: ../config_ui.py:70 ../config.glade:173
-#, fuzzy
-msgid "<b>Other Settings</b>"
-msgstr "<b>其他設定</b>"
-
-#: ../config_ui.py:72 ../config.glade:102
-#, fuzzy
-msgid "<b>Highlight Settings</b>"
-msgstr "<b>高亮度標示設定</b>"
+msgstr "Reemplazar en este ámbito no está soportado."
 
 #: ../find_result.py:76
 msgid "Next"
-msgstr "下一個"
+msgstr "Siguiente"
 
 #: ../find_result.py:80
 msgid "Expand All"
-msgstr "全部展開"
+msgstr "Expandir Todos"
 
 #: ../find_result.py:82
 msgid "Collapse All"
-msgstr "全部收合"
+msgstr "Colapsar Todos"
 
 #: ../find_result.py:84
 msgid "Clear Highlight"
-msgstr "清除標示"
+msgstr "Limpiar Resaltado"
 
 #: ../find_result.py:86
 msgid "Clear"
-msgstr "清除"
+msgstr "Limpiar"
 
 #: ../config.glade:6
 msgid "Configuration"
-msgstr "設定"
+msgstr "Configuración"
 
 #: ../config.glade:33
 msgid "Foreground color : "
-msgstr "文字顏色"
+msgstr "Color principal: "
 
 #: ../config.glade:66
 msgid "Background color : "
-msgstr "背景顏色"
+msgstr "Color de fondo :"
+
+#: ../config.glade:102
+msgid "<b>Highlight Settings</b>"
+msgstr "<b>Configuraciones de Resaltado</b>"
 
 #: ../config.glade:137
 msgid "Root Follow Filebrowser"
-msgstr "使用檔案瀏覽器的根資料夾路徑"
+msgstr "La raiz sigue al Visor de archivos"
+
+#: ../config.glade:173
+msgid "<b>Other Settings</b>"
+msgstr "<b>Otras opciones</b>"
 
 #: ../FindDialog.glade:67
 msgid "Find what : "
-msgstr "搜尋 : "
+msgstr "Que buscar : "
 
 #: ../FindDialog.glade:78
 msgid "Replace with : "
-msgstr "取代為 : "
+msgstr "Reemplazar con : "
 
 #: ../FindDialog.glade:134
 msgid "Forward"
-msgstr "向下"
+msgstr "Hacia adelante"
 
 #: ../FindDialog.glade:150
 msgid "Backward"
-msgstr "向上"
+msgstr "Hacia atrás"
 
 #: ../FindDialog.glade:187
 msgid "<b>Direction</b>"
-msgstr "<b>方向</b>"
+msgstr "<b>Dirección</b>"
 
 #: ../FindDialog.glade:211
 msgid "Current Document"
-msgstr "目前的文件"
+msgstr "Documento Actual"
 
 #: ../FindDialog.glade:227
 msgid "All Opened Documents"
-msgstr "所有開啟的文件"
+msgstr "Todos los documentos abiertos"
 
 #: ../FindDialog.glade:243
 msgid "All Documents in Directory"
-msgstr "選擇的資料夾內的所有文件"
+msgstr "Todos los documentos en un directorio"
 
 #: ../FindDialog.glade:259
 msgid "Current Selected Text"
-msgstr "選取的文字"
+msgstr "Texto seleccionado actualmente"
 
 #: ../FindDialog.glade:280
 msgid "<b>Scope</b>"
-msgstr "<b>範圍</b>"
+msgstr "<b>Ámbito</b>"
 
 #: ../FindDialog.glade:313
 msgid "Match whole word"
-msgstr "符合整個字詞"
+msgstr "Coincidir la palabra entera"
 
 #: ../FindDialog.glade:323
 msgid "Match case"
-msgstr "符合大小寫"
+msgstr "Coincidir mayúsculas y minúsculas"
 
 #: ../FindDialog.glade:337
 msgid "Wrap around"
-msgstr "回到文件開頭/結尾搜尋"
+msgstr "Envolverlo"
 
 #: ../FindDialog.glade:351
 msgid "Directory follow current doc."
-msgstr "選擇目前文件所在的資料夾"
+msgstr "El directorio sigue al documento actual."
 
 #: ../FindDialog.glade:365
 msgid "Directoy include sub-folder"
-msgstr "包含所有子資料夾"
+msgstr "El directorio incluye sub-carpetas"
 
 #: ../FindDialog.glade:381
 msgid "Regular expression"
-msgstr "使用正則表達式"
+msgstr "Expresión regular"
 
 #: ../FindDialog.glade:404
 msgid "<b>Options</b>"
-msgstr "<b>選項</b>"
+msgstr "<b>Opciones</b>"
 
 #: ../FindDialog.glade:435
 msgid "Filter : "
-msgstr "檔案類型 : "
+msgstr "Filtro : "
 
 #: ../FindDialog.glade:446
 msgid "Directory : "
-msgstr "資料夾 : "
+msgstr "Directorio : "
 
 #: ../FindDialog.glade:481
 msgid "..."
@@ -163,34 +164,32 @@ msgstr "..."
 
 #: ../FindDialog.glade:532
 msgid "Find"
-msgstr "搜尋"
+msgstr "Buscar"
 
 #: ../FindDialog.glade:546
 msgid "Replace"
-msgstr "取代"
+msgstr "Reemplazar"
 
 #: ../FindDialog.glade:560
 msgid "Find All"
-msgstr "全部搜尋"
+msgstr "Buscar todos"
 
 #: ../FindDialog.glade:574
 msgid "Replace All"
-msgstr "全部取代"
+msgstr "Reemplazar Todos"
 
 #: ../FindDialog.glade:588
 msgid "Close"
-msgstr "關閉"
+msgstr "Cerrar"
 
 #: ../FindDialog.glade:634
 msgid "Select a directory"
-msgstr "選擇資料夾"
+msgstr "Seleccionar un directorio"
 
 #: ../FindDialog.glade:656
 msgid "Cancel"
-msgstr "取消"
+msgstr "Cancelar"
 
 #: ../FindDialog.glade:670
 msgid "Ok"
-msgstr "確定"
-
-
+msgstr "Aceptar"

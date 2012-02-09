@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-11 20:05+0800\n"
+"POT-Creation-Date: 2011-01-23 10:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,19 +40,19 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: ../find_result.py:80
+#: ../find_result.py:78
 msgid "Expand All"
 msgstr ""
 
-#: ../find_result.py:82
+#: ../find_result.py:80
 msgid "Collapse All"
 msgstr ""
 
-#: ../find_result.py:84
+#: ../find_result.py:82
 msgid "Clear Highlight"
 msgstr ""
 
-#: ../find_result.py:86
+#: ../find_result.py:84
 msgid "Clear"
 msgstr ""
 

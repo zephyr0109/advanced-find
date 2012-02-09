@@ -102,6 +102,10 @@ class FindResultView(gtk.HBox):
 		format_file = os.path.join(os.path.dirname(__file__), "result_format.xml")
 		self.result_format = config_manager.ConfigManager(format_file).load_configure('result_format')
 		
+	def do_events(self):
+		while gtk.events_pending():
+			gtk.main_iteration(False)
+		
 	def on_findResultTreeview_cursor_changed_action(self, object):
 		model, it = object.get_selection().get_selected()
 		if not it:
@@ -109,7 +113,7 @@ class FindResultView(gtk.HBox):
 		
 		try:
 			m = re.search('.+(<.+>)+([0-9]+)(<.+>)+.*', model.get_value(it, 1))
-			line = m.group(2)
+			line = int(m.group(2))
 		except:
 			return
 		
@@ -122,29 +126,27 @@ class FindResultView(gtk.HBox):
 		if parent_it:
 			uri = "file://" + urllib.pathname2url(model.get_value(parent_it, 6).encode('utf-8'))
 		else:
-			uri = ""
-			
-		if uri == "":
 			return
-		
+			
 		# Tab wasn't passed, try to find one		
 		if not tab:
-			for doc in self._window.get_documents():
+			docs = self._window.get_documents()
+			for doc in docs:
 				if doc.get_uri() == uri:
 					tab = gedit.tab_get_from_document(doc)					
 			
 		# Still nothing? Open the file then
 		if not tab:
 			tab = self._window.create_tab_from_uri(uri, None, line, False, False)
+			self.do_events()
 			
 		if tab:
 			self._window.set_active_tab(tab)
-			doc = tab.get_document()
-			view = tab.get_view()
 			if result_len > 0:
+				doc = tab.get_document()
 				doc.select_range(doc.get_iter_at_offset(result_start), doc.get_iter_at_offset(result_start + result_len))
-			
-			view.scroll_to_cursor()
+				view = tab.get_view()
+				view.scroll_to_cursor()
 
 	def on_selectNextButton_clicked_action(self, object):
 		path, column = self.findResultTreeview.get_cursor()
