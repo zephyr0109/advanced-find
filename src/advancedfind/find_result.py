@@ -74,22 +74,25 @@ class FindResultView(gtk.HBox):
 		v_buttonbox.set_spacing(5)
 		self.selectNextButton = gtk.Button("Next")
 		self.selectNextButton.connect("clicked", self.on_selectNextButton_clicked_action)
+		#self.findAgainButton = gtk.Button("Find again")
+		#self.findAgainButton.connect("clicked", self.on_findAgainButton_clicked_action)
 		self.expandAllButton = gtk.Button("Expand All")
 		self.expandAllButton.connect("clicked", self.on_expandAllButton_clicked_action)
 		self.collapseAllButton = gtk.Button("Collapse All")
 		self.collapseAllButton.connect("clicked", self.on_collapseAllButton_clicked_action)
+		self.clearHighlightButton = gtk.Button("Clear Highlight")
+		self.clearHighlightButton.connect("clicked", self.on_clearHightlightButton_clicked_action)
 		self.clearButton = gtk.Button("Clear")
 		self.clearButton.connect("clicked", self.on_clearButton_clicked_action)
-		#self.findAgainButton = gtk.Button("Find again")
-		#self.findAgainButton.connect("clicked", self.on_findAgainButton_clicked_action)
-		self.closeButton = gtk.Button("Close")
-		self.closeButton.connect("clicked", self.on_closeButton_clicked_action)
+		#self.closeButton = gtk.Button("Close")
+		#self.closeButton.connect("clicked", self.on_closeButton_clicked_action)
 		v_buttonbox.pack_start(self.selectNextButton, False, False, 5)
+		#v_buttonbox.pack_start(self.findAgainButton, False, False, 5)
 		v_buttonbox.pack_start(self.expandAllButton, False, False, 5)
 		v_buttonbox.pack_start(self.collapseAllButton, False, False, 5)
+		v_buttonbox.pack_start(self.clearHighlightButton, False, False, 5)
 		v_buttonbox.pack_start(self.clearButton, False, False, 5)
-		#v_buttonbox.pack_start(self.findAgainButton, False, False, 5)
-		v_buttonbox.pack_start(self.closeButton, False, False, 5)
+		#v_buttonbox.pack_start(self.closeButton, False, False, 5)
 		v_box.pack_end(v_buttonbox, False, False, 5)
 		
 		#self._status = gtk.Label()
@@ -144,6 +147,7 @@ class FindResultView(gtk.HBox):
 			
 			view.scroll_to_cursor()
 
+	#'''
 	def on_selectNextButton_clicked_action(self, object):
 		path, column = self.findResultTreeview.get_cursor()
 		it = self.findResultTreemodel.get_iter(path)
@@ -165,7 +169,19 @@ class FindResultView(gtk.HBox):
 		else:
 			path = self.findResultTreemodel.get_path(it1) 
 		self.findResultTreeview.set_cursor(path, column, False)
+	#'''
 
+	'''
+	def on_findAgainButton_clicked_action(self, object):
+		pass
+	#'''
+	
+	def on_clearHightlightButton_clicked_action(self, object):
+		for doc in self._window.get_documents():
+			start, end = doc.get_bounds()
+			if doc.get_tag_table().lookup('result_highlight') == None:
+				tag = doc.create_tag("result_highlight", foreground='yellow', background='red')
+			doc.remove_tag_by_name('result_highlight', start, end)
 		
 	def on_expandAllButton_clicked_action(self, object):
 		self.findResultTreeview.expand_all()
@@ -175,12 +191,18 @@ class FindResultView(gtk.HBox):
 		
 	def on_clearButton_clicked_action(self, object):
 		self.clear_find_result()
-		
-	#def on_findAgainButton_clicked_action(self, object):
-	#	pass
+		'''
+		for doc in self._window.get_documents():
+			start, end = doc.get_bounds()
+			if doc.get_tag_table().lookup('result_highlight') == None:
+				tag = doc.create_tag("result_highlight", foreground='yellow', background='red')
+			doc.remove_tag_by_name('result_highlight', start, end)
+		#'''
 
+	'''
 	def on_closeButton_clicked_action(self, boject):
 		self._window.get_bottom_panel().set_property("visible", False)
+	#'''
 
 	def append_find_pattern(self, pattern, replace_flg = False, replace_text = None):
 		self.findResultTreeview.collapse_all()

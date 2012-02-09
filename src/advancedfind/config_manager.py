@@ -48,10 +48,6 @@ class ConfigManager:
 			dic[nodes[i].getAttribute('name')] = nodes[i].firstChild.nodeValue
 		return dic
 	
-	def convert_to_shortcut_string(self, str):
-		str_list = str.split('+')
-		return '<' + str_list[0] + '><' + str_list[1] + '>' + str_list[2]
-	
 	def update_config_file(self, filename, branch, dic):
 		root = self.dom.documentElement
 		nodes = root.getElementsByTagName(branch)

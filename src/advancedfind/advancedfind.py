@@ -2,7 +2,7 @@
 
 
 # findadvance.py
-# v0.1.2
+# v0.2.0
 #
 # Copyright 2010 swatch
 #
@@ -33,9 +33,11 @@ import fnmatch
 import subprocess
 import urllib
 import re
+#import pango
 
 from advancedfind_ui import AdvancedFindUI
 from find_result import FindResultView
+import config_manager
 
 #import lang
 
@@ -63,9 +65,34 @@ class AdvancedFindWindowHelper:
 		self.replace_list = []
 		self.filter_list = []
 		self.path_list = []
-		self.current_pattern = ""
+		self.current_search_pattern = ""
+		self.current_replace_text = ""
+		#self.current_file_pattern = ""
+		#self.current_path = ""
 		self.forwardFlg = True
 		self.scopeFlg = 0
+		
+		'''
+		self.result_highlight_tag = gtk.TextTag('result_highlight')
+		self.result_highlight_tag.set_properties(foreground='yellow',background='red')
+		self.result_highlight_tag.set_property('family', 'Serif')
+		self.result_highlight_tag.set_property('size-points', 12)
+		self.result_highlight_tag.set_property('weight', pango.WEIGHT_BOLD)
+		self.result_highlight_tag.set_property('underline', pango.UNDERLINE_DOUBLE)
+		self.result_highlight_tag.set_property('style', pango.STYLE_ITALIC)
+		#'''
+		
+		configfile = os.path.join(os.path.dirname(__file__), "config.xml")
+		self.config_manager = config_manager.ConfigManager(configfile)
+		self.options = self.config_manager.load_configure('search_option')
+		for key in self.options.keys():
+			if self.options[key] == 'True':
+				self.options[key] = True
+			elif self.options[key] == 'False':
+				self.options[key] = False
+		self.shortcut = self.config_manager.load_configure('shortcut')
+		self.active_shortcut = self.get_shortcut_str(self.shortcut)
+		self.result_highlight = self.config_manager.load_configure('result_highlight')
 
 		self._results_view = FindResultView(window)
 		self._window.get_bottom_panel().add_item(self._results_view, "Advanced Find/Replace", "gtk-find-and-replace")
@@ -85,6 +112,10 @@ class AdvancedFindWindowHelper:
 		self.filter_list = None
 		self.path_list = None
 		self._result_view = None
+		
+		self.config_manager.update_config_file(self.config_manager.config_file, 'search_option', self.options)
+		#self.config_manager.update_config_file(self.config_manager.config_file, 'shortcut', self.shortcut)
+		#self.config_manager.update_config_file(self.config_manager.config_file, 'result_highlight', self.result_highlight)
 	
 	def _insert_menu(self):
 		# Get the GtkUIManager
@@ -92,7 +123,7 @@ class AdvancedFindWindowHelper:
 
 		# Create a new action group
 		self._action_group = gtk.ActionGroup("FindAdvanceActions")
-		self._action_group.add_actions( [("advanced_find", None, _("Advanced Find / Replace"), "<ctrl><shift>F", _("Advanced Find / Replace"), self.advanced_find_active)]) 
+		self._action_group.add_actions( [("advanced_find", None, _("Advanced Find / Replace"), self.active_shortcut, _("Advanced Find / Replace"), self.advanced_find_active)]) 
 
 		# Insert the action group
 		manager.insert_action_group(self._action_group, -1)
@@ -125,16 +156,39 @@ class AdvancedFindWindowHelper:
 		dlg.run()
 		dlg.hide()
 		
+	def get_shortcut_str(self, shortcut_keys):
+		#'''
+		if shortcut_keys['ACTIVE_KEY1'] != "":
+			active_key1 = '<' + shortcut_keys['ACTIVE_KEY1'] + '>'
+		else:
+			active_key1 = ""
+		if shortcut_keys['ACTIVE_KEY2'] != "":
+			active_key2 = '<' + shortcut_keys['ACTIVE_KEY2'] + '>'
+		else:
+			active_key2 = ""
+		if shortcut_keys['ACTIVE_KEY3'] != "":
+			active_key3 = shortcut_keys['ACTIVE_KEY3']
+		else:
+			active_key3 = ""
+
+		if active_key1 + active_key2 + active_key3 != "":
+			return active_key1 + active_key2 + active_key3
+		else:
+			return None
+		#'''
+		
+		
+		
 	def advanced_find_active(self, action):
 		doc = self._window.get_active_document()
 		if not doc:
 			return
-		
+			
 		try:
 			start, end = doc.get_selection_bounds()
 			search_text = unicode(doc.get_text(start,end))
 		except:
-			search_text = self.current_pattern
+			search_text = self.current_search_pattern
 
 		if self.find_dialog == None:
 			self.find_dialog = AdvancedFindUI(self._plugin)
@@ -142,8 +196,15 @@ class AdvancedFindWindowHelper:
 		if search_text != "":
 			self.find_dialog.findTextEntry.child.set_text(search_text)
 		
-		#uri = doc.get_uri_for_display()
-		#self.find_dialog.pathEntry.set_text(os.path.dirname(uri))
+		if self.current_replace_text != "":
+			self.find_dialog.replaceTextEntry.child.set_text(self.current_replace_text)
+		'''	
+		if self.current_file_pattern != "":
+			self.find_dialog.filterComboboxentry.child.set_text(self.current_file_pattern)
+			
+		if self.current_path != "":
+			self.find_dialog.pathComboboxentry.child.set_text(self.current_path)
+		#'''
 
 	def create_regex(self, pattern, options):
 		if options['MATCH_WHOLE_WORD'] == True:
@@ -254,9 +315,10 @@ class AdvancedFindWindowHelper:
 		
 		regex = self.create_regex(search_pattern, options)
 
+		self.result_highlight_off(doc)
 		start, end = doc.get_bounds()
 		text = unicode(doc.get_text(start, end), 'utf-8')
-		lines = text.splitlines()
+		lines = re.findall('.*\\n', text)
 
 		tree_it = None
 		new_text = list(text)
@@ -294,6 +356,8 @@ class AdvancedFindWindowHelper:
 				
 		if text_changed == True:
 			doc.set_text("".join(new_text))
+			
+		self.result_highlight_on(tree_it)
 
 	def find_all_in_dir(self, parent_it, dir_path, file_pattern, search_pattern, options, replace_flg = False):
 		if search_pattern == "":
@@ -316,11 +380,8 @@ class AdvancedFindWindowHelper:
 				if os.path.dirname(f) not in d_list:
 					path_list.append(f)
 
-		#for f in os.listdir(unicode(dir_path, 'utf-8')):
 		for file_path in path_list:
-			#if fnmatch.fnmatch(f, unicode(file_pattern, 'utf-8')):
 			if fnmatch.fnmatch(file_path, unicode(file_pattern, 'utf-8')):
-				#file_path = unicode(dir_path + "/", 'utf-8') + f
 
 				if os.path.isfile(file_path):
 					#print file_path
@@ -344,6 +405,29 @@ class AdvancedFindWindowHelper:
 
 		self._results_view.show_find_result()
 		self.show_bottom_panel()
+		
+	def result_highlight_on(self, file_it):
+		if self._results_view.findResultTreemodel.iter_has_child(file_it):
+			for n in range(0,self._results_view.findResultTreemodel.iter_n_children(file_it)):
+				it = self._results_view.findResultTreemodel.iter_nth_child(file_it, n)
+				tab = self._results_view.findResultTreemodel.get_value(it, 3)
+				if not tab:
+					continue
+				
+				result_start = self._results_view.findResultTreemodel.get_value(it, 4)
+				result_len = self._results_view.findResultTreemodel.get_value(it, 5)
+				doc = tab.get_document()
+				if doc.get_tag_table().lookup('result_highlight') == None:
+					#tag = doc.create_tag("result_highlight", foreground='yellow', background='red')
+					tag = doc.create_tag("result_highlight", foreground=self.result_highlight['FOREGROUND_COLOR'], background=self.result_highlight['BACKGROUND_COLOR'])
+				doc.apply_tag_by_name('result_highlight', doc.get_iter_at_offset(result_start), doc.get_iter_at_offset(result_start + result_len))
+		
+	def result_highlight_off(self, doc):
+		start, end = doc.get_bounds()
+		if doc.get_tag_table().lookup('result_highlight') == None:
+			#tag = doc.create_tag("result_highlight", foreground='yellow', background='red')
+			tag = doc.create_tag("result_highlight", foreground=self.result_highlight['FOREGROUND_COLOR'], background=self.result_highlight['BACKGROUND_COLOR'])
+		doc.remove_tag_by_name('result_highlight', start, end)
 
 	def show_bottom_panel(self):
 		panel = self._window.get_bottom_panel()
