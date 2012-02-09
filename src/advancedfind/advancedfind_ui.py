@@ -2,6 +2,7 @@
 
 
 # findadvance_ui.py
+# v0.0.3
 #
 # Copyright 2010 swatch
 #
@@ -70,9 +71,29 @@ class AdvancedFindUI(object):
 							"on_allFilesInPathRadiobutton_toggled" : self.scopeRadiobuttonGroup_action })
 
 		self.findDialog = ui.get_object("findDialog")
+		self.findDialog.set_keep_above(True)
 
-		self.findTextEntry = ui.get_object("findTextEntry")
-		self.replaceTextEntry = ui.get_object("replaceTextEntry")
+		#self.findTextEntry = ui.get_object("findTextEntry")
+		#self.replaceTextEntry = ui.get_object("replaceTextEntry")
+		
+		self.findTextEntry = ui.get_object("findTextComboboxentry")
+		#self.findTextListstore = ui.get_object("findTextListstore")
+		#find_cell = gtk.CellRendererText()
+		#self.findTextEntry.pack_start(find_cell, True)
+		#self.findTextEntry.add_attribute(find_cell, 'text', 0)
+		self.findTextEntry.set_text_column(0)
+		for find_text in self._instance.find_list:
+			self.findTextEntry.append_text(find_text)
+
+		self.replaceTextEntry = ui.get_object("replaceTextComboboxentry")
+		#self.replaceTextListstore = ui.get_object("replaceTextListstore")
+		#replace_cell = gtk.CellRendererText()
+		#self.replaceTextEntry.pack_start(replace_cell, True)
+		#self.replaceTextEntry.add_attribute(replace_cell, 'text', 0)
+		self.replaceTextEntry.set_text_column(0)
+		for replace_text in self._instance.replace_list:
+			self.replaceTextEntry.append_text(replace_text)
+
 
 		self.matchWholeWordCheckbutton = ui.get_object("matchWholeWordCheckbutton")
 		self.matchCaseCheckbutton = ui.get_object("matchCaseCheckbutton")
@@ -127,9 +148,13 @@ class AdvancedFindUI(object):
 		if not doc:
 			return
 		
-		pattern = self.findTextEntry.get_text()
+		pattern = self.findTextEntry.get_active_text()
 		if pattern == "":
 			return
+			
+		if pattern not in self._instance.find_list:
+			self._instance.find_list.append(pattern)
+			self.findTextEntry.append_text(pattern)
 			
 		self._instance.advanced_find_in_doc(doc, pattern, self.options, self.forwardFlg)
 		
@@ -138,16 +163,26 @@ class AdvancedFindUI(object):
 		if not doc:
 			return
 		
-		pattern = self.findTextEntry.get_text()
+		pattern = self.findTextEntry.get_active_text()
 		if pattern == "":
 			return
+			
+		replace_text = self.replaceTextEntry.get_active_text()
+		if replace_text != "" and replace_text not in self._instance.replace_list:
+			self._instance.replace_list.append(replace_text)
+			self.replaceTextEntry.append_text(replace_text)
+			
 			
 		self._instance.advanced_find_in_doc(doc, pattern, self.options, self.forwardFlg, True)
 
 	def on_findAllButton_clicked_action(self, object):
-		pattern = self.findTextEntry.get_text()
+		pattern = self.findTextEntry.get_active_text()
 		if pattern == "":
 			return
+			
+		if pattern not in self._instance.find_list:
+			self._instance.find_list.append(pattern)
+			self.findTextEntry.append_text(pattern)
 
 		it = self._instance._results_view.append_find_pattern(pattern)
 		
@@ -164,11 +199,16 @@ class AdvancedFindUI(object):
 				self._instance.advanced_find_all_in_doc(it, docs[i], pattern, self.options)
 
 	def on_replaceAllButton_clicked_action(self, object):
-		pattern = self.findTextEntry.get_text()
+		pattern = self.findTextEntry.get_active_text()
 		if pattern == "":
 			return
+			
+		replace_text = self.replaceTextEntry.get_active_text()
+		if replace_text != "" and replace_text not in self._instance.replace_list:
+			self._instance.replace_list.append(replace_text)
+			self.replaceTextEntry.append_text(replace_text)
 
-		it = self._instance._results_view.append_find_pattern(pattern, True, self.replaceTextEntry.get_text())
+		it = self._instance._results_view.append_find_pattern(pattern, True, self.replaceTextEntry.child.get_text())
 		
 		if self.scopeFlg == 0: #current
 			doc = self._instance._window.get_active_document()
@@ -203,17 +243,8 @@ class AdvancedFindUI(object):
 	def scopeRadiobuttonGroup_action(self, object):
 		if self.currentFileRadiobutton.get_active() == True:
 			self.scopeFlg = 0
-			self.filterEntry.set_sensitive(False)
-			self.pathEntry.set_sensitive(False)
 		elif self.allFilesRadiobutton.get_active() == True:
 			self.scopeFlg = 1
-			self.filterEntry.set_sensitive(False)
-			self.pathEntry.set_sensitive(False)
-		elif self.allFilesInPathRadiobutton.get_active() == True:
-			self.scopeFlg = 2
-			self.filterEntry.set_sensitive(True)
-			self.pathEntry.set_sensitive(True)
-
 
 
 if __name__ == "__main__":
