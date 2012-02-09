@@ -93,21 +93,16 @@ class AdvancedFindWindowHelper:
 		configfile = os.path.join(os.path.dirname(__file__), "config.xml")
 		self.config_manager = config_manager.ConfigManager(configfile)
 		self.options = self.config_manager.load_configure('search_option')
-		for key in self.options.keys():
-			if self.options[key] == 'True':
-				self.options[key] = True
-			elif self.options[key] == 'False':
-				self.options[key] = False
+		self.to_bool(self.options)
+		
+		self.find_dlg_setting = self.config_manager.load_configure('find_dialog')
+		self.to_bool(self.find_dlg_setting)
 
 		self.shortcuts = self.config_manager.load_configure('shortcut')
 		self.result_highlight = self.config_manager.load_configure('result_highlight')
 		
 		self.show_button = self.config_manager.load_configure('show_button')
-		for key in self.show_button.keys():
-			if self.show_button[key] == 'True':
-				self.show_button[key] = True
-			elif self.show_button[key] == 'False':
-				self.show_button[key] = False
+		self.to_bool(self.show_button)
 
 		self._results_view = FindResultView(window, self.show_button)
 		self._window.get_bottom_panel().add_item(self._results_view, _("Advanced Find/Replace"), "gtk-find-and-replace")
@@ -135,6 +130,7 @@ class AdvancedFindWindowHelper:
 		self._result_view = None
 		
 		self.config_manager.update_config_file(self.config_manager.config_file, 'search_option', self.options)
+		self.config_manager.update_config_file(self.config_manager.config_file, 'find_dialog', self.find_dlg_setting)
 		#self.config_manager.update_config_file(self.config_manager.config_file, 'shortcut', self.shortcuts)
 		self.config_manager.update_config_file(self.config_manager.config_file, 'result_highlight', self.result_highlight)
 		
@@ -174,6 +170,13 @@ class AdvancedFindWindowHelper:
 
 	def update_ui(self):
 		self._action_group.set_sensitive(self._window.get_active_document() != None)
+		
+	def boolean(self, string):
+		return string.lower() in ['true', 'yes', 't', 'y', 'ok', '1']
+		
+	def to_bool(self, dic):
+		for key in dic.keys():
+			dic[key] = self.boolean(dic[key])
 		
 	def show_message_dialog(self, dlg, text):
 		dlg.set_property('text', text)

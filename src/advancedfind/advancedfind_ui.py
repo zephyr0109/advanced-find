@@ -32,6 +32,7 @@ except:
 try:
 	import gtk
 	import gtk.glade
+	import gtk.gdk
 except:
 	sys.exit(1)
 
@@ -61,6 +62,8 @@ class AdvancedFindUI(object):
 		ui.set_translation_domain('advancedfind')
 		ui.add_from_file(gladefile)
 		ui.connect_signals({ "on_findDialog_destroy" : self.on_findDialog_destroy_action,
+							"on_findDialog_focus_in_event": self.on_findDialog_focus_in_event_action,
+							"on_findDialog_focus_out_event" : self.on_findDialog_focus_out_event_action,
 							
 							"on_findButton_clicked" : self.on_findButton_clicked_action,
 							"on_replaceButton_clicked" : self.on_replaceButton_clicked_action,
@@ -89,6 +92,13 @@ class AdvancedFindUI(object):
 		self.findDialog = ui.get_object("findDialog")
 		#self.findDialog.set_keep_above(True)
 		self.findDialog.set_transient_for(self._window)
+
+		accelgroup = gtk.AccelGroup()
+		key, modifier = gtk.accelerator_parse('Escape')
+		accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.esc_accel_action)
+		key, modifier = gtk.accelerator_parse('Return')
+		accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.return_accel_action)
+		self.findDialog.add_accel_group(accelgroup)
 
 		self.findTextEntry = ui.get_object("findTextComboboxentry")
 		#self.findTextListstore = ui.get_object("findTextListstore")
@@ -140,12 +150,18 @@ class AdvancedFindUI(object):
 		except:
 			pass
 		
+		self.pathExpander = ui.get_object("pathExpander")
+		self.pathExpander.set_expanded(self._instance.find_dlg_setting['PATH_EXPANDED'])		
+		
 		self.matchWholeWordCheckbutton = ui.get_object("matchWholeWordCheckbutton")
 		self.matchCaseCheckbutton = ui.get_object("matchCaseCheckbutton")
 		self.wrapAroundCheckbutton = ui.get_object("wrapAroundCheckbutton")
 		self.followCurrentDocCheckbutton = ui.get_object("followCurrentDocCheckbutton")
 		self.includeSubfolderCheckbutton = ui.get_object("includeSubfolderCheckbutton")
 		self.regexSearchCheckbutton = ui.get_object("regexSearchCheckbutton")
+		
+		self.optionsExpander = ui.get_object("optionsExpander")
+		self.optionsExpander.set_expanded(self._instance.find_dlg_setting['OPTIONS_EXPANDED'])
 
 		self.forwardRadiobutton = ui.get_object("forwardRadiobutton")
 		self.backwardRadiobutton = ui.get_object("backwardRadiobutton")
@@ -166,7 +182,6 @@ class AdvancedFindUI(object):
 			self.allFilesInPathRadiobutton.set_active(True)
 		elif self._instance.scopeFlg == 3:
 			self.currentSelectionRadiobutton.set_active(True)
-
 
 		self.findButton = ui.get_object("findButton")
 		self.replaceButton = ui.get_object("replaceButton")
@@ -189,10 +204,25 @@ class AdvancedFindUI(object):
 
 	def on_findDialog_destroy_action(self, object):
 		try:
+			self._instance.find_dlg_setting['PATH_EXPANDED'] = self.pathExpander.get_expanded()
+			self._instance.find_dlg_setting['OPTIONS_EXPANDED'] = self.optionsExpander.get_expanded()
 			self._instance.find_ui = None
 		except:
 			pass
+			
+	def on_findDialog_focus_in_event_action(self, object, event):
+		object.set_opacity(1)
 
+	def on_findDialog_focus_out_event_action(self, object, event):
+		object.set_opacity(0.5)
+		
+	def esc_accel_action(self, accelgroup, window, key, modifier):
+		window.hide()
+		
+	def return_accel_action(self, accelgroup, window, key, modifier):
+		self.on_findButton_clicked_action(None)
+		#self.on_findAllButton_clicked_action(None)
+		
 	def main(self):
 		gtk.main()
 
@@ -335,7 +365,7 @@ class AdvancedFindUI(object):
 		
 	def on_selectPathDialogCancelButton_clicked_action(self, object):
 		self.selectPathFilechooserdialog.hide()
-
+		
 	# options    
 	def on_matchWholeWordCheckbutton_toggled_action(self, object):
 		self._instance.options['MATCH_WHOLE_WORD'] = object.get_active()

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-09 23:21+0800\n"
+"POT-Creation-Date: 2011-03-13 17:02+0800\n"
 "PO-Revision-Date: 2010-10-17 19:33+0800\n"
 "Last-Translator: swatch <swatch.code@gmail.com>\n"
 "Language-Team: none\n"
@@ -16,47 +16,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../advancedfind.py:111 ../advancedfind.py:148 ../FindDialog.glade:24
+#: ../advancedfind.py:113 ../advancedfind.py:150 ../FindDialog.glade:24
 msgid "Advanced Find/Replace"
 msgstr "Advanced Find/Replace"
 
-#: ../advancedfind.py:149
+#: ../advancedfind.py:151
+msgid "Find Next"
+msgstr "Find Next"
+
+#: ../advancedfind.py:152
+msgid "Find Previous"
+msgstr "Find Previous"
+
+#: ../advancedfind.py:153
 msgid "Select and Find Next"
 msgstr "Select and Find Next"
 
-#: ../advancedfind.py:150
+#: ../advancedfind.py:154
 msgid "Select and Find Previous"
 msgstr "Select and Find Previous"
 
-#: ../advancedfind.py:281 ../advancedfind.py:325
+#: ../advancedfind.py:290
 msgid "Nothing is found."
 msgstr "Nothing is found."
 
-#: ../advancedfind_ui.py:313
+#: ../advancedfind_ui.py:312
 msgid "Replace in this scope is not supported."
 msgstr "Replace in this scope is not supported."
 
-#: ../find_result.py:78 ../find_result.py:139
+#: ../find_result.py:78 ../find_result.py:143
 msgid "Next"
 msgstr "Next"
 
-#: ../find_result.py:81 ../find_result.py:112 ../find_result.py:140
+#: ../find_result.py:81 ../find_result.py:112 ../find_result.py:144
 msgid "Expand All"
 msgstr "Expand All"
 
-#: ../find_result.py:84 ../find_result.py:113 ../find_result.py:141
+#: ../find_result.py:84 ../find_result.py:113 ../find_result.py:145
 msgid "Collapse All"
 msgstr "Collapse All"
 
-#: ../find_result.py:87 ../find_result.py:114 ../find_result.py:142
+#: ../find_result.py:87 ../find_result.py:114 ../find_result.py:146
 msgid "Clear Highlight"
 msgstr "Clear Highlight"
 
-#: ../find_result.py:90 ../find_result.py:115 ../find_result.py:143
+#: ../find_result.py:90 ../find_result.py:115 ../find_result.py:147
 msgid "Clear"
 msgstr "Clear"
 
-#: ../find_result.py:134
+#: ../find_result.py:116
+msgid "Markup"
+msgstr ""
+
+#: ../find_result.py:138
 msgid "Show Buttons"
 msgstr "Show Buttons"
 
@@ -73,7 +85,6 @@ msgid "Background color : "
 msgstr "Background color : "
 
 #: ../config.glade:102
-#, fuzzy
 msgid "<b>Result Highlighting</b>"
 msgstr "<b>Result Highlighting</b>"
 
@@ -82,7 +93,6 @@ msgid "Root Follow Filebrowser"
 msgstr "Root Follow Filebrowser"
 
 #: ../config.glade:173
-#, fuzzy
 msgid "<b>Others</b>"
 msgstr "<b>Others</b>"
 
