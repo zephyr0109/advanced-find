@@ -8,6 +8,6 @@
 	<shortcut name="ACTIVE_KEY1">ctrl</shortcut>
 	<shortcut name="ACTIVE_KEY2">shift</shortcut>
 	<shortcut name="ACTIVE_KEY3">F</shortcut>
-	<result_highlight name="FOREGROUND_COLOR">yellow</result_highlight>
+	<result_highlight name="FOREGROUND_COLOR">#ffffffff0000</result_highlight>
 	<result_highlight name="BACKGROUND_COLOR">red</result_highlight>
 </manifest>

@@ -115,7 +115,7 @@ class AdvancedFindWindowHelper:
 		
 		self.config_manager.update_config_file(self.config_manager.config_file, 'search_option', self.options)
 		#self.config_manager.update_config_file(self.config_manager.config_file, 'shortcut', self.shortcut)
-		#self.config_manager.update_config_file(self.config_manager.config_file, 'result_highlight', self.result_highlight)
+		self.config_manager.update_config_file(self.config_manager.config_file, 'result_highlight', self.result_highlight)
 	
 	def _insert_menu(self):
 		# Get the GtkUIManager
@@ -319,7 +319,7 @@ class AdvancedFindWindowHelper:
 		start, end = doc.get_bounds()
 		text = unicode(doc.get_text(start, end), 'utf-8')
 		lines = re.findall('.*\\n', text + u'\n')
-		print lines
+		#print lines
 
 		tree_it = None
 		new_text = list(text)
@@ -408,6 +408,8 @@ class AdvancedFindWindowHelper:
 		self.show_bottom_panel()
 		
 	def result_highlight_on(self, file_it):
+		if file_it == None:
+			return
 		if self._results_view.findResultTreemodel.iter_has_child(file_it):
 			for n in range(0,self._results_view.findResultTreemodel.iter_n_children(file_it)):
 				it = self._results_view.findResultTreemodel.iter_nth_child(file_it, n)
@@ -419,14 +421,12 @@ class AdvancedFindWindowHelper:
 				result_len = self._results_view.findResultTreemodel.get_value(it, 5)
 				doc = tab.get_document()
 				if doc.get_tag_table().lookup('result_highlight') == None:
-					#tag = doc.create_tag("result_highlight", foreground='yellow', background='red')
 					tag = doc.create_tag("result_highlight", foreground=self.result_highlight['FOREGROUND_COLOR'], background=self.result_highlight['BACKGROUND_COLOR'])
 				doc.apply_tag_by_name('result_highlight', doc.get_iter_at_offset(result_start), doc.get_iter_at_offset(result_start + result_len))
 		
 	def result_highlight_off(self, doc):
 		start, end = doc.get_bounds()
 		if doc.get_tag_table().lookup('result_highlight') == None:
-			#tag = doc.create_tag("result_highlight", foreground='yellow', background='red')
 			tag = doc.create_tag("result_highlight", foreground=self.result_highlight['FOREGROUND_COLOR'], background=self.result_highlight['BACKGROUND_COLOR'])
 		doc.remove_tag_by_name('result_highlight', start, end)
 

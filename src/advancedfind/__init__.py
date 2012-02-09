@@ -25,7 +25,7 @@
 import gedit
 import gtk
 from advancedfind import AdvancedFindWindowHelper
-from advancedfind_ui import AdvancedFindUI
+from config_ui import ConfigUI
 
 class AdvancedFindReplacePlugin(gedit.Plugin):
 	def __init__(self):
@@ -44,14 +44,13 @@ class AdvancedFindReplacePlugin(gedit.Plugin):
 	def update_ui(self, window):
 		self._instances[window].update_ui()
 
-	'''	
 	def is_configurable(self):
 		return True
 		
 	def create_configure_dialog(self):
 		dlg = ConfigUI(self)
 		return dlg.configWindow
-	#'''
+
 	def get_instance(self):
 		return self._instances[self._window]
 
