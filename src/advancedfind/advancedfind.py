@@ -505,10 +505,13 @@ class AdvancedFindWindowHelper:
 		if find_options['REGEX_SEARCH'] == True:
 			grep_cmd = grep_cmd + ['-E', search_pattern, dir_path]
 		else:
-			grep_cmd = grep_cmd + [re.escape(search_pattern).replace('\(','(').replace('\)',')').replace('\n','n'), dir_path]
+			grep_cmd = grep_cmd + ['-F', search_pattern, dir_path]
 		#print grep_cmd
 
 		p = subprocess.Popen(grep_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		for e in p.stderr:
+			print e
+
 		for f in p.stdout:
 			p1 = subprocess.Popen(['file', '--mime', f[:-1]], stdout=subprocess.PIPE)
 			p2 = subprocess.Popen(['grep', 'charset=binary'], stdin=p1.stdout, stdout=subprocess.PIPE)
