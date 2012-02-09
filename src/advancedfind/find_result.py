@@ -40,6 +40,19 @@ import urllib
 import re
 import config_manager
 
+import gettext
+APP_NAME = 'advancedfind'
+#LOCALE_DIR = '/usr/share/locale'
+LOCALE_DIR = os.path.join(os.path.dirname(__file__), 'locale')
+if not os.path.exists(LOCALE_DIR):
+	LOCALE_DIR = '/usr/share/locale'
+try:
+	t = gettext.translation(APP_NAME, LOCALE_DIR)
+	_ = t.gettext
+	gtk.glade.bindtextdomain(APP_NAME, LOCALE_DIR)
+except:
+	pass
+
 
 class FindResultView(gtk.HBox):
 	def __init__(self, window, show_button_option):

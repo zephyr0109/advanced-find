@@ -329,6 +329,10 @@ class AdvancedFindUI(object):
 		if search_pattern == "":
 			return
 			
+		doc = self._instance._window.get_active_document()
+		if not doc:
+			return
+		
 		self._instance.set_bottom_panel_label(_('Finding...'), gtk.gdk.PixbufAnimation(os.path.join(os.path.dirname(__file__), 'loading.gif')))
 		self._instance._results_view.set_sensitive(False)
 		self._instance.show_bottom_panel()
@@ -340,15 +344,10 @@ class AdvancedFindUI(object):
 		it = self._instance._results_view.append_find_pattern(search_pattern)
 		
 		if self._instance.scopeFlg == 0: #current document
-			doc = self._instance._window.get_active_document()
-			if not doc:
-				return
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.find_options)
 			self._instance._results_view.show_find_result()
 		elif self._instance.scopeFlg == 1: #all opened documents
 			docs = self._instance._window.get_documents()
-			if not docs:
-				return
 			for doc in docs:
 				self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.find_options)
 				self.do_events()
@@ -359,9 +358,6 @@ class AdvancedFindUI(object):
 			self._instance.find_all_in_dir(it, dir_path, file_pattern, search_pattern, self._instance.find_options)
 			self._instance._results_view.show_find_result()
 		elif self._instance.scopeFlg == 3: #current selected text
-			doc = self._instance._window.get_active_document()
-			if not doc:
-				return
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.find_options, False, True)
 			self._instance._results_view.show_find_result()
 
@@ -371,6 +367,10 @@ class AdvancedFindUI(object):
 	def on_replaceAllButton_clicked_action(self, object):
 		search_pattern = self.findTextEntry.get_active_text()
 		if search_pattern == "":
+			return
+			
+		doc = self._instance._window.get_active_document()
+		if not doc:
 			return
 			
 		self._instance.set_bottom_panel_label(_('Replacing...'), gtk.gdk.PixbufAnimation(os.path.join(os.path.dirname(__file__), 'loading.gif')))
@@ -384,15 +384,10 @@ class AdvancedFindUI(object):
 		it = self._instance._results_view.append_find_pattern(search_pattern, True, self.replaceTextEntry.child.get_text())
 		
 		if self._instance.scopeFlg == 0: #current document
-			doc = self._instance._window.get_active_document()
-			if not doc:
-				return
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.find_options, True)
 			self._instance._results_view.show_find_result()
 		elif self._instance.scopeFlg == 1: #all opened documents
 			docs = self._instance._window.get_documents()
-			if not docs:
-				return
 			for doc in docs:
 				self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.find_options, True)
 			self._instance._results_view.show_find_result()
@@ -402,9 +397,6 @@ class AdvancedFindUI(object):
 			self._instance._results_view.show_find_result()
 			self._instance._results_view.findResultTreemodel.set_value(it, 2, _("Replace in this scope is not supported."))
 		elif self._instance.scopeFlg == 3: #current selected text
-			doc = self._instance._window.get_active_document()
-			if not doc:
-				return
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.find_options, True, True)
 			self._instance._results_view.show_find_result()
 		
