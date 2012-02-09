@@ -29,6 +29,21 @@ import re
 import config_manager
 
 
+import gettext
+APP_NAME = 'advancedfind'
+#LOCALE_DIR = '/usr/share/locale'
+LOCALE_DIR = os.path.join(os.path.dirname(__file__), 'locale')
+if not os.path.exists(LOCALE_DIR):
+	LOCALE_DIR = '/usr/share/locale'
+try:
+	t = gettext.translation(APP_NAME, LOCALE_DIR)
+	_ = t.gettext
+	#Gtk.glade.bindtextdomain(APP_NAME, LOCALE_DIR)
+except:
+	pass
+#gettext.install(APP_NAME, LOCALE_DIR, unicode=True)
+
+
 class FindResultView(Gtk.HBox):
 	def __init__(self, window, show_button_option):
 		Gtk.HBox.__init__(self)
@@ -166,7 +181,12 @@ class FindResultView(Gtk.HBox):
 			Gtk.main_iteration()
 			
 	def to_xml_text(self, text):
-		return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+		# & -> &amp;
+		# < -> &lt;
+		# > -> &gt;
+		# ' -> &apos;
+		# " -> &quot;
+		return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace("'", '&apos;').replace('"', '&quot;')
 		
 	def remove_markup(self, text):
 		regex = re.compile(r'<.+>([^ <>]+)</.+>')
@@ -179,6 +199,7 @@ class FindResultView(Gtk.HBox):
 		
 		try:
 			m = re.search('.+(<.+>)+([0-9]+)(<.+>)+.*', model.get_value(it, 1))
+			#m = re.search('.+(.+)+([0-9]+)(.+)+.*', model.get_value(it, 1))
 			line_num = int(m.group(2))
 		except:
 			return
@@ -343,20 +364,24 @@ class FindResultView(Gtk.HBox):
 		idx = self.findResultTreemodel.iter_n_children(None)
 		header = '#' + str(idx) + ' - '
 		if replace_flg == True:
-			mode = self.result_format['MODE_REPLACE'] %{'HEADER' : header, 'PATTERN' : self.to_xml_text(pattern), 'REPLACE_TEXT' : self.to_xml_text(replace_text)}
+			mode = self.result_format['MODE_REPLACE'] %{'HEADER' : header, 'PATTERN' : self.to_xml_text(unicode(pattern, 'utf-8')), 'REPLACE_TEXT' : self.to_xml_text(unicode(replace_text, 'utf-8'))}
+			#mode = header + ' Replace ' + pattern + ' with ' + replace_text
 			it = self.findResultTreemodel.append(None, [idx, mode, '', None, 0, 0, ''])
 		else:
-			mode = self.result_format['MODE_FIND'] %{'HEADER' : header, 'PATTERN' : self.to_xml_text(pattern)}
+			mode = self.result_format['MODE_FIND'] %{'HEADER' : header, 'PATTERN' : self.to_xml_text(unicode(pattern, 'utf-8'))}
+			#mode = header + ' Search ' + pattern
 			it = self.findResultTreemodel.append(None, [idx, mode, '', None, 0, 0, ''])
 		return it
 	
 	def append_find_result_filename(self, parent_it, filename, tab, uri):
-		filename_str = self.result_format['FILENAME'] % {'FILENAME' : self.to_xml_text(filename)}
+		filename_str = self.result_format['FILENAME'] % {'FILENAME' : self.to_xml_text(unicode(filename, 'utf-8'))}
+		#filename_str = filename
 		it = self.findResultTreemodel.append(parent_it, [0, filename_str, '', tab, 0, 0, uri])
 		return it
 		
 	def append_find_result(self, parent_it, line, text, result_offset_start = 0, result_len = 0, uri = "", line_start_pos = 0, replace_flg = False):
 		result_line = self.result_format['LINE'] % {'LINE_NUM' : line}
+		#result_line = 'Line ' + str(line) + ' : '
 		markup_start = result_offset_start - line_start_pos
 		markup_end = markup_start + result_len
 		
@@ -366,9 +391,11 @@ class FindResultView(Gtk.HBox):
 
 		if replace_flg == False:
 			result_text = (text_header + self.result_format['FIND_RESULT_TEXT'] % {'RESULT_TEXT' : text_marked} + text_footer).rstrip()
+			#result_text = (text_header + text_marked + text_footer).rstrip()
 			self.findResultTreemodel.append(parent_it, [int(line), result_line, result_text, None, result_offset_start, result_len, uri])
 		else:
 			result_text = (text_header + self.result_format['REPLACE_RESULT_TEXT'] % {'RESULT_TEXT' : text_marked} + text_footer).rstrip()
+			#result_text = (text_header + text_marked + text_footer).rstrip()
 			self.findResultTreemodel.append(parent_it, [int(line), result_line, result_text, None, result_offset_start, result_len, uri])
 		
 	def show_find_result(self):
@@ -384,8 +411,10 @@ class FindResultView(Gtk.HBox):
 			hits_cnt = self.findResultTreemodel.iter_n_children(it1)
 			total_hits += hits_cnt
 			hits_str = self.result_format['HITS_CNT'] % {'HITS_CNT' : str(hits_cnt)}
+			#hits_str = str(hits_cnt) + ' hits'
 			self.findResultTreemodel.set_value(it1, 2, hits_str)
 		total_hits_str = self.result_format['TOTAL_HITS'] % {'TOTAL_HITS': str(total_hits), 'FILES_CNT' : str(file_cnt)}
+		#total_hits_str = 'Total ' +  str(total_hits) + ' hits in ' + str(file_cnt)
 		self.findResultTreemodel.set_value(pattern_it, 2, total_hits_str)
 
 	def clear_highlight(self):

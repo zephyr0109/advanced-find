@@ -30,6 +30,7 @@ import fnmatch
 import subprocess
 import urllib
 import re
+import time
 
 
 from advancedfind_ui import AdvancedFindUI
@@ -242,7 +243,7 @@ class AdvancedFindWindowHelper:
 			
 		try:
 			start, end = doc.get_selection_bounds()
-			search_text = unicode(doc.get_text(start,end,True))
+			search_text = unicode(doc.get_text(start,end,True), 'utf-8')
 		except:
 			search_text = self.current_search_pattern
 
@@ -430,6 +431,8 @@ class AdvancedFindWindowHelper:
 					line_text = text[line_start_pos:line_end_pos]
 					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, match.start(), match.end()-match.start(), "", line_start_pos)
 					start_pos = match.end() + 1
+					if start_pos > end_pos:
+						break
 					match = regex.search(text, start_pos, end_pos)
 			else:
 				results = []
@@ -450,6 +453,8 @@ class AdvancedFindWindowHelper:
 					results.append([replace_start_pos, replace_text_len])
 					replace_offset += replace_text_len - (match.end() - match.start())
 					start_pos = match.end() + 1
+					if start_pos > end_pos:
+						break
 					match = regex.search(text, start_pos, end_pos)
 				doc.end_user_action()
 				
@@ -476,47 +481,48 @@ class AdvancedFindWindowHelper:
 		return False
 			
 	def find_all_in_dir(self, parent_it, dir_path, file_pattern, search_pattern, find_options, replace_flg = False):
+		start_time = time.time()
 		if search_pattern == "":
 			return
 			
 		d_list = []
-		f_list = []
 		file_list = []
 		
 		for root, dirs, files in os.walk(unicode(dir_path, 'utf-8')):
 			for d in dirs:
 				d_list.append(os.path.join(root, d))	
 			for f in files:
-				f_list.append(os.path.join(root, f))
+				if self.check_file_pattern(f, unicode(file_pattern, 'utf-8')):
+					if find_options['INCLUDE_SUBFOLDER'] == True:
+						file_list.append(os.path.join(root, f))
+					else:
+						if os.path.dirname(f) not in d_list:
+							file_list.append(os.path.join(root, f))
+				self.find_ui.do_events()
+					
+		mid_time = time.time()
+		print 'Use ' + str(mid_time-start_time) + ' seconds to find files.'
 		
-		if find_options['INCLUDE_SUBFOLDER'] == True:
-			file_list = f_list
-		else:
-			for f in f_list:
-				if os.path.dirname(f) not in d_list:
-					file_list.append(f)
 					
 		for file_path in file_list:
-			if self.check_file_pattern(file_path, unicode(file_pattern, 'utf-8')):
-				if os.path.isfile(file_path):
-					pipe = subprocess.PIPE
-					p1 = subprocess.Popen(["file", "--mime-type", file_path], stdout=pipe)
-					p2 = subprocess.Popen(["grep", "-E", "text|xml"], stdin=p1.stdout, stdout=pipe)
-					output = p2.communicate()[0]
-					if output:
-						temp_doc = Gedit.Document()
-						file_uri = "file://" + urllib.pathname2url(file_path.encode('utf-8'))
-						temp_doc.load(Gio.file_new_for_uri(file_uri), Gedit.encoding_get_from_charset('utf-8'), 0, 0, False)
-						f_temp = open(file_path, 'r')
-						try:
-							text = unicode(f_temp.read(), 'utf-8')
-						except:
-							text = f_temp.read()
-						f_temp.close()
-						temp_doc.set_text(text)
-						
-						self.advanced_find_all_in_doc(parent_it, temp_doc, search_pattern, find_options, replace_flg)
-						self.find_ui.do_events()
+			if os.path.isfile(file_path):
+				temp_doc = Gedit.Document()
+				file_uri = "file://" + urllib.pathname2url(file_path.encode('utf-8'))
+				temp_doc.load(Gio.file_new_for_uri(file_uri), Gedit.encoding_get_from_charset('utf-8'), 0, 0, False)
+				f_temp = open(file_path, 'r')
+				try:
+					text = unicode(f_temp.read(), 'utf-8')
+				except:
+					text = f_temp.read()
+				f_temp.close()
+				temp_doc.set_text(text)
+				
+				self.advanced_find_all_in_doc(parent_it, temp_doc, search_pattern, find_options, replace_flg)
+				self.find_ui.do_events()
+				
+		end_time = time.time()						
+		print 'Use ' + str(end_time-mid_time) + ' seconds to find results.'
+		print 'Total use ' + str(end_time-start_time) + ' seconds.'
 						
 	def result_highlight_on(self, file_it):
 		if file_it == None:
