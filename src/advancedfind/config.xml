@@ -5,7 +5,7 @@
 	<FindOption name="WRAP_AROUND" value="False"/>
 	<FindOption name="FOLLOW_CURRENT_DOC" value="True"/>
 	<FindOption name="ROOT_FOLLOW_FILEBROWSER" value="True"/>
-	<FindOption name="INCLUDE_SUBFOLDER" value="False"/>
+	<FindOption name="INCLUDE_SUBFOLDER" value="True"/>
 	<FindOption name="INCLUDE_HIDDEN" value="True"/>
 	<FindOption name="REGEX_SEARCH" value="False"/>
 	<FindGUI name="PATH_EXPANDED" value="True"/>
@@ -17,9 +17,9 @@
 	<Shortcut name="SELECT_FIND_PREVIOUS" value="&lt;ctrl&gt;&lt;shift&gt;F3"/>
 	<ResultDisplay name="FOREGROUND_COLOR" value="#ffffffff0000"/>
 	<ResultDisplay name="BACKGROUND_COLOR" value="red"/>
-	<ResultGUI name="NEXT_BUTTON" value="True"/>
-	<ResultGUI name="EXPAND_ALL_BUTTON" value="True"/>
-	<ResultGUI name="COLLAPSE_ALL_BUTTON" value="True"/>
+	<ResultGUI name="NEXT_BUTTON" value="False"/>
+	<ResultGUI name="EXPAND_ALL_BUTTON" value="False"/>
+	<ResultGUI name="COLLAPSE_ALL_BUTTON" value="False"/>
 	<ResultGUI name="CLEAR_HIGHLIGHT_BUTTON" value="True"/>
 	<ResultGUI name="CLEAR_BUTTON" value="True"/>
 </manifest>
