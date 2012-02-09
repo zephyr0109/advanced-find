@@ -213,14 +213,21 @@ class AdvancedFindWindowHelper:
 		if search_pattern == "":
 			return
 		
+		regex = self.create_regex(search_pattern, options)
+		
 		if doc.get_has_selection():
 			selection_start, selection_end = doc.get_selection_bounds()
-			if forward_flg == True:
-				doc.place_cursor(selection_end)
-			else:
-				doc.place_cursor(selection_start)
-		
-		regex = self.create_regex(search_pattern, options)
+			match = regex.search(doc.get_text(selection_start, selection_end))
+			if match and replace_flg == True:
+				replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+				doc.delete_selection(False, False)
+				doc.insert_at_cursor(replace_text)
+				return		
+			else:			
+				if forward_flg == True:
+					doc.place_cursor(selection_end)
+				else:
+					doc.place_cursor(selection_start)
 		
 		view = self._window.get_active_view()
 		if forward_flg == True:
