@@ -29,6 +29,7 @@ from advancedfind import AdvancedFindWindowHelper
 from config_ui import ConfigUI
 
 
+
 class AdvancedFindReplacePlugin(gedit.Plugin):
 	def __init__(self):
 		gedit.Plugin.__init__(self)

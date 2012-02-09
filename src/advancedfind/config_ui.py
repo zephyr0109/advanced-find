@@ -42,6 +42,7 @@ import os.path
 #from gettext import gettext as _
 
 
+
 class ConfigUI(object):
 	def __init__(self, plugin):
 		self._plugin = plugin
@@ -64,7 +65,7 @@ class ConfigUI(object):
 
 		self.rootFollowFilebrowserCheckbutton = UI.get_object("rootFollowFilebrowserCheckbutton")
 		self.rootFollowFilebrowserCheckbutton.set_active(self._instance.options['ROOT_FOLLOW_FILEBROWSER'])
-			
+		
 		self.configWindow.show_all()
 
 		signals = { "on_configWindow_destroy" : self.on_configWindow_destroy,

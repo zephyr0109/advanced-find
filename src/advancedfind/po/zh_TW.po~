@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-06 19:14+0800\n"
+"POT-Creation-Date: 2011-01-11 20:01+0800\n"
 "PO-Revision-Date: 2010-10-17 20:15+0800\n"
 "Last-Translator: swatch <swatch.code@gmail.com>\n"
 "Language-Team: none\n"
@@ -15,25 +15,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../advancedfind.py:104 ../advancedfind.py:138 ../FindDialog.glade:24
+#: ../advancedfind.py:103 ../advancedfind.py:137 ../FindDialog.glade:24
 msgid "Advanced Find/Replace"
 msgstr "進階搜尋/取代"
 
-#: ../advancedfind.py:139
+#: ../advancedfind.py:138
 msgid "Select and Find Next"
 msgstr "選取並尋找下一個"
 
-#: ../advancedfind.py:140
+#: ../advancedfind.py:139
 msgid "Select and Find Previous"
 msgstr "選取並尋找上一個"
 
-#: ../advancedfind.py:269 ../advancedfind.py:313
+#: ../advancedfind.py:268 ../advancedfind.py:312
 msgid "Nothing is found."
 msgstr "找不到符合的字詞"
 
-#: ../advancedfind_ui.py:310
+#: ../advancedfind_ui.py:315
 msgid "Replace in this scope is not supported."
 msgstr "取代功能不支援所選擇的範圍"
+
+#: ../config_ui.py:70 ../config.glade:173
+#, fuzzy
+msgid "<b>Other Settings</b>"
+msgstr "<b>其他設定</b>"
+
+#: ../config_ui.py:72 ../config.glade:102
+#, fuzzy
+msgid "<b>Highlight Settings</b>"
+msgstr "<b>高亮度標示設定</b>"
 
 #: ../find_result.py:76
 msgid "Next"
@@ -59,17 +69,17 @@ msgstr "清除"
 msgid "Configuration"
 msgstr "設定"
 
-#: ../config.glade:30
+#: ../config.glade:33
 msgid "Foreground color : "
 msgstr "文字顏色"
 
-#: ../config.glade:63
+#: ../config.glade:66
 msgid "Background color : "
 msgstr "背景顏色"
 
-#: ../config.glade:99
-msgid "<b>Highlight Setting</b>"
-msgstr "<b>高亮度標示設定</b>"
+#: ../config.glade:137
+msgid "Root Follow Filebrowser"
+msgstr "使用檔案瀏覽器的根資料夾路徑"
 
 #: ../FindDialog.glade:67
 msgid "Find what : "
@@ -182,3 +192,5 @@ msgstr "取消"
 #: ../FindDialog.glade:670
 msgid "Ok"
 msgstr "確定"
+
+

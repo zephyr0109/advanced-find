@@ -47,7 +47,6 @@ LOCALE_DIR = '/usr/share/locale'
 gettext.install(APP_NAME, LOCALE_DIR, unicode=True)
 
 
-
 # Menu item example, insert a new item in the Edit menu
 ui_str = """<ui>
 	<menubar name="MenuBar">
@@ -397,7 +396,8 @@ class AdvancedFindWindowHelper:
 				match_pos = 0
 				for cnt in range(0, len(results)):
 					match = regex.search(lines[i][match_pos:])
-					result_offset_start = line_start.get_offset() + match.start() + match_pos
+					line_start_pos = line_start.get_offset()
+					result_offset_start = line_start_pos + match.start() + match_pos
 					result_len = len(match.group(0))
 					if options['REGEX_SEARCH'] == False:
 						replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
@@ -407,13 +407,13 @@ class AdvancedFindWindowHelper:
 					replace_offset = result_len - replace_text_len
 					
 					if replace_flg == True:
-						self._results_view.append_find_result(tree_it, str(line_number_offset + i), lines[i].strip(), tab, result_offset_start - (replace_offset * replace_cnt), replace_text_len)
+						self._results_view.append_find_result(tree_it, str(line_number_offset + i), lines[i], tab, result_offset_start - (replace_offset * replace_cnt), replace_text_len, "", line_start_pos - (replace_offset * replace_cnt), replace_offset, True)
 						replace_start_idx = result_offset_start - (replace_offset * replace_cnt)
 						new_text[replace_start_idx:replace_start_idx + result_len] = replace_text
 						replace_cnt += 1
 						text_changed = True
 					else:
-						self._results_view.append_find_result(tree_it, str(line_number_offset + i), lines[i].strip(), tab, result_offset_start, result_len)
+						self._results_view.append_find_result(tree_it, str(line_number_offset + i), lines[i], tab, result_offset_start, result_len, "", line_start_pos)
 					match_pos += match.end()
 				
 		if text_changed == True:
