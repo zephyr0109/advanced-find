@@ -112,7 +112,7 @@ class AdvancedFindWindowHelper:
 						gtk.MESSAGE_INFO,
 						gtk.BUTTONS_CLOSE,
 						None)
-
+		
 		# Insert menu items
 		self._insert_menu()
 
@@ -362,7 +362,7 @@ class AdvancedFindWindowHelper:
 				if doc_uri == None:
 					uri = ''
 				else:
-					uri = urllib.unquote(doc.get_uri()[7:]).decode('utf-8')
+					uri = urllib.unquote(doc.get_uri()).decode('utf-8')
 				tree_it = self._results_view.append_find_result_filename(parent_it, doc.get_short_name_for_display(), uri)
 			tab = gedit.tab_get_from_document(doc)
 
@@ -411,7 +411,7 @@ class AdvancedFindWindowHelper:
 	def find_all_in_dir(self, parent_it, dir_path, file_pattern, search_pattern, options, replace_flg = False):
 		if search_pattern == "":
 			return
-		
+			
 		d_list = []
 		f_list = []
 		path_list = []
@@ -428,7 +428,7 @@ class AdvancedFindWindowHelper:
 			for f in f_list:
 				if os.path.dirname(f) not in d_list:
 					path_list.append(f)
-
+					
 		for file_path in path_list:
 			if fnmatch.fnmatch(file_path, unicode(file_pattern, 'utf-8')):
 				if os.path.isfile(file_path):
@@ -449,7 +449,8 @@ class AdvancedFindWindowHelper:
 						temp_doc.set_text(text)
 						
 						self.advanced_find_all_in_doc(parent_it, temp_doc, search_pattern, options, replace_flg)
-
+						self.find_ui.do_events()
+						
 	def result_highlight_on(self, file_it):
 		if file_it == None:
 			return
@@ -478,5 +479,17 @@ class AdvancedFindWindowHelper:
 		if panel.get_property("visible") == False:
 			panel.set_property("visible", True)
 		panel.activate_item(self._results_view)
+		
+	def set_bottom_panel_label(self, text = None, icon = None):
+		tab = self._results_view
+		if text:
+			tab.get_parent().get_tab_label(tab).get_children()[0].get_child().get_children()[1].set_text(_(text))
+		else:
+			tab.get_parent().get_tab_label(tab).get_children()[0].get_child().get_children()[1].set_text(_("Advanced Find/Replace"))
+		if icon:
+			tab.get_parent().get_tab_label(tab).get_children()[0].get_child().get_children()[0].set_from_animation(icon)
+		else:
+			tab.get_parent().get_tab_label(tab).get_children()[0].get_child().get_children()[0].set_from_icon_name('gtk-find-and-replace', gtk.ICON_SIZE_MENU)
+		
 		
 		

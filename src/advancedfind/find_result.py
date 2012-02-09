@@ -99,7 +99,9 @@ class FindResultView(gtk.HBox):
 		v_box.pack_end(v_buttonbox, False, False, 5)
 		
 		#self._status = gtk.Label()
-		#v_box.pack_start(self._status, False)
+		#self._status.set_text('test')
+		#self._status.hide()
+		#v_box.pack_end(self._status, False)
 		
 		self.pack_start(scrollWindow, True, True, 5)
 		self.pack_start(v_separator1, False, False)
@@ -200,7 +202,7 @@ class FindResultView(gtk.HBox):
 		
 		parent_it = model.iter_parent(it)
 		if parent_it:
-			uri = "file://" + urllib.pathname2url(model.get_value(parent_it, 6).encode('utf-8'))
+			uri = urllib.quote(model.get_value(parent_it, 6).encode('utf-8')).replace('%3A//', '://')
 		else:
 			return
 			

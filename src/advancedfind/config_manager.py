@@ -61,8 +61,8 @@ class ConfigManager:
 	
 if __name__ == '__main__':
 	config_manager = ConfigManager('config.xml')
-	print config_manager.get_configure('shortcut', 'ADVANCED_FIND_ACTIVE')
-	print config_manager.convert_to_shortcut_string(config_manager.get_configure('shortcut', 'ADVANCED_FIND_ACTIVE'))
+	#print config_manager.get_configure('shortcut', 'ADVANCED_FIND_ACTIVE')
+	#print config_manager.convert_to_shortcut_string(config_manager.get_configure('shortcut', 'ADVANCED_FIND_ACTIVE'))
 	print config_manager.load_configure('search_option')
 	#dic = {u'MATCH_CASE': u'True', u'MATCH_WHOLE_WORD': u'True', u'WRAP_AROUND': u'True', u'RE_SEARCH': u'True'}
 	#config_manager.update_config_file('config1.xml', 'search_option', dic)

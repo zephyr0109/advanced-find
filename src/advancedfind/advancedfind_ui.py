@@ -94,9 +94,11 @@ class AdvancedFindUI(object):
 		self.findDialog.set_transient_for(self._window)
 
 		accelgroup = gtk.AccelGroup()
-		key, modifier = gtk.accelerator_parse('Escape')
-		accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.esc_accel_action)
+		#key, modifier = gtk.accelerator_parse('Escape')
+		#accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.esc_accel_action)
 		key, modifier = gtk.accelerator_parse('Return')
+		accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.return_accel_action)
+		key, modifier = gtk.accelerator_parse('KP_Enter')
 		accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.return_accel_action)
 		self.findDialog.add_accel_group(accelgroup)
 
@@ -201,7 +203,7 @@ class AdvancedFindUI(object):
 
 		if self._instance.options['FOLLOW_CURRENT_DOC'] == True:
 			self.pathComboboxentry.child.set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
-
+			
 	def on_findDialog_destroy_action(self, object):
 		try:
 			self._instance.find_dlg_setting['PATH_EXPANDED'] = self.pathExpander.get_expanded()
@@ -216,16 +218,20 @@ class AdvancedFindUI(object):
 	def on_findDialog_focus_out_event_action(self, object, event):
 		object.set_opacity(0.5)
 		
-	def esc_accel_action(self, accelgroup, window, key, modifier):
-		window.hide()
+	#def esc_accel_action(self, accelgroup, window, key, modifier):
+		#window.hide()
 		
 	def return_accel_action(self, accelgroup, window, key, modifier):
-		self.on_findButton_clicked_action(None)
-		#self.on_findAllButton_clicked_action(None)
+		#self.on_findButton_clicked_action(None)
+		self.on_findAllButton_clicked_action(None)
 		
 	def main(self):
 		gtk.main()
 
+	def do_events(self):
+		while gtk.events_pending():
+			gtk.main_iteration(False)
+			
 	def append_combobox_list(self):
 		find_text = self.findTextEntry.get_active_text()
 		replace_text = self.replaceTextEntry.get_active_text()
@@ -281,7 +287,13 @@ class AdvancedFindUI(object):
 		search_pattern = self.findTextEntry.get_active_text()
 		if search_pattern == "":
 			return
-		
+			
+		self._instance.set_bottom_panel_label(_('Finding...'), gtk.gdk.PixbufAnimation(os.path.join(os.path.dirname(__file__), 'loading.gif')))
+		self._instance._results_view.set_sensitive(False)
+		self._instance.show_bottom_panel()
+		self.findDialog.hide()
+		self.do_events()
+			
 		self.append_combobox_list()
 		
 		it = self._instance._results_view.append_find_pattern(search_pattern)
@@ -298,6 +310,7 @@ class AdvancedFindUI(object):
 				return
 			for doc in docs:
 				self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.options)
+				self.do_events()
 			self._instance._results_view.show_find_result()
 		elif self._instance.scopeFlg == 2: #files in directory
 			dir_path = self.pathComboboxentry.get_active_text()
@@ -310,13 +323,20 @@ class AdvancedFindUI(object):
 				return
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.options, False, True)
 			self._instance._results_view.show_find_result()
-		self._instance.show_bottom_panel()
-		self.findDialog.hide()
+
+		self._instance.set_bottom_panel_label()
+		self._instance._results_view.set_sensitive(True)
 
 	def on_replaceAllButton_clicked_action(self, object):
 		search_pattern = self.findTextEntry.get_active_text()
 		if search_pattern == "":
 			return
+			
+		self._instance.set_bottom_panel_label(_('Replacing...'), gtk.gdk.PixbufAnimation(os.path.join(os.path.dirname(__file__), 'loading.gif')))
+		self._instance._results_view.set_sensitive(False)
+		self._instance.show_bottom_panel()
+		self.findDialog.hide()
+		self.do_events()
 		
 		self.append_combobox_list()
 
@@ -346,8 +366,9 @@ class AdvancedFindUI(object):
 				return
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.options, True, True)
 			self._instance._results_view.show_find_result()
-		self._instance.show_bottom_panel()
-		self.findDialog.hide()
+		
+		self._instance.set_bottom_panel_label()
+		self._instance._results_view.set_sensitive(True)
 
 	def on_closeButton_clicked_action(self, object):
 		self.findDialog.destroy()
@@ -416,7 +437,9 @@ class AdvancedFindUI(object):
 		path = os.path.join(base, u'virtual_root')
 		val = client.get(path)
 		if val != None:
-			return val.get_string()[7:]
+			path_string = val.get_string()
+			idx = path_string.find('://') + 3
+			return val.get_string()[idx:]
 		return None
 	
 
