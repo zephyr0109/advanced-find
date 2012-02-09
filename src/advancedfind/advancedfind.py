@@ -225,7 +225,8 @@ class AdvancedFindWindowHelper:
 					replace_text = match.expand(unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8'))
 				doc.delete_selection(False, False)
 				doc.insert_at_cursor(replace_text)
-				return		
+				replace_flg = False
+				#return		
 			else:			
 				if forward_flg == True:
 					doc.place_cursor(selection_end)
