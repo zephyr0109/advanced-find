@@ -7,17 +7,29 @@ msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-17 19:33+0800\n"
-"PO-Revision-Date: 2010-10-17 19:36+0800\n"
+"POT-Creation-Date: 2010-10-19 21:58+0800\n"
+"PO-Revision-Date: 2010-10-17 20:15+0800\n"
 "Last-Translator: swatch <swatch.code@gmail.com>\n"
-"Language-Team: Chinese (traditional)\n"
+"Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../advancedfind.py:103 ../advancedfind.py:131 ../FindDialog.glade:24
+#: ../advancedfind.py:103 ../advancedfind.py:137 ../FindDialog.glade:24
 msgid "Advanced Find/Replace"
 msgstr "進階搜尋/取代"
+
+#: ../advancedfind.py:291
+msgid "Nothing is found"
+msgstr "找不到符合的字詞"
+
+#: ../advancedfind.py:331
+msgid "Nothing is found."
+msgstr "找不到符合的字詞"
+
+#: ../advancedfind_ui.py:296
+msgid "Replace in this scope is not supported."
+msgstr "取代功能不支援所選擇的範圍"
 
 #: ../find_result.py:76
 msgid "Next"
@@ -112,7 +124,7 @@ msgid "Directoy include sub-folder"
 msgstr "包含所有子資料夾"
 
 #: ../FindDialog.glade:368
-msgid "Regular Expression"
+msgid "Regular expression"
 msgstr "使用正則表達式"
 
 #: ../FindDialog.glade:391

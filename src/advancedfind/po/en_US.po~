@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-17 19:33+0800\n"
+"POT-Creation-Date: 2010-10-17 20:01+0800\n"
 "PO-Revision-Date: 2010-10-17 19:33+0800\n"
 "Last-Translator: swatch <swatch.code@gmail.com>\n"
 "Language-Team: none\n"
@@ -19,6 +19,10 @@ msgstr ""
 #: ../advancedfind.py:103 ../advancedfind.py:131 ../FindDialog.glade:24
 msgid "Advanced Find/Replace"
 msgstr "Advanced Find/Replace"
+
+#: ../advancedfind_ui.py:296
+msgid "Replace is only for opened documents."
+msgstr "Replace is only for opened documents."
 
 #: ../find_result.py:76
 msgid "Next"
@@ -113,8 +117,8 @@ msgid "Directoy include sub-folder"
 msgstr "Directoy include sub-folder"
 
 #: ../FindDialog.glade:368
-msgid "Regular Expression"
-msgstr "Regular Expression"
+msgid "Regular expression"
+msgstr "Regular expression"
 
 #: ../FindDialog.glade:391
 msgid "<b>Options</b>"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-17 20:01+0800\n"
+"POT-Creation-Date: 2010-10-19 22:01+0800\n"
 "PO-Revision-Date: 2010-10-17 19:33+0800\n"
 "Last-Translator: swatch <swatch.code@gmail.com>\n"
 "Language-Team: none\n"
@@ -16,13 +16,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../advancedfind.py:103 ../advancedfind.py:131 ../FindDialog.glade:24
+#: ../advancedfind.py:103 ../advancedfind.py:137 ../FindDialog.glade:24
 msgid "Advanced Find/Replace"
 msgstr "Advanced Find/Replace"
 
+#: ../advancedfind.py:291 ../advancedfind.py:331
+msgid "Nothing is found."
+msgstr "Nothing is found."
+
 #: ../advancedfind_ui.py:296
-msgid "Replace is only for opened documents."
-msgstr "Replace is only for opened documents."
+msgid "Replace in this scope is not supported."
+msgstr "Replace in this scope is not supported."
 
 #: ../find_result.py:76
 msgid "Next"
@@ -167,3 +171,6 @@ msgstr "Cancel"
 #: ../FindDialog.glade:657
 msgid "Ok"
 msgstr "Ok"
+
+#~ msgid "Replace is only for opened documents."
+#~ msgstr "Replace is only for opened documents."

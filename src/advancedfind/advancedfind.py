@@ -101,6 +101,12 @@ class AdvancedFindWindowHelper:
 
 		self._results_view = FindResultView(window)
 		self._window.get_bottom_panel().add_item(self._results_view, _("Advanced Find/Replace"), "gtk-find-and-replace")
+		
+		self.msgDialog = gtk.MessageDialog(self._window, 
+						gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+						gtk.MESSAGE_INFO,
+						gtk.BUTTONS_CLOSE,
+						'')
 
 		# Insert menu items
 		self._insert_menu()
@@ -152,12 +158,8 @@ class AdvancedFindWindowHelper:
 	def update_ui(self):
 		self._action_group.set_sensitive(self._window.get_active_document() != None)
 		
-	def show_message_dialog(self, text):
-		dlg = gtk.MessageDialog(self._window, 
-								gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-								gtk.MESSAGE_INFO,
-								gtk.BUTTONS_CLOSE,
-								_(text))
+	def show_message_dialog(self, dlg, text):
+		dlg.set_property('text', text)
 		dlg.run()
 		dlg.hide()
 		
@@ -227,7 +229,7 @@ class AdvancedFindWindowHelper:
 		
 		return regex
 		
-	def advanced_find_in_doc(self, doc, search_pattern, options, forward_flg = True, replace_flg = False):
+	def advanced_find_in_doc(self, doc, search_pattern, options, forward_flg = True, replace_flg = False, around_flg = False):
 		if search_pattern == "":
 			return
 			
@@ -272,12 +274,12 @@ class AdvancedFindWindowHelper:
 					find_start = doc.get_iter_at_mark(doc.get_insert())
 					next_flg = view.forward_display_line(find_start)
 			
-			if options['WRAP_AROUND'] == True:
+			if options['WRAP_AROUND'] == True and around_flg == False:
 				find_start = doc.get_start_iter()
 				doc.place_cursor(find_start)
-				self.advanced_find_in_doc(doc, search_pattern, options, forward_flg, replace_flg)
-			#else:
-			#	self.show_message_dialog("End of file.")
+				self.advanced_find_in_doc(doc, search_pattern, options, forward_flg, replace_flg, True)
+			else:
+				self.show_message_dialog(self.msgDialog, _("Nothing is found."))
 
 		else:
 			find_end = doc.get_iter_at_mark(doc.get_insert())
@@ -312,12 +314,12 @@ class AdvancedFindWindowHelper:
 					find_end = doc.get_iter_at_mark(doc.get_insert())
 					previous_flg = view.backward_display_line(find_end)
 
-			if options['WRAP_AROUND'] == True:
+			if options['WRAP_AROUND'] == True and around_flg == False:
 				find_end = doc.get_end_iter()
 				doc.place_cursor(find_end)
-				self.advanced_find_in_doc(doc, search_pattern, options, forward_flg, replace_flg)
-			#else:
-			#	self.show_message_dialog("End of file.")
+				self.advanced_find_in_doc(doc, search_pattern, options, forward_flg, replace_flg, True)
+			else:
+				self.show_message_dialog(self.msgDialog, _("Nothing is found."))
 				
 
 	def advanced_find_all_in_doc(self, parent_it, doc, search_pattern, options, replace_flg = False):
