@@ -2,7 +2,7 @@
 
 
 # findadvance_ui.py
-# v0.1.3
+# v0.3.0
 #
 # Copyright 2010 swatch
 #
@@ -50,9 +50,9 @@ class AdvancedFindUI(object):
 			pass
 
 		gladefile = os.path.join(os.path.dirname(__file__),"FindDialog.glade")
-		self.ui = gtk.Builder()
-		self.ui.add_from_file(gladefile)
-		self.ui.connect_signals({ "on_findDialog_destroy" : self.on_findDialog_destroy_action,
+		ui = gtk.Builder()
+		ui.add_from_file(gladefile)
+		ui.connect_signals({ "on_findDialog_destroy" : self.on_findDialog_destroy_action,
 							
 							"on_findButton_clicked" : self.on_findButton_clicked_action,
 							"on_replaceButton_clicked" : self.on_replaceButton_clicked_action,
@@ -68,6 +68,7 @@ class AdvancedFindUI(object):
 							"on_wrapAroundCheckbutton_toggled" : self.on_wrapAroundCheckbutton_toggled_action,
 							"on_followCurrentDocCheckbutton_toggled" : self.on_followCurrentDocCheckbutton_toggled_action,
 							"on_includeSubfolderCheckbutton_toggled" : self.on_includeSubfolderCheckbutton_toggled_action,
+							"on_regexSearchCheckbutton_toggled" : self.on_regexSearchCheckbutton_toggled_action,
 							
 							"on_forwardRadiobutton_toggled" : self.directionRadiobuttonGroup_action,
 							"on_backwardRadiobutton_toggled" : self.directionRadiobuttonGroup_action,
@@ -76,11 +77,11 @@ class AdvancedFindUI(object):
 							"on_allFilesRadiobutton_toggled" : self.scopeRadiobuttonGroup_action,
 							"on_allFilesInPathRadiobutton_toggled" : self.scopeRadiobuttonGroup_action })
 
-		self.findDialog = self.ui.get_object("findDialog")
+		self.findDialog = ui.get_object("findDialog")
 		self.findDialog.set_keep_above(True)
 
-		self.findTextEntry = self.ui.get_object("findTextComboboxentry")
-		#self.findTextListstore = self.ui.get_object("findTextListstore")
+		self.findTextEntry = ui.get_object("findTextComboboxentry")
+		#self.findTextListstore = ui.get_object("findTextListstore")
 		#find_cell = gtk.CellRendererText()
 		#self.findTextEntry.pack_start(find_cell, True)
 		#self.findTextEntry.add_attribute(find_cell, 'text', 0)
@@ -91,8 +92,8 @@ class AdvancedFindUI(object):
 		except:
 			pass
 
-		self.replaceTextEntry = self.ui.get_object("replaceTextComboboxentry")
-		#self.replaceTextListstore = self.ui.get_object("replaceTextListstore")
+		self.replaceTextEntry = ui.get_object("replaceTextComboboxentry")
+		#self.replaceTextListstore = ui.get_object("replaceTextListstore")
 		#replace_cell = gtk.CellRendererText()
 		#self.replaceTextEntry.pack_start(replace_cell, True)
 		#self.replaceTextEntry.add_attribute(replace_cell, 'text', 0)
@@ -103,7 +104,7 @@ class AdvancedFindUI(object):
 		except:
 			pass
 			
-		self.filterComboboxentry = self.ui.get_object("filterComboboxentry")
+		self.filterComboboxentry = ui.get_object("filterComboboxentry")
 		self.filterComboboxentry.set_text_column(0)
 		self.filterComboboxentry.child.set_text("*")
 		#self.filterComboboxentry.append_text("*")
@@ -113,9 +114,9 @@ class AdvancedFindUI(object):
 		except:
 			pass
 			
-		self.selectPathFilechooserdialog = self.ui.get_object("selectPathFilechooserdialog")
+		self.selectPathFilechooserdialog = ui.get_object("selectPathFilechooserdialog")
 		
-		self.pathComboboxentry = self.ui.get_object("pathComboboxentry")
+		self.pathComboboxentry = ui.get_object("pathComboboxentry")
 		self.pathComboboxentry.set_text_column(0)
 		self.pathComboboxentry.child.set_text(self.selectPathFilechooserdialog.get_filename())
 		#self.pathComboboxentry.child.set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
@@ -125,22 +126,23 @@ class AdvancedFindUI(object):
 		except:
 			pass
 		
-		self.matchWholeWordCheckbutton = self.ui.get_object("matchWholeWordCheckbutton")
-		self.matchCaseCheckbutton = self.ui.get_object("matchCaseCheckbutton")
-		self.wrapAroundCheckbutton = self.ui.get_object("wrapAroundCheckbutton")
-		self.followCurrentDocCheckbutton = self.ui.get_object("followCurrentDocCheckbutton")
-		self.includeSubfolderCheckbutton = self.ui.get_object("includeSubfolderCheckbutton")
+		self.matchWholeWordCheckbutton = ui.get_object("matchWholeWordCheckbutton")
+		self.matchCaseCheckbutton = ui.get_object("matchCaseCheckbutton")
+		self.wrapAroundCheckbutton = ui.get_object("wrapAroundCheckbutton")
+		self.followCurrentDocCheckbutton = ui.get_object("followCurrentDocCheckbutton")
+		self.includeSubfolderCheckbutton = ui.get_object("includeSubfolderCheckbutton")
+		self.regexSearchCheckbutton = ui.get_object("regexSearchCheckbutton")
 
-		self.forwardRadiobutton = self.ui.get_object("forwardRadiobutton")
-		self.backwardRadiobutton = self.ui.get_object("backwardRadiobutton")
+		self.forwardRadiobutton = ui.get_object("forwardRadiobutton")
+		self.backwardRadiobutton = ui.get_object("backwardRadiobutton")
 		if self._instance.forwardFlg == True:
 			self.forwardRadiobutton.set_active(True)
 		else:
 			self.backwardRadiobutton.set_active(True)
 
-		self.currentFileRadiobutton = self.ui.get_object("currentFileRadiobutton")
-		self.allFilesRadiobutton = self.ui.get_object("allFilesRadiobutton")
-		self.allFilesInPathRadiobutton = self.ui.get_object("allFilesInPathRadiobutton")
+		self.currentFileRadiobutton = ui.get_object("currentFileRadiobutton")
+		self.allFilesRadiobutton = ui.get_object("allFilesRadiobutton")
+		self.allFilesInPathRadiobutton = ui.get_object("allFilesInPathRadiobutton")
 		if self._instance.scopeFlg == 0:
 			self.currentFileRadiobutton.set_active(True)
 		elif self._instance.scopeFlg == 1:
@@ -148,12 +150,12 @@ class AdvancedFindUI(object):
 		elif self._instance.scopeFlg == 2:
 			self.allFilesInPathRadiobutton.set_active(True)
 
-		self.findButton = self.ui.get_object("findButton")
-		self.replaceButton = self.ui.get_object("replaceButton")
-		self.findAllButton = self.ui.get_object("findAllButton")
-		self.replaceAllButton = self.ui.get_object("replaceAllButton")
-		self.closeButton = self.ui.get_object("closeButton")
-		self.selectPathButton = self.ui.get_object("selectPathButton")
+		self.findButton = ui.get_object("findButton")
+		self.replaceButton = ui.get_object("replaceButton")
+		self.findAllButton = ui.get_object("findAllButton")
+		self.replaceAllButton = ui.get_object("replaceAllButton")
+		self.closeButton = ui.get_object("closeButton")
+		self.selectPathButton = ui.get_object("selectPathButton")
 
 		self.findDialog.show()
 
@@ -162,6 +164,7 @@ class AdvancedFindUI(object):
 		self.wrapAroundCheckbutton.set_active(self._instance.options['WRAP_AROUND'])
 		self.followCurrentDocCheckbutton.set_active(self._instance.options['FOLLOW_CURRENT_DOC'])
 		self.includeSubfolderCheckbutton.set_active(self._instance.options['INCLUDE_SUBFOLDER'])
+		self.regexSearchCheckbutton.set_active(self._instance.options['REGEX_SEARCH'])
 
 		if self._instance.options['FOLLOW_CURRENT_DOC'] == True:
 			self.pathComboboxentry.child.set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
@@ -320,6 +323,9 @@ class AdvancedFindUI(object):
 			
 	def on_includeSubfolderCheckbutton_toggled_action(self, object):
 		self._instance.options['INCLUDE_SUBFOLDER'] = object.get_active()
+		
+	def on_regexSearchCheckbutton_toggled_action(self, object):
+		self._instance.options['REGEX_SEARCH'] = object.get_active()
 
 
 	# radiobutton

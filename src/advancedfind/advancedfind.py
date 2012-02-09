@@ -2,7 +2,7 @@
 
 
 # findadvance.py
-# v0.2.1
+# v0.3.0
 #
 # Copyright 2010 swatch
 #
@@ -207,6 +207,9 @@ class AdvancedFindWindowHelper:
 		#'''
 
 	def create_regex(self, pattern, options):
+		if options['REGEX_SEARCH'] == False:
+			pattern = re.escape(pattern)
+		
 		if options['MATCH_WHOLE_WORD'] == True:
 			pattern = "\\b%s\\b" % pattern
 			
