@@ -40,6 +40,7 @@ import os
 #import pango
 import re
 #import config_manager
+import gconf
 
 
 #gtk.glade.bindtextdomain('advancedfind', os.path.join(os.path.dirname(__file__), 'locale'))
@@ -84,7 +85,8 @@ class AdvancedFindUI(object):
 							
 							"on_currentFileRadiobutton_toggled" : self.scopeRadiobuttonGroup_action,
 							"on_allFilesRadiobutton_toggled" : self.scopeRadiobuttonGroup_action,
-							"on_allFilesInPathRadiobutton_toggled" : self.scopeRadiobuttonGroup_action })
+							"on_allFilesInPathRadiobutton_toggled" : self.scopeRadiobuttonGroup_action,
+							"on_currentSelectionRadiobutton_toggled" : self.scopeRadiobuttonGroup_action })
 
 		self.findDialog = ui.get_object("findDialog")
 		#self.findDialog.set_keep_above(True)
@@ -128,8 +130,12 @@ class AdvancedFindUI(object):
 		
 		self.pathComboboxentry = ui.get_object("pathComboboxentry")
 		self.pathComboboxentry.set_text_column(0)
-		self.pathComboboxentry.child.set_text(self.selectPathFilechooserdialog.get_filename())
-		#self.pathComboboxentry.child.set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
+		filebrowser_root = self.get_filebrowser_root()
+		if filebrowser_root != None and self._instance.options['ROOT_FOLLOW_FILEBROWSER'] == True:
+			self.pathComboboxentry.child.set_text(filebrowser_root)
+		else:
+			self.pathComboboxentry.child.set_text(self.selectPathFilechooserdialog.get_filename())
+			
 		try:
 			for path in self._instance.path_list:
 				self.pathComboboxentry.append_text(path)
@@ -153,12 +159,16 @@ class AdvancedFindUI(object):
 		self.currentFileRadiobutton = ui.get_object("currentFileRadiobutton")
 		self.allFilesRadiobutton = ui.get_object("allFilesRadiobutton")
 		self.allFilesInPathRadiobutton = ui.get_object("allFilesInPathRadiobutton")
+		self.currentSelectionRadiobutton = ui.get_object("currentSelectionRadiobutton")
 		if self._instance.scopeFlg == 0:
 			self.currentFileRadiobutton.set_active(True)
 		elif self._instance.scopeFlg == 1:
 			self.allFilesRadiobutton.set_active(True)
 		elif self._instance.scopeFlg == 2:
 			self.allFilesInPathRadiobutton.set_active(True)
+		elif self._instance.scopeFlg == 3:
+			self.currentSelectionRadiobutton.set_active(True)
+
 
 		self.findButton = ui.get_object("findButton")
 		self.replaceButton = ui.get_object("replaceButton")
@@ -248,14 +258,14 @@ class AdvancedFindUI(object):
 		
 		it = self._instance._results_view.append_find_pattern(search_pattern)
 		
-		if self._instance.scopeFlg == 0: #current
+		if self._instance.scopeFlg == 0: #current document
 			doc = self._instance._window.get_active_document()
 			if not doc:
 				return
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.options)
 			self._instance._results_view.show_find_result()
 			self._instance.show_bottom_panel()
-		elif self._instance.scopeFlg == 1: #all opened
+		elif self._instance.scopeFlg == 1: #all opened documents
 			docs = self._instance._window.get_documents()
 			if not docs:
 				return
@@ -267,6 +277,13 @@ class AdvancedFindUI(object):
 			dir_path = self.pathComboboxentry.get_active_text()
 			file_pattern = self.filterComboboxentry.get_active_text()
 			self._instance.find_all_in_dir(it, dir_path, file_pattern, search_pattern, self._instance.options)
+		elif self._instance.scopeFlg == 3: #current selected text
+			doc = self._instance._window.get_active_document()
+			if not doc:
+				return
+			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.options, False, True)
+			self._instance._results_view.show_find_result()
+			self._instance.show_bottom_panel()
 
 	def on_replaceAllButton_clicked_action(self, object):
 		search_pattern = self.findTextEntry.get_active_text()
@@ -277,14 +294,14 @@ class AdvancedFindUI(object):
 
 		it = self._instance._results_view.append_find_pattern(search_pattern, True, self.replaceTextEntry.child.get_text())
 		
-		if self._instance.scopeFlg == 0: #current
+		if self._instance.scopeFlg == 0: #current document
 			doc = self._instance._window.get_active_document()
 			if not doc:
 				return
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.options, True)
 			self._instance._results_view.show_find_result()
 			self._instance.show_bottom_panel()
-		elif self._instance.scopeFlg == 1: #all opened
+		elif self._instance.scopeFlg == 1: #all opened documents
 			docs = self._instance._window.get_documents()
 			if not docs:
 				return
@@ -296,6 +313,13 @@ class AdvancedFindUI(object):
 			path = str(self._instance._results_view.findResultTreemodel.iter_n_children(None) - 1)
 			it = self._instance._results_view.findResultTreemodel.get_iter(path)
 			self._instance._results_view.findResultTreemodel.set_value(it, 2, _("Replace in this scope is not supported."))
+		elif self._instance.scopeFlg == 3: #current selected text
+			doc = self._instance._window.get_active_document()
+			if not doc:
+				return
+			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.options, True, True)
+			self._instance._results_view.show_find_result()
+			self._instance.show_bottom_panel()
 
 	def on_closeButton_clicked_action(self, object):
 		self.findDialog.destroy()
@@ -329,7 +353,11 @@ class AdvancedFindUI(object):
 		if object.get_active() == True:
 			self.pathComboboxentry.child.set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
 		else:
-			self.pathComboboxentry.child.set_text(self.selectPathFilechooserdialog.get_filename())
+			filebrowser_root = self.get_filebrowser_root()
+			if filebrowser_root != None and self._instance.options['ROOT_FOLLOW_FILEBROWSER'] == True:
+				self.pathComboboxentry.child.set_text(filebrowser_root)
+			else:
+				self.pathComboboxentry.child.set_text(self.selectPathFilechooserdialog.get_filename())
 			
 	def on_includeSubfolderCheckbutton_toggled_action(self, object):
 		self._instance.options['INCLUDE_SUBFOLDER'] = object.get_active()
@@ -349,6 +377,20 @@ class AdvancedFindUI(object):
 			self._instance.scopeFlg = 1
 		elif self.allFilesInPathRadiobutton.get_active() == True:
 			self._instance.scopeFlg = 2
+		elif self.currentSelectionRadiobutton.get_active() == True:
+			self._instance.scopeFlg = 3
+
+	# filebrowser integration
+	def get_filebrowser_root(self):
+		base = u'/apps/gedit-2/plugins/filebrowser/on_load'
+		client = gconf.client_get_default()
+		client.add_dir(base, gconf.CLIENT_PRELOAD_NONE)
+		path = os.path.join(base, u'virtual_root')
+		val = client.get(path)
+		if val != None:
+			return val.get_string()[7:]
+		return None
+	
 
 
 if __name__ == "__main__":

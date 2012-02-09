@@ -347,7 +347,7 @@ class AdvancedFindWindowHelper:
 		#print self.auto_select_word()
 		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.options, False, False, False)
 
-	def advanced_find_all_in_doc(self, parent_it, doc, search_pattern, options, replace_flg = False):
+	def advanced_find_all_in_doc(self, parent_it, doc, search_pattern, options, replace_flg = False, selection_only = False):
 		if search_pattern == "":
 			return
 		
@@ -356,20 +356,33 @@ class AdvancedFindWindowHelper:
 		self.result_highlight_off(doc)
 		start, end = doc.get_bounds()
 		text = unicode(doc.get_text(start, end), 'utf-8')
-		#lines = re.findall('.*\\n', text + u'\n')
-		lines = text.splitlines(True)
-		#print lines
+		
+		if selection_only == False:
+			lines = text.splitlines(True)
+			line_number_offset = 1
+		else:
+			selection_start, selection_end = doc.get_selection_bounds()
+			selection_text = unicode(doc.get_text(selection_start, selection_end), 'utf-8')
+			lines= selection_text.splitlines(True)
+			line_start_offset = selection_start.get_offset()
+			#print line_start_offset
+			line_number_offset = selection_start.get_line() + 1
+			#print line_number_offset
 
 		tree_it = None
 		new_text = list(text)
 		text_changed = False
 		replace_cnt = 0
-		#replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
-		#replace_text_len = len(replace_text)
 
 		for i in range(len(lines)):
 			results = regex.findall(lines[i])
-			line_start = doc.get_iter_at_line(i)
+			if selection_only == False:
+				line_start = doc.get_iter_at_line(i)
+			else:
+				if i > 0:
+					line_start_offset += len(lines[i-1])
+				#print line_start_offset
+				line_start = doc.get_iter_at_offset(line_start_offset)
 				
 			if results:
 				if not tree_it:
@@ -390,17 +403,17 @@ class AdvancedFindWindowHelper:
 						replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
 					else:
 						replace_text = match.expand(unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8'))
-					#replace_offset = result_len - replace_text_len
-					replace_offset = result_len - len(replace_text)
+					replace_text_len = len(replace_text)
+					replace_offset = result_len - replace_text_len
 					
 					if replace_flg == True:
-						self._results_view.append_find_result(tree_it, str(i+1), lines[i].strip(), tab, result_offset_start - (replace_offset * replace_cnt), replace_text_len)
+						self._results_view.append_find_result(tree_it, str(line_number_offset + i), lines[i].strip(), tab, result_offset_start - (replace_offset * replace_cnt), replace_text_len)
 						replace_start_idx = result_offset_start - (replace_offset * replace_cnt)
 						new_text[replace_start_idx:replace_start_idx + result_len] = replace_text
 						replace_cnt += 1
 						text_changed = True
 					else:
-						self._results_view.append_find_result(tree_it, str(i+1), lines[i].strip(), tab, result_offset_start, result_len)
+						self._results_view.append_find_result(tree_it, str(line_number_offset + i), lines[i].strip(), tab, result_offset_start, result_len)
 					match_pos += match.end()
 				
 		if text_changed == True:

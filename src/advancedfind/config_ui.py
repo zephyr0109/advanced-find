@@ -61,12 +61,16 @@ class ConfigUI(object):
 		
 		self.fgColorbutton.set_color(gtk.gdk.color_parse(self._instance.result_highlight['FOREGROUND_COLOR']))
 		self.bgColorbutton.set_color(gtk.gdk.color_parse(self._instance.result_highlight['BACKGROUND_COLOR']))
+
+		self.rootFollowFilebrowserCheckbutton = UI.get_object("rootFollowFilebrowserCheckbutton")
+		self.rootFollowFilebrowserCheckbutton.set_active(self._instance.options['ROOT_FOLLOW_FILEBROWSER'])
 			
 		self.configWindow.show_all()
 
 		signals = { "on_configWindow_destroy" : self.on_configWindow_destroy,
 					"on_fgColorbutton_color_set" : self.on_fgColorbutton_color_set,
-					"on_bgColorbutton_color_set" : self.on_bgColorbutton_color_set }
+					"on_bgColorbutton_color_set" : self.on_bgColorbutton_color_set,
+					"on_rootFollowFilebrowserCheckbutton_toggled" : self.on_rootFollowFilebrowserCheckbutton_toggled }
 		
 		UI.connect_signals(signals)
 		
@@ -78,7 +82,11 @@ class ConfigUI(object):
 		self._instance.result_highlight['FOREGROUND_COLOR'] = widget.get_color().to_string()
 		
 	def on_bgColorbutton_color_set(self, widget):
-		self._instance.result_highlight['BACKGROUND_COLOR'] = widget.get_color().to_string()	
+		self._instance.result_highlight['BACKGROUND_COLOR'] = widget.get_color().to_string()
+		
+	def on_rootFollowFilebrowserCheckbutton_toggled(self, widget):
+		self._instance.options['ROOT_FOLLOW_FILEBROWSER'] = widget.get_active()
+			
 
 
 if __name__ == '__main__':
