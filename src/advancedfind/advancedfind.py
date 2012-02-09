@@ -37,6 +37,8 @@ from advancedfind_ui import AdvancedFindUI
 from find_result import FindResultView
 import config_manager
 
+import time
+
 
 import gettext
 APP_NAME = 'advancedfind'
@@ -365,8 +367,8 @@ class AdvancedFindWindowHelper:
 					uri = ''
 				else:
 					uri = urllib.unquote(doc.get_uri()).decode('utf-8')
-				tree_it = self._results_view.append_find_result_filename(parent_it, doc.get_short_name_for_display(), uri)
-			tab = gedit.tab_get_from_document(doc)
+				tab = gedit.tab_get_from_document(doc)
+				tree_it = self._results_view.append_find_result_filename(parent_it, doc.get_short_name_for_display(), tab, uri)
 
 			if replace_flg == False:
 				while(match):
@@ -376,7 +378,7 @@ class AdvancedFindWindowHelper:
 					if line_end_pos == line_start_pos:
 						line_end_pos = end_pos
 					line_text = text[line_start_pos:line_end_pos]
-					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, tab, match.start(), match.end()-match.start(), "", line_start_pos)
+					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, match.start(), match.end()-match.start(), "", line_start_pos)
 					start_pos = match.end() + 1
 					match = regex.search(text, start_pos, end_pos)
 			else:
@@ -407,9 +409,12 @@ class AdvancedFindWindowHelper:
 				for result in results:
 					line_num = doc.get_iter_at_offset(result[0]).get_line()
 					line_start_pos = doc.get_iter_at_line(line_num).get_offset()
-					line_end_pos = result[0]+result[1]
+					#line_end_pos = result[0]+result[1]
+					line_end_pos = doc.get_iter_at_line(doc.get_iter_at_offset(result[0]+result[1]).get_line()+1).get_offset()
+					if line_end_pos == line_start_pos:
+						line_end_pos = end_pos
 					line_text = text[line_start_pos:line_end_pos]
-					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, tab, result[0], result[1], "", line_start_pos, True)
+					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, result[0], result[1], "", line_start_pos, True)
 			
 		self.result_highlight_on(tree_it)
 	
@@ -421,6 +426,7 @@ class AdvancedFindWindowHelper:
 		return False
 		
 	def find_all_in_dir(self, parent_it, dir_path, file_pattern, search_pattern, find_options, replace_flg = False):
+		start_time = time.time()
 		if search_pattern == "":
 			return
 			
@@ -440,6 +446,9 @@ class AdvancedFindWindowHelper:
 			for f in f_list:
 				if os.path.dirname(f) not in d_list:
 					file_list.append(f)
+					
+		mid_time = time.time()
+		print 'Use ' + str(mid_time-start_time) + ' seconds to find files.'
 					
 		#temp_doc = gedit.Document()
 		for file_path in file_list:
@@ -463,6 +472,10 @@ class AdvancedFindWindowHelper:
 						
 						self.advanced_find_all_in_doc(parent_it, temp_doc, search_pattern, find_options, replace_flg)
 						self.find_ui.do_events()
+
+		end_time = time.time()						
+		print 'Use ' + str(end_time-mid_time) + ' seconds to find results.'
+		print 'Total use ' + str(end_time-start_time) + ' seconds.'
 						
 	def result_highlight_on(self, file_it):
 		if file_it == None:
