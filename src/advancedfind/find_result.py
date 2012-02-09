@@ -218,11 +218,10 @@ class FindResultView(gtk.HBox):
 			
 		if tab:
 			self._window.set_active_tab(tab)
-			if result_len > 0:
-				doc = tab.get_document()
-				doc.select_range(doc.get_iter_at_offset(result_start), doc.get_iter_at_offset(result_start + result_len))
-				view = tab.get_view()
-				view.scroll_to_cursor()
+			doc = tab.get_document()
+			doc.select_range(doc.get_iter_at_offset(result_start), doc.get_iter_at_offset(result_start + result_len))
+			view = tab.get_view()
+			view.scroll_to_cursor()
 				
 	def on_findResultTreeview_button_press_action(self, object, event):
 		if event.button == 3:

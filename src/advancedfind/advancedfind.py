@@ -212,12 +212,12 @@ class AdvancedFindWindowHelper:
 
 	def create_regex(self, pattern, options):
 		if options['REGEX_SEARCH'] == False:
-			pattern = re.escape(unicode(pattern, "utf-8"))
+			pattern = re.escape(unicode(r'%s' % pattern, "utf-8"))
 		else:
-			pattern = unicode(pattern, "utf-8")
+			pattern = unicode(r'%s' % pattern, "utf-8")
 		
 		if options['MATCH_WHOLE_WORD'] == True:
-			pattern = '\\b%s\\b' % pattern
+			pattern = r'\b%s\b' % pattern
 			
 		if options['MATCH_CASE'] == True:
 			regex = re.compile(pattern, re.MULTILINE)
@@ -268,13 +268,9 @@ class AdvancedFindWindowHelper:
 			end_pos = doc.get_iter_at_mark(doc.get_insert()).get_offset()
 			results = []
 			match = regex.search(text, start_pos, end_pos)
-			last_start_pos = start_pos
 			while match:
-				start_pos = match.end()
-				if start_pos == last_start_pos:
-					break
-				last_start_pos = start_pos
 				results.append(match.span())
+				start_pos = match.end() + 1
 				match = regex.search(text, start_pos, end_pos)
 			results_len = len(results)
 			if results_len > 0:
@@ -305,32 +301,23 @@ class AdvancedFindWindowHelper:
 			doc.select_range(replace_start, replace_end)
 			view.scroll_to_cursor()
 
-	def auto_select_word(self):
+	def auto_select_word(self, pattern=r'[_a-zA-Z][_a-zA-Z0-9]*'):
 		doc = self._window.get_active_document()
 		if doc.get_has_selection():
 			start, end = doc.get_selection_bounds()
 			return doc.get_text(start, end)
 		else:
 			current_iter = doc.get_iter_at_mark(doc.get_insert())
-			iter_idx = current_iter.get_line_index()
 			line_num = current_iter.get_line()
-			lines = doc.get_text(doc.get_start_iter(), doc.get_end_iter()).splitlines(True)
-			if lines == []:
-				return ""
-			line = lines[line_num]
-			results = re.findall('[_a-zA-Z][_a-zA-Z0-9]*', line)
-			select_text = ''
-			match_pos = 0
-			for result in results:
-				match = re.search(result, line[match_pos:])
-				if match:
-					if match.start() + match_pos <= iter_idx and iter_idx <= match.end() + match_pos:
-						select_text = result
-						break
-					else:
-						match_pos += match.end()
-			return select_text
-	
+			line_start = doc.get_iter_at_line(line_num)
+			line_text = doc.get_text(line_start, doc.get_iter_at_line(line_num + 1))
+			line_start_pos = line_start.get_offset()
+			matches = re.finditer(pattern, line_text)
+			for match in matches:
+				if current_iter.get_offset() in range(line_start_pos + match.start(), line_start_pos + match.end() + 1):
+					return match.group(0)
+			return ''
+					
 	def find_next(self, action):
 		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.options, True, False, False)
 	
@@ -366,7 +353,6 @@ class AdvancedFindWindowHelper:
 
 		tree_it = None
 		match = regex.search(text, start_pos, end_pos)
-		last_start_pos = start_pos
 		if match:
 			if not tree_it:
 				doc_uri = doc.get_uri()
@@ -379,15 +365,12 @@ class AdvancedFindWindowHelper:
 
 			if replace_flg == False:
 				while(match):
-					start_pos = match.end()
-					if start_pos == last_start_pos:
-						break
-					last_start_pos = start_pos
 					line_num = doc.get_iter_at_offset(match.start()).get_line()
 					line_start_pos = doc.get_iter_at_line(line_num).get_offset()
 					line_end_pos = doc.get_iter_at_line(doc.get_iter_at_offset(match.end()).get_line()+1).get_offset()
 					line_text = text[line_start_pos:line_end_pos]
 					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, tab, match.start(), match.end()-match.start(), "", line_start_pos)
+					start_pos = match.end() + 1
 					match = regex.search(text, start_pos, end_pos)
 			else:
 				results = []
@@ -398,10 +381,6 @@ class AdvancedFindWindowHelper:
 						replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
 					else:
 						replace_text = match.expand(unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8'))
-					start_pos = match.end()
-					if start_pos == last_start_pos:
-						break
-					last_start_pos = start_pos
 					replace_start_pos = match.start() + replace_offset
 					replace_end_pos = match.end() + replace_offset
 					replace_start = doc.get_iter_at_offset(replace_start_pos)
@@ -411,6 +390,7 @@ class AdvancedFindWindowHelper:
 					replace_text_len = len(replace_text)
 					results.append([replace_start_pos, replace_text_len])
 					replace_offset += replace_text_len - (match.end() - match.start())
+					start_pos = match.end() + 1
 					match = regex.search(text, start_pos, end_pos)
 				doc.end_user_action()
 				
