@@ -2,7 +2,7 @@
 
 
 # findadvance.py
-# v0.3.0
+#
 #
 # Copyright 2010 swatch
 #
@@ -23,8 +23,6 @@
 
 
 
-from gettext import gettext as _
-
 import gtk
 import gedit
 import os.path
@@ -39,7 +37,14 @@ from advancedfind_ui import AdvancedFindUI
 from find_result import FindResultView
 import config_manager
 
-#import lang
+
+import gettext
+APP_NAME = 'advancedfind'
+LOCALE_DIR = '/usr/share/locale'
+#LOCALE_DIR = os.path.join(os.path.dirname(__file__), 'locale')
+#if not os.path.exists(LOCALE_DIR):
+#	LOCALE_DIR = '/usr/share/locale'
+gettext.install(APP_NAME, LOCALE_DIR, unicode=True)
 
 
 
@@ -47,7 +52,7 @@ import config_manager
 ui_str = """<ui>
 	<menubar name="MenuBar">
 		<menu name="SearchMenu" action="Search">
-			<placeholder name="SearchOps_2">
+			<placeholder name="SearchOps_0">
 				<menuitem name="advanced_find_active" action="advanced_find_active"/>
 			</placeholder>
 		</menu>
@@ -95,7 +100,7 @@ class AdvancedFindWindowHelper:
 		self.result_highlight = self.config_manager.load_configure('result_highlight')
 
 		self._results_view = FindResultView(window)
-		self._window.get_bottom_panel().add_item(self._results_view, "Advanced Find/Replace", "gtk-find-and-replace")
+		self._window.get_bottom_panel().add_item(self._results_view, _("Advanced Find/Replace"), "gtk-find-and-replace")
 
 		# Insert menu items
 		self._insert_menu()
@@ -123,7 +128,7 @@ class AdvancedFindWindowHelper:
 
 		# Create a new action group
 		self._action_group = gtk.ActionGroup("AdvancedFindReplaceActions")
-		self._action_group.add_actions( [("advanced_find_active", None, _("Advanced Find / Replace"), self.active_shortcut, _("Advanced Find / Replace"), self.advanced_find_active)]) 
+		self._action_group.add_actions( [("advanced_find_active", None, _("Advanced Find/Replace"), self.active_shortcut, _("Advanced Find/Replace"), self.advanced_find_active)]) 
 
 		# Insert the action group
 		manager.insert_action_group(self._action_group, -1)

@@ -2,7 +2,7 @@
 
 
 # config_manager.py
-# v0.0.1
+#
 #
 # Copyright 2010 swatch
 #

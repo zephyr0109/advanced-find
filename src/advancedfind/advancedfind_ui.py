@@ -2,7 +2,7 @@
 
 
 # findadvance_ui.py
-# v0.3.0
+#
 #
 # Copyright 2010 swatch
 #
@@ -41,6 +41,13 @@ import os
 import re
 #import config_manager
 
+
+#gtk.glade.bindtextdomain('advancedfind', os.path.join(os.path.dirname(__file__), 'locale'))
+#gtk.glade.bindtextdomain('advancedfind', '/usr/share/locale')
+#gtk.glade.textdomain('advancedfind')
+
+
+
 class AdvancedFindUI(object):
 	def __init__(self, plugin):
 		try:
@@ -51,6 +58,7 @@ class AdvancedFindUI(object):
 
 		gladefile = os.path.join(os.path.dirname(__file__),"FindDialog.glade")
 		ui = gtk.Builder()
+		ui.set_translation_domain('advancedfind')
 		ui.add_from_file(gladefile)
 		ui.connect_signals({ "on_findDialog_destroy" : self.on_findDialog_destroy_action,
 							
@@ -285,7 +293,7 @@ class AdvancedFindUI(object):
 		elif self._instance.scopeFlg == 2: #files in directory
 			path = str(self._instance._results_view.findResultTreemodel.iter_n_children(None) - 1)
 			it = self._instance._results_view.findResultTreemodel.get_iter(path)
-			self._instance._results_view.findResultTreemodel.set_value(it, 2, "Replace in All Documents in Directory is not supported.")
+			self._instance._results_view.findResultTreemodel.set_value(it, 2, _("Replace in this scope is not supported."))
 
 	def on_closeButton_clicked_action(self, object):
 		self.findDialog.destroy()

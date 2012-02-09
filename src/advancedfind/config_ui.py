@@ -2,7 +2,7 @@
 
 
 # config_ui.py
-# v0.0.1
+#
 #
 # Copyright 2010 swatch
 #
@@ -39,7 +39,7 @@ except:
 	
 import os.path
 	
-from gettext import gettext as _
+#from gettext import gettext as _
 
 
 class ConfigUI(object):
@@ -50,6 +50,7 @@ class ConfigUI(object):
 		#Set the Glade file
 		gladefile = os.path.join(os.path.dirname(__file__),"config.glade")
 		UI = gtk.Builder()
+		UI.set_translation_domain('advancedfind')
 		UI.add_from_file(gladefile)
 		self.configWindow = UI.get_object("configWindow")
 		self.fgColorbutton = UI.get_object("fgColorbutton")

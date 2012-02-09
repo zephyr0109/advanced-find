@@ -2,7 +2,7 @@
 
 
 # find_result.py
-# v0.2.0
+#
 #
 # Copyright 2010 swatch
 #
@@ -40,6 +40,7 @@ import urllib
 #import pango
 import re
 
+
 class FindResultView(gtk.HBox):
 	def __init__(self, window):
 		gtk.HBox.__init__(self)
@@ -72,17 +73,17 @@ class FindResultView(gtk.HBox):
 		v_buttonbox = gtk.VButtonBox()
 		v_buttonbox.set_layout(gtk.BUTTONBOX_END)
 		v_buttonbox.set_spacing(5)
-		self.selectNextButton = gtk.Button("Next")
+		self.selectNextButton = gtk.Button(_("Next"))
 		self.selectNextButton.connect("clicked", self.on_selectNextButton_clicked_action)
 		#self.findAgainButton = gtk.Button("Find again")
 		#self.findAgainButton.connect("clicked", self.on_findAgainButton_clicked_action)
-		self.expandAllButton = gtk.Button("Expand All")
+		self.expandAllButton = gtk.Button(_("Expand All"))
 		self.expandAllButton.connect("clicked", self.on_expandAllButton_clicked_action)
-		self.collapseAllButton = gtk.Button("Collapse All")
+		self.collapseAllButton = gtk.Button(_("Collapse All"))
 		self.collapseAllButton.connect("clicked", self.on_collapseAllButton_clicked_action)
-		self.clearHighlightButton = gtk.Button("Clear Highlight")
+		self.clearHighlightButton = gtk.Button(_("Clear Highlight"))
 		self.clearHighlightButton.connect("clicked", self.on_clearHightlightButton_clicked_action)
-		self.clearButton = gtk.Button("Clear")
+		self.clearButton = gtk.Button(_("Clear"))
 		self.clearButton.connect("clicked", self.on_clearButton_clicked_action)
 		#self.closeButton = gtk.Button("Close")
 		#self.closeButton.connect("clicked", self.on_closeButton_clicked_action)

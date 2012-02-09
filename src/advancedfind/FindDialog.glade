@@ -21,7 +21,7 @@
     </columns>
   </object>
   <object class="GtkWindow" id="findDialog">
-    <property name="title" translatable="yes">Advanced Find / Replace</property>
+    <property name="title" translatable="yes">Advanced Find/Replace</property>
     <property name="window_position">mouse</property>
     <property name="destroy_with_parent">True</property>
     <signal name="destroy" handler="on_findDialog_destroy"/>
@@ -365,7 +365,7 @@
                         </child>
                         <child>
                           <object class="GtkCheckButton" id="regexSearchCheckbutton">
-                            <property name="label" translatable="yes">Regular Expression</property>
+                            <property name="label" translatable="yes">Regular expression</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>

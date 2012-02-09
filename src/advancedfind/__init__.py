@@ -3,6 +3,7 @@
 
 # __init__.py
 #
+#
 # Copyright 2010 swatch
 #
 # This program is free software; you can redistribute it and/or modify
@@ -26,6 +27,7 @@ import gedit
 import gtk
 from advancedfind import AdvancedFindWindowHelper
 from config_ui import ConfigUI
+
 
 class AdvancedFindReplacePlugin(gedit.Plugin):
 	def __init__(self):
