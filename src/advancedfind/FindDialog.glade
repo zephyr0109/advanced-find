@@ -157,10 +157,12 @@
                             <child>
                               <object class="GtkRadioButton" id="forwardRadiobutton">
                                 <property name="label" translatable="yes">Forward</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_action_appearance">False</property>
+                                <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_forwardRadiobutton_toggled" swapped="no"/>
@@ -174,10 +176,12 @@
                             <child>
                               <object class="GtkRadioButton" id="backwardRadiobutton">
                                 <property name="label" translatable="yes">Backward</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_action_appearance">False</property>
+                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">forwardRadiobutton</property>
                                 <signal name="toggled" handler="on_backwardRadiobutton_toggled" swapped="no"/>
@@ -189,7 +193,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkAlignment" id="alignment5">
+                              <object class="GtkAlignment" id="alignment4">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <child>
@@ -198,7 +202,7 @@
                               </object>
                               <packing>
                                 <property name="expand">False</property>
-                                <property name="fill">False</property>
+                                <property name="fill">True</property>
                                 <property name="position">2</property>
                               </packing>
                             </child>
@@ -243,6 +247,7 @@
                             <child>
                               <object class="GtkRadioButton" id="currentFileRadiobutton">
                                 <property name="label" translatable="yes">Current Document</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -260,6 +265,7 @@
                             <child>
                               <object class="GtkRadioButton" id="allFilesRadiobutton">
                                 <property name="label" translatable="yes">All Opened Documents</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -277,6 +283,7 @@
                             <child>
                               <object class="GtkRadioButton" id="allFilesInPathRadiobutton">
                                 <property name="label" translatable="yes">All Documents in Directory</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -294,6 +301,7 @@
                             <child>
                               <object class="GtkRadioButton" id="currentSelectionRadiobutton">
                                 <property name="label" translatable="yes">Current Selected Text</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -358,6 +366,7 @@
                     <child>
                       <object class="GtkCheckButton" id="matchWholeWordCheckbutton">
                         <property name="label" translatable="yes">Match whole word</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
@@ -369,6 +378,7 @@
                     <child>
                       <object class="GtkCheckButton" id="matchCaseCheckbutton">
                         <property name="label" translatable="yes">Match case</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
@@ -384,6 +394,7 @@
                     <child>
                       <object class="GtkCheckButton" id="wrapAroundCheckbutton">
                         <property name="label" translatable="yes">Wrap around</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
@@ -399,6 +410,7 @@
                     <child>
                       <object class="GtkCheckButton" id="followCurrentDocCheckbutton">
                         <property name="label" translatable="yes">Directory follow current doc.</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
@@ -414,6 +426,7 @@
                     <child>
                       <object class="GtkCheckButton" id="includeSubfolderCheckbutton">
                         <property name="label" translatable="yes">Directoy include sub-folder</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
@@ -431,6 +444,7 @@
                     <child>
                       <object class="GtkCheckButton" id="regexSearchCheckbutton">
                         <property name="label" translatable="yes">Regular expression</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
@@ -530,6 +544,7 @@
                         <child>
                           <object class="GtkButton" id="selectPathButton">
                             <property name="label" translatable="yes">...</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -617,11 +632,13 @@
                 <property name="spacing">5</property>
                 <child>
                   <object class="GtkButton" id="findButton">
-                    <property name="label" translatable="yes">Find</property>
+                    <property name="label" translatable="yes">_Find</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <property name="use_underline">True</property>
                     <signal name="clicked" handler="on_findButton_clicked" swapped="no"/>
                   </object>
                   <packing>
@@ -632,11 +649,13 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="replaceButton">
-                    <property name="label" translatable="yes">Replace</property>
+                    <property name="label" translatable="yes">_Replace</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <property name="use_underline">True</property>
                     <signal name="clicked" handler="on_replaceButton_clicked" swapped="no"/>
                   </object>
                   <packing>
@@ -647,11 +666,13 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="findAllButton">
-                    <property name="label" translatable="yes">Find All</property>
+                    <property name="label" translatable="yes">Find _All</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <property name="use_underline">True</property>
                     <signal name="clicked" handler="on_findAllButton_clicked" swapped="no"/>
                   </object>
                   <packing>
@@ -663,6 +684,7 @@
                 <child>
                   <object class="GtkButton" id="replaceAllButton">
                     <property name="label" translatable="yes">Replace All</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -677,11 +699,13 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="closeButton">
-                    <property name="label" translatable="yes">Close</property>
+                    <property name="label" translatable="yes">_Close</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
+                    <property name="use_underline">True</property>
                     <signal name="clicked" handler="on_closeButton_clicked" swapped="no"/>
                   </object>
                   <packing>
@@ -699,17 +723,58 @@
               </packing>
             </child>
             <child>
-              <object class="GtkAlignment" id="alignment4">
+              <object class="GtkSeparator" id="separator1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFrame" id="frame3">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label_xalign">0</property>
+                <property name="shadow_type">none</property>
                 <child>
-                  <placeholder/>
+                  <object class="GtkAlignment" id="alignment3">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="left_padding">12</property>
+                    <child>
+                      <object class="GtkScale" id="opacityScale">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="adjustment">opacityAdjustment</property>
+                        <property name="show_fill_level">True</property>
+                        <property name="restrict_to_fill_level">False</property>
+                        <property name="fill_level">0.5</property>
+                        <property name="round_digits">3</property>
+                        <property name="digits">2</property>
+                        <property name="draw_value">False</property>
+                        <property name="value_pos">right</property>
+                        <signal name="value-changed" handler="on_opacityScale_vlaue_changed" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child type="label">
+                  <object class="GtkLabel" id="label9">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">&lt;b&gt;Opacity&lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
+                  </object>
                 </child>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">1</property>
+                <property name="pack_type">end</property>
+                <property name="position">2</property>
               </packing>
             </child>
             <child>
@@ -720,6 +785,7 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">5</property>
+            <property name="pack_type">end</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -731,6 +797,13 @@
       <!-- column-name gchararray1 -->
       <column type="gchararray"/>
     </columns>
+  </object>
+  <object class="GtkAdjustment" id="opacityAdjustment">
+    <property name="lower">0.050000000000000003</property>
+    <property name="upper">0.94999999999999996</property>
+    <property name="value">0.5</property>
+    <property name="step_increment">0.050000000000000003</property>
+    <property name="page_increment">0.20000000000000001</property>
   </object>
   <object class="GtkListStore" id="pathListstore">
     <columns>
@@ -769,6 +842,7 @@
             <child>
               <object class="GtkButton" id="selectPathDialogCancelButton">
                 <property name="label" translatable="yes">Cancel</property>
+                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -784,6 +858,7 @@
             <child>
               <object class="GtkButton" id="selectPathDialogOkButton">
                 <property name="label" translatable="yes">Ok</property>
+                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>

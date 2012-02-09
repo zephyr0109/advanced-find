@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-09 13:20+0800\n"
+"POT-Creation-Date: 2011-11-25 00:55+0800\n"
 "PO-Revision-Date: 2010-10-17 19:33+0800\n"
 "Last-Translator: swatch <swatch.code@gmail.com>\n"
 "Language-Team: none\n"
@@ -17,72 +17,76 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../advancedfind.py:137 ../advancedfind.py:176 ../advancedfind.py:527
+#: ../advancedfind.py:151 ../advancedfind.py:204 ../advancedfind.py:595
 #: ../FindDialog.glade:12
 msgid "Advanced Find/Replace"
 msgstr "Advanced Find/Replace"
 
-#: ../advancedfind.py:177
+#: ../advancedfind.py:205
 msgid "Find Next"
 msgstr "Find Next"
 
-#: ../advancedfind.py:178
+#: ../advancedfind.py:206
 msgid "Find Previous"
 msgstr "Find Previous"
 
-#: ../advancedfind.py:179
+#: ../advancedfind.py:207
 msgid "Select and Find Next"
 msgstr "Select and Find Next"
 
-#: ../advancedfind.py:180
+#: ../advancedfind.py:208
 msgid "Select and Find Previous"
 msgstr "Select and Find Previous"
 
-#: ../advancedfind.py:181
+#: ../advancedfind.py:209
 msgid "Advanced Find/Replace Settings"
 msgstr "Advanced Find/Replace Settings"
 
-#: ../advancedfind.py:321
+#: ../advancedfind.py:355
 msgid "Nothing is found."
 msgstr "Nothing is found."
 
-#: ../advancedfind_ui.py:282
+#: ../advancedfind_ui.py:333
 msgid "Finding..."
 msgstr "Finding"
 
-#: ../advancedfind_ui.py:326
+#: ../advancedfind_ui.py:377
 msgid "Replacing..."
 msgstr "Replacing..."
 
-#: ../advancedfind_ui.py:353
+#: ../advancedfind_ui.py:403
 msgid "Replace in this scope is not supported."
 msgstr "Replace in this scope is not supported."
 
-#: ../find_result.py:66 ../find_result.py:133
+#: ../find_result.py:81 ../find_result.py:158
 msgid "Next"
 msgstr "Next"
 
-#: ../find_result.py:69 ../find_result.py:102 ../find_result.py:134
+#: ../find_result.py:84 ../find_result.py:122 ../find_result.py:159
 msgid "Expand All"
 msgstr "Expand All"
 
-#: ../find_result.py:72 ../find_result.py:103 ../find_result.py:135
+#: ../find_result.py:87 ../find_result.py:123 ../find_result.py:160
 msgid "Collapse All"
 msgstr "Collapse All"
 
-#: ../find_result.py:75 ../find_result.py:104 ../find_result.py:136
+#: ../find_result.py:90 ../find_result.py:124 ../find_result.py:161
 msgid "Clear Highlight"
 msgstr "Clear Highlight"
 
-#: ../find_result.py:78 ../find_result.py:105 ../find_result.py:137
+#: ../find_result.py:93 ../find_result.py:125 ../find_result.py:162
 msgid "Clear"
 msgstr "Clear"
 
-#: ../find_result.py:106
-msgid "Markup"
-msgstr ""
+#: ../find_result.py:96 ../find_result.py:126 ../find_result.py:163
+msgid "Stop"
+msgstr "Stop"
 
 #: ../find_result.py:128
+msgid "Markup"
+msgstr "Markup"
+
+#: ../find_result.py:153
 msgid "Show Buttons"
 msgstr "Show Buttons"
 
@@ -90,23 +94,23 @@ msgstr "Show Buttons"
 msgid "Configuration"
 msgstr "Configuration"
 
-#: ../config.glade:33
+#: ../config.glade:39
 msgid "Foreground color : "
 msgstr "Foreground color : "
 
-#: ../config.glade:66
+#: ../config.glade:81
 msgid "Background color : "
 msgstr "Background color : "
 
-#: ../config.glade:102
+#: ../config.glade:125
 msgid "<b>Result Highlighting</b>"
 msgstr "<b>Result Highlighting</b>"
 
-#: ../config.glade:137
+#: ../config.glade:169
 msgid "Root Follow Filebrowser"
 msgstr "Root Follow Filebrowser"
 
-#: ../config.glade:173
+#: ../config.glade:208
 msgid "<b>Others</b>"
 msgstr "<b>Others</b>"
 
@@ -118,111 +122,115 @@ msgstr "Find what : "
 msgid "Replace with : "
 msgstr "Replace with : "
 
-#: ../FindDialog.glade:154
+#: ../FindDialog.glade:159
 msgid "Forward"
 msgstr "Forward"
 
-#: ../FindDialog.glade:171
+#: ../FindDialog.glade:178
 msgid "Backward"
 msgstr "Backward"
 
-#: ../FindDialog.glade:211
+#: ../FindDialog.glade:220
 msgid "<b>Direction</b>"
 msgstr "<b>Direction</b>"
 
-#: ../FindDialog.glade:239
+#: ../FindDialog.glade:249
 msgid "Current Document"
 msgstr "Current Document"
 
-#: ../FindDialog.glade:256
+#: ../FindDialog.glade:267
 msgid "All Opened Documents"
 msgstr "All Opened Documents"
 
-#: ../FindDialog.glade:273
+#: ../FindDialog.glade:285
 msgid "All Documents in Directory"
 msgstr "All Documents in Directory"
 
-#: ../FindDialog.glade:290
+#: ../FindDialog.glade:303
 msgid "Current Selected Text"
 msgstr ""
 
-#: ../FindDialog.glade:313
+#: ../FindDialog.glade:327
 msgid "<b>Scope</b>"
 msgstr "<b>Scope</b>"
 
-#: ../FindDialog.glade:354
+#: ../FindDialog.glade:368
 msgid "Match whole word"
 msgstr "Match whole word"
 
-#: ../FindDialog.glade:365
+#: ../FindDialog.glade:380
 msgid "Match case"
 msgstr "Match case"
 
-#: ../FindDialog.glade:380
+#: ../FindDialog.glade:396
 msgid "Wrap around"
 msgstr "Wrap around"
 
-#: ../FindDialog.glade:395
+#: ../FindDialog.glade:412
 msgid "Directory follow current doc."
 msgstr "Directory follow current doc."
 
-#: ../FindDialog.glade:410
+#: ../FindDialog.glade:428
 msgid "Directoy include sub-folder"
 msgstr "Directoy include sub-folder"
 
-#: ../FindDialog.glade:427
+#: ../FindDialog.glade:446
 msgid "Regular expression"
 msgstr "Regular expression"
 
-#: ../FindDialog.glade:448
+#: ../FindDialog.glade:468
 msgid "<b>Options</b>"
 msgstr "<b>Options</b>"
 
-#: ../FindDialog.glade:475
+#: ../FindDialog.glade:495
 msgid "Filter : "
 msgstr "Filter : "
 
-#: ../FindDialog.glade:488
+#: ../FindDialog.glade:508
 msgid "Directory : "
 msgstr "Directory : "
 
-#: ../FindDialog.glade:524
+#: ../FindDialog.glade:546
 msgid "..."
 msgstr "..."
 
-#: ../FindDialog.glade:570
+#: ../FindDialog.glade:595
 msgid "<b>Path</b>"
 msgstr "<b>Path</b>"
 
-#: ../FindDialog.glade:610
-msgid "Find"
-msgstr "Find"
+#: ../FindDialog.glade:635
+msgid "_Find"
+msgstr "_Find"
 
-#: ../FindDialog.glade:625
-msgid "Replace"
-msgstr "Replace"
+#: ../FindDialog.glade:652
+msgid "_Replace"
+msgstr "_Replace"
 
-#: ../FindDialog.glade:640
-msgid "Find All"
-msgstr "Find All"
+#: ../FindDialog.glade:669
+msgid "Find _All"
+msgstr "Find _All"
 
-#: ../FindDialog.glade:655
+#: ../FindDialog.glade:686
 msgid "Replace All"
 msgstr "Replace All"
 
-#: ../FindDialog.glade:670
-msgid "Close"
-msgstr "Close"
+#: ../FindDialog.glade:702
+msgid "_Close"
+msgstr "_Close"
 
-#: ../FindDialog.glade:740
+#: ../FindDialog.glade:768
+msgid "<b>Opacity</b>"
+msgstr "<b>Opacity</b>"
+
+#: ../FindDialog.glade:823
 msgid "Select a directory"
 msgstr "Select a directory"
 
-#: ../FindDialog.glade:761
+#: ../FindDialog.glade:844
 msgid "Cancel"
 msgstr "Cancel"
 
-#: ../FindDialog.glade:776
+#: ../FindDialog.glade:860
 msgid "Ok"
 msgstr "Ok"
 

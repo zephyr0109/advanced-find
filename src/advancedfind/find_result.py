@@ -93,12 +93,17 @@ class FindResultView(Gtk.HBox):
 		self.clearButton = Gtk.Button(_("Clear"))
 		self.clearButton.set_no_show_all(True)
 		self.clearButton.connect("clicked", self.on_clearButton_clicked_action)
+		self.stopButton = Gtk.Button(_("Stop"))
+		self.stopButton.set_no_show_all(True)
+		self.stopButton.connect("clicked", self.on_stopButton_clicked_action)
+		self.stopButton.set_sensitive(False)
 
 		v_buttonbox.pack_start(self.selectNextButton, False, False, 5)
 		v_buttonbox.pack_start(self.expandAllButton, False, False, 5)
 		v_buttonbox.pack_start(self.collapseAllButton, False, False, 5)
 		v_buttonbox.pack_start(self.clearHighlightButton, False, False, 5)
 		v_buttonbox.pack_start(self.clearButton, False, False, 5)
+		v_buttonbox.pack_start(self.stopButton, False, False, 5)
 		v_box.pack_end(v_buttonbox, False, False, 5)
 		
 		#self._status = Gtk.Label()
@@ -118,24 +123,29 @@ class FindResultView(Gtk.HBox):
 		self.collapseAllItem = Gtk.MenuItem.new_with_label(_('Collapse All'))
 		self.clearHighlightItem = Gtk.MenuItem.new_with_label(_('Clear Highlight'))
 		self.clearItem = Gtk.MenuItem.new_with_label(_('Clear'))
+		self.stopItem = Gtk.MenuItem.new_with_label(_('Stop'))
+		self.stopItem.set_sensitive(False)
 		self.markupItem = Gtk.MenuItem.new_with_label(_('Markup'))
 
 		self.contextMenu.append(self.expandAllItem)
 		self.contextMenu.append(self.collapseAllItem)
 		self.contextMenu.append(self.clearHighlightItem)
 		self.contextMenu.append(self.clearItem)
+		self.contextMenu.append(self.stopItem)
 		self.contextMenu.append(self.markupItem)
 		
 		self.expandAllItem.connect('activate', self.on_expandAllItem_activate)
 		self.collapseAllItem.connect('activate', self.on_collapseAllItem_activate)
 		self.clearHighlightItem.connect('activate', self.on_clearHighlightItem_activate)
 		self.clearItem.connect('activate', self.on_clearItem_activate)
+		self.stopItem.connect('activate', self.on_stopItem_activate)
 		self.markupItem.connect('activate', self.on_markupItem_activate)
 
 		self.expandAllItem.show()
 		self.collapseAllItem.show()
 		self.clearHighlightItem.show()
 		self.clearItem.show()
+		self.stopItem.show()
 		#self.markupItem.show()
 		
 		self.contextMenu.append(Gtk.SeparatorMenuItem())
@@ -150,24 +160,28 @@ class FindResultView(Gtk.HBox):
 		self.showCollapseAllButtonItem = Gtk.CheckMenuItem.new_with_label(_('Collapse All'))
 		self.showClearHighlightButtonItem = Gtk.CheckMenuItem.new_with_label(_('Clear Highlight'))
 		self.showClearButtonItem = Gtk.CheckMenuItem.new_with_label(_('Clear'))
+		self.showStopButtonItem = Gtk.CheckMenuItem.new_with_label(_('Stop'))
 
 		self.showButtonsSubmenu.append(self.showNextButtonItem)
 		self.showButtonsSubmenu.append(self.showExpandAllButtonItem)
 		self.showButtonsSubmenu.append(self.showCollapseAllButtonItem)
 		self.showButtonsSubmenu.append(self.showClearHighlightButtonItem)
 		self.showButtonsSubmenu.append(self.showClearButtonItem)
+		self.showButtonsSubmenu.append(self.showStopButtonItem)
 		
 		self.showNextButtonItem.connect('activate', self.on_showNextButtonItem_activate)
 		self.showExpandAllButtonItem.connect('activate', self.on_showExpandAllButtonItem_activate)
 		self.showCollapseAllButtonItem.connect('activate', self.on_showCollapseAllButtonItem_activate)
 		self.showClearHighlightButtonItem.connect('activate', self.on_showClearHighlightButtonItem_activate)
 		self.showClearButtonItem.connect('activate', self.on_showClearButtonItem_activate)
+		self.showStopButtonItem.connect('activate', self.on_showStopButtonItem_activate)
 		
 		self.showNextButtonItem.show()
 		self.showExpandAllButtonItem.show()
 		self.showCollapseAllButtonItem.show()
 		self.showClearHighlightButtonItem.show()
 		self.showClearButtonItem.show()
+		self.showStopButtonItem.show()
 		
 		self.showButtonsItem.set_submenu(self.showButtonsSubmenu)
 		
@@ -204,7 +218,6 @@ class FindResultView(Gtk.HBox):
 		except:
 			return
 		
-		#tab = model.get_value(it, 3)
 		result_start = model.get_value(it, 4)
 		result_len = model.get_value(it, 5)
 		#uri = model.get_value(it, 6)
@@ -253,6 +266,10 @@ class FindResultView(Gtk.HBox):
 		
 	def on_clearItem_activate(self, object):
 		self.clear_find_result()
+		
+	def on_stopItem_activate(self, object):
+		self.stopButton.set_sensitive(False)
+		object.set_sensitive(False)
 		
 	def on_markupItem_activate(self, object):
 		model, it = self.findResultTreeview.get_selection().get_selected()
@@ -321,6 +338,14 @@ class FindResultView(Gtk.HBox):
 		else:
 			self.show_button_option['CLEAR_BUTTON'] = False
 			self.clearButton.hide()
+			
+	def on_showStopButtonItem_activate(self, object):
+		if self.showStopButtonItem.get_active() == True:
+			self.show_button_option['STOP_BUTTON'] = True
+			self.stopButton.show()
+		else:
+			self.show_button_option['STOP_BUTTON'] = False
+			self.stopButton.hide()
 
 	def on_selectNextButton_clicked_action(self, object):
 		path, column = self.findResultTreeview.get_cursor()
@@ -358,6 +383,9 @@ class FindResultView(Gtk.HBox):
 		
 	def on_clearButton_clicked_action(self, object):
 		self.clear_find_result()
+		
+	def on_stopButton_clicked_action(self, object):
+		object.set_sensitive(False)
 
 	def append_find_pattern(self, pattern, replace_flg = False, replace_text = None):
 		self.findResultTreeview.collapse_all()
@@ -446,7 +474,22 @@ class FindResultView(Gtk.HBox):
 		if self.show_button_option['CLEAR_BUTTON'] == True:
 			self.clearButton.show()
 			self.showClearButtonItem.set_active(True)
-		
+		if self.show_button_option['STOP_BUTTON'] == True:
+			self.stopButton.show()
+			self.showStopButtonItem.set_active(True)
+			
+	def is_busy(self, busy_flg = True):
+		if busy_flg:
+			self.clearButton.set_sensitive(False)
+			self.stopButton.set_sensitive(True)
+			self.clearItem.set_sensitive(False)
+			self.stopItem.set_sensitive(True)
+		else:
+			self.clearButton.set_sensitive(True)
+			self.stopButton.set_sensitive(False)
+			self.clearItem.set_sensitive(True)
+			self.stopItem.set_sensitive(False)
+		self.do_events()		
 	
 
 

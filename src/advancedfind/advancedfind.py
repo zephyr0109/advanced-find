@@ -131,7 +131,9 @@ class AdvancedFindWindowHelper:
 		self.config_manager.to_bool(self.find_options)
 		
 		self.find_dlg_setting = self.config_manager.load_configure('FindGUI')
-		self.config_manager.to_bool(self.find_dlg_setting)
+		#self.config_manager.to_bool(self.find_dlg_setting)
+		self.config_manager.boolean(self.find_dlg_setting['OPTIONS_EXPANDED'])
+		self.config_manager.boolean(self.find_dlg_setting['PATH_EXPANDED'])
 
 		self.shortcuts = self.config_manager.load_configure('Shortcut')
 		self.result_highlight = self.config_manager.load_configure('ResultDisplay')
@@ -269,9 +271,15 @@ class AdvancedFindWindowHelper:
 
 	def create_regex(self, pattern, find_options):
 		if find_options['REGEX_SEARCH'] == False:
-			pattern = re.escape(unicode(r'%s' % pattern, "utf-8"))
+			try:
+				pattern = re.escape(unicode(r'%s' % pattern, "utf-8"))
+			except:
+				pattern = re.escape(r'%s' % pattern)
 		else:
-			pattern = unicode(r'%s' % pattern, "utf-8")
+			try:
+				pattern = unicode(r'%s' % pattern, "utf-8")
+			except:
+				pattern = r'%s' % pattern
 		
 		if find_options['MATCH_WHOLE_WORD'] == True:
 			pattern = r'\b%s\b' % pattern
@@ -286,12 +294,12 @@ class AdvancedFindWindowHelper:
 	def advanced_find_in_doc(self, doc, search_pattern, find_options, forward_flg = True, replace_flg = False, around_flg = False):
 		if search_pattern == "":
 			return
-		
+
 		regex = self.create_regex(search_pattern, find_options)
 		
 		if doc.get_has_selection():
 			sel_start, sel_end = doc.get_selection_bounds()
-			match = regex.search(doc.get_text(sel_start, sel_end, True))
+			match = regex.search(unicode(doc.get_text(sel_start, sel_end, True), 'utf-8'))
 			if match and replace_flg == True:
 				if find_options['REGEX_SEARCH'] == False:
 					replace_text = unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8')
@@ -376,18 +384,20 @@ class AdvancedFindWindowHelper:
 			return ''
 					
 	def find_next(self, action, data = None):
-		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.find_options, True, False, False)
+		#print 'find next'
+		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.find_options, True)
 	
-	def find_previous(self, action, data = None):		
-		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.find_options, False, False, False)
+	def find_previous(self, action, data = None):
+		#print 'find previous'
+		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.find_options, False)
 		
 	def select_find_next(self, action, data = None):
 		#print self.auto_select_word()
-		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.find_options, True, False, False)
+		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.find_options, True)
 
 	def select_find_previous(self, action, data = None):
 		#print self.auto_select_word()
-		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.find_options, False, False, False)
+		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.find_options, False)
 		
 	def advanced_find_all_in_doc(self, parent_it, doc, search_pattern, find_options, replace_flg = False, selection_only = False):
 		if search_pattern == "":
@@ -402,11 +412,17 @@ class AdvancedFindWindowHelper:
 		start_pos = 0
 		end_pos = end.get_offset()
 		if selection_only == True:
-			sel_start, sel_end = doc.get_selection_bounds()
-			if sel_start:
+			try:
+				sel_start, sel_end = doc.get_selection_bounds()
+			except:
+				#print 'No selection is found.'
+				return
+
+			if sel_start and sel_end:
 				start_pos = sel_start.get_offset()
-			if sel_end:
 				end_pos = sel_end.get_offset()
+			else:
+				return
 
 		tree_it = None
 		match = regex.search(text, start_pos, end_pos)
@@ -488,7 +504,6 @@ class AdvancedFindWindowHelper:
 
 		#d_list = []
 		file_list = []
-		
 		if find_options['INCLUDE_SUBFOLDER'] == True:
 			grep_cmd = ['grep', '-E', '-l', '-R', search_pattern, dir_path]
 		else:
@@ -514,6 +529,9 @@ class AdvancedFindWindowHelper:
 					
 		#mid_time = time.time()
 		#print 'Use ' + str(mid_time-start_time) + ' seconds to find files.'
+		
+		self._results_view.is_busy(True)
+		self._results_view.do_events()
 					
 		for file_path in file_list:
 			if os.path.isfile(file_path):
@@ -531,6 +549,10 @@ class AdvancedFindWindowHelper:
 				
 				self.advanced_find_all_in_doc(parent_it, temp_doc, search_pattern, find_options, replace_flg)
 				self.find_ui.do_events()
+				if self._results_view.stopButton.get_sensitive() == False:
+					break
+				
+		self._results_view.is_busy(False)
 				
 		#end_time = time.time()						
 		#print 'Use ' + str(end_time-mid_time) + ' seconds to find results.'
@@ -540,11 +562,11 @@ class AdvancedFindWindowHelper:
 		if file_it == None:
 			return
 		if self._results_view.findResultTreemodel.iter_has_child(file_it):
+			tab = self._results_view.findResultTreemodel.get_value(file_it, 3)
+			if not tab:
+				return
 			for n in range(0,self._results_view.findResultTreemodel.iter_n_children(file_it)):
 				it = self._results_view.findResultTreemodel.iter_nth_child(file_it, n)
-				tab = self._results_view.findResultTreemodel.get_value(it, 3)
-				if not tab:
-					continue
 				
 				result_start = self._results_view.findResultTreemodel.get_value(it, 4)
 				result_len = self._results_view.findResultTreemodel.get_value(it, 5)

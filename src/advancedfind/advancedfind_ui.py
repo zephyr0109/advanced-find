@@ -79,7 +79,9 @@ class AdvancedFindUI(object):
 							"on_currentFileRadiobutton_toggled" : self.scopeRadiobuttonGroup_action,
 							"on_allFilesRadiobutton_toggled" : self.scopeRadiobuttonGroup_action,
 							"on_allFilesInPathRadiobutton_toggled" : self.scopeRadiobuttonGroup_action,
-							"on_currentSelectionRadiobutton_toggled" : self.scopeRadiobuttonGroup_action })
+							"on_currentSelectionRadiobutton_toggled" : self.scopeRadiobuttonGroup_action,
+							
+							"on_opacityScale_vlaue_changed" : self.on_opacityScale_vlaue_changed_action })
 
 		self.findDialog = ui.get_object("findDialog")
 		#self.findDialog.set_keep_above(True)
@@ -87,7 +89,7 @@ class AdvancedFindUI(object):
 
 		accelgroup = Gtk.AccelGroup()
 		#key, modifier = Gtk.accelerator_parse('Escape')
-		#accelgroup.connect(key, modifier, Gtk.ACCEL_VISIBLE, self.esc_accel_action)
+		#accelgroup.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.esc_accel_action)
 		key, modifier = Gtk.accelerator_parse('Return')
 		accelgroup.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.return_accel_action)
 		key, modifier = Gtk.accelerator_parse('KP_Enter')
@@ -194,6 +196,10 @@ class AdvancedFindUI(object):
 		self.followCurrentDocCheckbutton.set_active(self._instance.find_options['FOLLOW_CURRENT_DOC'])
 		self.includeSubfolderCheckbutton.set_active(self._instance.find_options['INCLUDE_SUBFOLDER'])
 		self.regexSearchCheckbutton.set_active(self._instance.find_options['REGEX_SEARCH'])
+		
+		self.opacityScale = ui.get_object("opacityScale")
+		self.opacityScale.set_value(float(self._instance.find_dlg_setting['OPACITY']))
+		self.opacityScale.set_fill_level(float(self._instance.find_dlg_setting['OPACITY']))
 
 		'''
 		if self._instance.find_options['FOLLOW_CURRENT_DOC'] == True:
@@ -204,6 +210,7 @@ class AdvancedFindUI(object):
 		try:
 			self._instance.find_dlg_setting['PATH_EXPANDED'] = self.pathExpander.get_expanded()
 			self._instance.find_dlg_setting['OPTIONS_EXPANDED'] = self.optionsExpander.get_expanded()
+			self._instance.find_dlg_setting['OPACITY'] = self.opacityScale.get_value()
 			self._instance.find_ui = None
 		except:
 			pass
@@ -228,10 +235,13 @@ class AdvancedFindUI(object):
 		object.set_opacity(1)
 
 	def on_findDialog_focus_out_event_action(self, object, event):
-		object.set_opacity(0.5)
-		
-	#def esc_accel_action(self, accelgroup, window, key, modifier):
-		#window.hide()
+		#object.set_opacity(0.5)
+		object.set_opacity(self.opacityScale.get_value())
+	
+	'''	
+	def esc_accel_action(self, accelgroup, window, key, modifier):
+		window.hide()
+	#'''
 		
 	def return_accel_action(self, accelgroup, window, key, modifier):
 		#self.on_findButton_clicked_action(None)
@@ -321,7 +331,8 @@ class AdvancedFindUI(object):
 			return
 			
 		self._instance.set_bottom_panel_label(_('Finding...'), os.path.join(os.path.dirname(__file__), 'loading.gif'))
-		self._instance._results_view.set_sensitive(False)
+		#self._instance._results_view.set_sensitive(False)
+		self._instance._results_view.is_busy(True)
 		self._instance.show_bottom_panel()
 		self.findDialog.hide()
 		self.do_events()
@@ -334,10 +345,12 @@ class AdvancedFindUI(object):
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.find_options)
 			self._instance._results_view.show_find_result()
 		elif self._instance.scopeFlg == 1: #all opened documents
-			docs = self._instance._window.get_documents()
+			docs = self._instance._window.get_documents()			
 			for doc in docs:
 				self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.find_options)
 				self.do_events()
+				if self._instance._results_view.stopButton.get_sensitive() == False:
+					break
 			self._instance._results_view.show_find_result()
 		elif self._instance.scopeFlg == 2: #files in directory
 			dir_path = self.pathComboboxtext.get_active_text()
@@ -349,7 +362,9 @@ class AdvancedFindUI(object):
 			self._instance._results_view.show_find_result()
 
 		self._instance.set_bottom_panel_label()
-		self._instance._results_view.set_sensitive(True)
+		#self._instance._results_view.set_sensitive(True)
+		self._instance._results_view.is_busy(False)
+		#self.do_events()
 
 	def on_replaceAllButton_clicked_action(self, object):
 		search_pattern = self.findTextComboboxtext.get_active_text()
@@ -360,7 +375,8 @@ class AdvancedFindUI(object):
 			return
 			
 		self._instance.set_bottom_panel_label(_('Replacing...'), os.path.join(os.path.dirname(__file__), 'loading.gif'))
-		self._instance._results_view.set_sensitive(False)
+		#self._instance._results_view.set_sensitive(False)
+		self._instance._results_view.is_busy(True)
 		self._instance.show_bottom_panel()
 		self.findDialog.hide()
 		self.do_events()
@@ -376,6 +392,9 @@ class AdvancedFindUI(object):
 			docs = self._instance._window.get_documents()
 			for doc in docs:
 				self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self._instance.find_options, True)
+				self.do_events()
+				if self._instance._results_view.stopButton.get_sensitive() == False:
+					break
 			self._instance._results_view.show_find_result()
 		elif self._instance.scopeFlg == 2: #files in directory
 			path = str(self._instance._results_view.findResultTreemodel.iter_n_children(None) - 1)
@@ -387,7 +406,9 @@ class AdvancedFindUI(object):
 			self._instance._results_view.show_find_result()
 		
 		self._instance.set_bottom_panel_label()
-		self._instance._results_view.set_sensitive(True)
+		#self._instance._results_view.set_sensitive(True)
+		self._instance._results_view.is_busy(False)
+		#self.do_events()
 
 	def on_closeButton_clicked_action(self, object):
 		self.findDialog.destroy()
@@ -432,7 +453,9 @@ class AdvancedFindUI(object):
 		
 	def on_regexSearchCheckbutton_toggled_action(self, object):
 		self._instance.find_options['REGEX_SEARCH'] = object.get_active()
-
+		
+	def on_opacityScale_vlaue_changed_action(self, object):
+		object.set_fill_level(object.get_value())
 
 	# radiobutton
 	def directionRadiobuttonGroup_action(self, object):
