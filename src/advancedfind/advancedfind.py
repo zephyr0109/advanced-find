@@ -97,10 +97,10 @@ class AdvancedFindWindowHelper:
 		self._window = window
 		self._plugin = plugin
 		self.find_ui = None
-		self.find_list = []
-		self.replace_list = []
-		self.filter_list = []
-		self.path_list = []
+		self.find_history = []
+		self.replace_history = []
+		self.file_type_history = []
+		self.file_path_history = []
 		self.current_search_pattern = ""
 		self.current_replace_text = ""
 		#self.current_file_pattern = ""
@@ -120,19 +120,24 @@ class AdvancedFindWindowHelper:
 		
 		configfile = os.path.join(os.path.dirname(__file__), "config.xml")
 		self.config_manager = config_manager.ConfigManager(configfile)
-		self.options = self.config_manager.load_configure('search_option')
-		self.config_manager.to_bool(self.options)
+		self.find_options = self.config_manager.load_configure('FindOption')
+		self.config_manager.to_bool(self.find_options)
 		
-		self.find_dlg_setting = self.config_manager.load_configure('find_dialog')
+		self.find_dlg_setting = self.config_manager.load_configure('FindGUI')
 		self.config_manager.to_bool(self.find_dlg_setting)
 
-		self.shortcuts = self.config_manager.load_configure('shortcut')
-		self.result_highlight = self.config_manager.load_configure('result_highlight')
+		self.shortcuts = self.config_manager.load_configure('Shortcut')
+		self.result_highlight = self.config_manager.load_configure('ResultDisplay')
 		
-		self.show_button = self.config_manager.load_configure('show_button')
-		self.config_manager.to_bool(self.show_button)
+		self.result_gui_settings = self.config_manager.load_configure('ResultGUI')
+		self.config_manager.to_bool(self.result_gui_settings)
+		
+		self.find_history = self.config_manager.load_list('FindHistory')
+		self.replace_history = self.config_manager.load_list('ReplaceHistory')
+		self.file_type_history = self.config_manager.load_list('FilterHistory')
+		self.file_path_history = self.config_manager.load_list('PathHistory')
 
-		self._results_view = FindResultView(window, self.show_button)
+		self._results_view = FindResultView(window, self.result_gui_settings)
 		icon = Gtk.Image.new_from_stock(Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU)
 		self._window.get_bottom_panel().add_item(self._results_view, 'AdvancedFindBottomPanel', _("Advanced Find/Replace"), icon)
 		
@@ -149,22 +154,36 @@ class AdvancedFindWindowHelper:
 		# Remove any installed menu items
 		self._remove_menu()
 
+		self.config_manager.update_configure('FindOption', self.find_options)
+		self.config_manager.update_configure('FindGUI', self.find_dlg_setting)
+		#self.config_manager.update_configure('Shortcut', self.shortcuts)
+		self.config_manager.update_configure('ResultDisplay', self.result_highlight)
+		self.result_gui_settings.update(self._results_view.get_show_button_option())
+		self.config_manager.update_configure('ResultGUI', self.result_gui_settings)
+		self.config_manager.update_list('FindHistory', self.find_history)
+		self.config_manager.update_list('ReplaceHistory', self.replace_history)
+		self.config_manager.update_list('FilterHistory', self.file_type_history)
+		self.config_manager.update_list('PathHistory', self.file_path_history)
+		self.config_manager.update_config_file(self.config_manager.config_file)
+
 		self._window = None
 		self._plugin = None
 		self.find_ui = None
-		self.find_list = None
-		self.replace_list = None
-		self.filter_list = None
-		self.path_list = None
+		self.find_history = None
+		self.replace_history = None
+		self.file_type_history = None
+		self.file_path_history = None
 		self._result_view = None
 		
-		self.config_manager.update_config_file(self.config_manager.config_file, 'search_option', self.options)
+		'''
+		self.config_manager.update_config_file(self.config_manager.config_file, 'search_option', self.find_options)
 		self.config_manager.update_config_file(self.config_manager.config_file, 'find_dialog', self.find_dlg_setting)
 		#self.config_manager.update_config_file(self.config_manager.config_file, 'shortcut', self.shortcuts)
 		self.config_manager.update_config_file(self.config_manager.config_file, 'result_highlight', self.result_highlight)
 		
-		self.show_button.update(self._results_view.get_show_button_option())
-		self.config_manager.update_config_file(self.config_manager.config_file, 'show_button', self.show_button)
+		self.result_gui_settings.update(self._results_view.get_show_button_option())
+		self.config_manager.update_config_file(self.config_manager.config_file, 'result_gui_settings', self.result_gui_settings)
+		#'''
 	
 	def _insert_menu(self):
 		# Get the GtkUIManager
@@ -178,7 +197,7 @@ class AdvancedFindWindowHelper:
 										("find_previous", None, _("Find Previous"), self.shortcuts['FIND_PREVIOUS'], _("Find Previous"), self.find_previous),
 										("select_find_next", None, _("Select and Find Next"), self.shortcuts['SELECT_FIND_NEXT'], _("Select and Find Next"), self.select_find_next),
 										("select_find_previous", None, _("Select and Find Previous"), self.shortcuts['SELECT_FIND_PREVIOUS'], _("Select and Find Previous"), self.select_find_previous),
-										("advanced_find_configure", None, _("Advanced Find/Replace Configure"), None, _("Advanced Find/Replace Configure"), self.advanced_find_configure)]) 
+										("advanced_find_configure", None, _("Advanced Find/Replace Settings"), None, _("Advanced Find/Replace Settings"), self.advanced_find_configure)]) 
 
 		# Insert the action group
 		manager.insert_action_group(self._action_group, -1)
@@ -241,33 +260,33 @@ class AdvancedFindWindowHelper:
 			self.find_ui.pathComboboxentry.child.set_text(self.current_path)
 		#'''
 
-	def create_regex(self, pattern, options):
-		if options['REGEX_SEARCH'] == False:
+	def create_regex(self, pattern, find_options):
+		if find_options['REGEX_SEARCH'] == False:
 			pattern = re.escape(unicode(r'%s' % pattern, "utf-8"))
 		else:
 			pattern = unicode(r'%s' % pattern, "utf-8")
 		
-		if options['MATCH_WHOLE_WORD'] == True:
+		if find_options['MATCH_WHOLE_WORD'] == True:
 			pattern = r'\b%s\b' % pattern
 			
-		if options['MATCH_CASE'] == True:
+		if find_options['MATCH_CASE'] == True:
 			regex = re.compile(pattern, re.MULTILINE)
 		else:
 			regex = re.compile(pattern, re.IGNORECASE | re.MULTILINE)
 		
 		return regex
 		
-	def advanced_find_in_doc(self, doc, search_pattern, options, forward_flg = True, replace_flg = False, around_flg = False):
+	def advanced_find_in_doc(self, doc, search_pattern, find_options, forward_flg = True, replace_flg = False, around_flg = False):
 		if search_pattern == "":
 			return
 		
-		regex = self.create_regex(search_pattern, options)
+		regex = self.create_regex(search_pattern, find_options)
 		
 		if doc.get_has_selection():
 			sel_start, sel_end = doc.get_selection_bounds()
 			match = regex.search(doc.get_text(sel_start, sel_end, True))
 			if match and replace_flg == True:
-				if options['REGEX_SEARCH'] == False:
+				if find_options['REGEX_SEARCH'] == False:
 					replace_text = unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8')
 				else:
 					replace_text = match.expand(unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8'))
@@ -311,17 +330,17 @@ class AdvancedFindWindowHelper:
 				view.scroll_to_cursor()
 				
 		if not doc.get_has_selection():
-			if options['WRAP_AROUND'] == True and around_flg == False:
+			if find_options['WRAP_AROUND'] == True and around_flg == False:
 				if forward_flg == True:
 					doc.place_cursor(doc.get_start_iter())
 				else:
 					doc.place_cursor(doc.get_end_iter())
-				self.advanced_find_in_doc(doc, search_pattern, options, forward_flg, replace_flg, True)
+				self.advanced_find_in_doc(doc, search_pattern, find_options, forward_flg, replace_flg, True)
 			else:
 				self.show_message_dialog(self.msgDialog, _("Nothing is found."))
 				
 		if replace_flg == True and doc.get_has_selection():
-			if options['REGEX_SEARCH'] == False:
+			if find_options['REGEX_SEARCH'] == False:
 				replace_text = unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8')
 			else:
 				replace_text = match.expand(unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8'))
@@ -350,24 +369,24 @@ class AdvancedFindWindowHelper:
 			return ''
 					
 	def find_next(self, window, tab, data = None):
-		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.options, True, False, False)
+		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.find_options, True, False, False)
 	
 	def find_previous(self, window, tab, data = None):	
-		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.options, False, False, False)
+		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.find_options, False, False, False)
 		
 	def select_find_next(self, window, tab, data = None):
 		#print self.auto_select_word()
-		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.options, True, False, False)
+		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.find_options, True, False, False)
 
 	def select_find_previous(self, window, tab, data = None):
 		#print self.auto_select_word()
-		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.options, False, False, False)
+		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.find_options, False, False, False)
 		
-	def advanced_find_all_in_doc(self, parent_it, doc, search_pattern, options, replace_flg = False, selection_only = False):
+	def advanced_find_all_in_doc(self, parent_it, doc, search_pattern, find_options, replace_flg = False, selection_only = False):
 		if search_pattern == "":
 			return
 		
-		regex = self.create_regex(search_pattern, options)
+		regex = self.create_regex(search_pattern, find_options)
 
 		self.result_highlight_off(doc)
 		start, end = doc.get_bounds()
@@ -411,7 +430,7 @@ class AdvancedFindWindowHelper:
 				replace_offset = 0
 				doc.begin_user_action()
 				while(match):
-					if options['REGEX_SEARCH'] == False:
+					if find_options['REGEX_SEARCH'] == False:
 						replace_text = unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8')
 					else:
 						replace_text = match.expand(unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8'))
@@ -447,13 +466,13 @@ class AdvancedFindWindowHelper:
 				return True
 		return False
 			
-	def find_all_in_dir(self, parent_it, dir_path, file_pattern, search_pattern, options, replace_flg = False):
+	def find_all_in_dir(self, parent_it, dir_path, file_pattern, search_pattern, find_options, replace_flg = False):
 		if search_pattern == "":
 			return
 			
 		d_list = []
 		f_list = []
-		path_list = []
+		file_path_history = []
 		
 		for root, dirs, files in os.walk(unicode(dir_path, 'utf-8')):
 			for d in dirs:
@@ -461,14 +480,14 @@ class AdvancedFindWindowHelper:
 			for f in files:
 				f_list.append(os.path.join(root, f))
 		
-		if options['INCLUDE_SUBFOLDER'] == True:
-			path_list = f_list
+		if find_options['INCLUDE_SUBFOLDER'] == True:
+			file_path_history = f_list
 		else:
 			for f in f_list:
 				if os.path.dirname(f) not in d_list:
-					path_list.append(f)
+					file_path_history.append(f)
 					
-		for file_path in path_list:
+		for file_path in file_path_history:
 			if self.check_file_pattern(file_path, unicode(file_pattern, 'utf-8')):
 				if os.path.isfile(file_path):
 					pipe = subprocess.PIPE
@@ -487,7 +506,7 @@ class AdvancedFindWindowHelper:
 						f_temp.close()
 						temp_doc.set_text(text)
 						
-						self.advanced_find_all_in_doc(parent_it, temp_doc, search_pattern, options, replace_flg)
+						self.advanced_find_all_in_doc(parent_it, temp_doc, search_pattern, find_options, replace_flg)
 						self.find_ui.do_events()
 						
 	def result_highlight_on(self, file_it):
