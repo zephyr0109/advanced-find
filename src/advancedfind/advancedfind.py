@@ -2,7 +2,7 @@
 
 
 # findadvance.py
-# v0.0.1
+# v0.0.2
 #
 # Copyright 2010 swatch
 #
@@ -241,7 +241,6 @@ class AdvancedFindWindowHelper:
 		start, end = doc.get_bounds()
 		text = unicode(doc.get_text(start, end), 'utf-8')
 		lines = text.splitlines()
-		uri = doc.get_uri().replace('file://', '')
 		m = re.search('(\n|\r|\r\n)', text)
 		eol = m.group(0)
 		
