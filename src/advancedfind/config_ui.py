@@ -81,4 +81,4 @@ class ConfigUI(object):
 if __name__ == '__main__':
 	dlg = ConfigUI(None)
 	gtk.main()
-
+	

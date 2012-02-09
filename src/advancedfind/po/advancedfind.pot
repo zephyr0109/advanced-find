@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-19 22:01+0800\n"
+"POT-Creation-Date: 2010-10-20 23:00+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,11 +16,19 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../advancedfind.py:103 ../advancedfind.py:137 ../FindDialog.glade:24
+#: ../advancedfind.py:105 ../advancedfind.py:139 ../FindDialog.glade:24
 msgid "Advanced Find/Replace"
 msgstr ""
 
-#: ../advancedfind.py:291 ../advancedfind.py:331
+#: ../advancedfind.py:140
+msgid "Select and Find Next"
+msgstr ""
+
+#: ../advancedfind.py:141
+msgid "Select and Find Previous"
+msgstr ""
+
+#: ../advancedfind.py:280 ../advancedfind.py:320
 msgid "Nothing is found."
 msgstr ""
 

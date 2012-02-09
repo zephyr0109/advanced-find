@@ -54,6 +54,8 @@ ui_str = """<ui>
 		<menu name="SearchMenu" action="Search">
 			<placeholder name="SearchOps_0">
 				<menuitem name="advanced_find_active" action="advanced_find_active"/>
+				<menuitem name="select_find_next" action="select_find_next"/>
+				<menuitem name="select_find_previous" action="select_find_previous"/>
 			</placeholder>
 		</menu>
 	</menubar>
@@ -96,7 +98,7 @@ class AdvancedFindWindowHelper:
 			elif self.options[key] == 'False':
 				self.options[key] = False
 		self.shortcut = self.config_manager.load_configure('shortcut')
-		self.active_shortcut = self.get_shortcut_str(self.shortcut)
+		#self.active_shortcut = self.get_shortcut_keys(self.shortcut)
 		self.result_highlight = self.config_manager.load_configure('result_highlight')
 
 		self._results_view = FindResultView(window)
@@ -106,7 +108,7 @@ class AdvancedFindWindowHelper:
 						gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
 						gtk.MESSAGE_INFO,
 						gtk.BUTTONS_CLOSE,
-						'')
+						None)
 
 		# Insert menu items
 		self._insert_menu()
@@ -134,7 +136,9 @@ class AdvancedFindWindowHelper:
 
 		# Create a new action group
 		self._action_group = gtk.ActionGroup("AdvancedFindReplaceActions")
-		self._action_group.add_actions( [("advanced_find_active", None, _("Advanced Find/Replace"), self.active_shortcut, _("Advanced Find/Replace"), self.advanced_find_active)]) 
+		self._action_group.add_actions( [("advanced_find_active", None, _("Advanced Find/Replace"), self.get_shortcut_keys(self.shortcut, 'ACTIVE'), _("Advanced Find/Replace"), self.advanced_find_active),
+										("select_find_next", None, _("Select and Find Next"), self.get_shortcut_keys(self.shortcut, 'SELECT_FIND_NEXT'), _("Select and Find Next"), self.select_find_next),
+										("select_find_previous", None, _("Select and Find Previous"), self.get_shortcut_keys(self.shortcut, 'SELECT_FIND_PREVIOUS'), _("Select and Find Previous"), self.select_find_previous)]) 
 
 		# Insert the action group
 		manager.insert_action_group(self._action_group, -1)
@@ -163,28 +167,24 @@ class AdvancedFindWindowHelper:
 		dlg.run()
 		dlg.hide()
 		
-	def get_shortcut_str(self, shortcut_keys):
-		#'''
-		if shortcut_keys['ACTIVE_KEY1'] != "":
-			active_key1 = '<' + shortcut_keys['ACTIVE_KEY1'] + '>'
+	def get_shortcut_keys(self, shortcut_keys, shortcut):
+		if shortcut_keys[shortcut + '_KEY1'] != 'None':
+			key1 = '<' + shortcut_keys[shortcut + '_KEY1'] + '>'
 		else:
-			active_key1 = ""
-		if shortcut_keys['ACTIVE_KEY2'] != "":
-			active_key2 = '<' + shortcut_keys['ACTIVE_KEY2'] + '>'
+			key1 = ""
+		if shortcut_keys[shortcut + '_KEY2'] != 'None':
+			key2 = '<' + shortcut_keys[shortcut + '_KEY2'] + '>'
 		else:
-			active_key2 = ""
-		if shortcut_keys['ACTIVE_KEY3'] != "":
-			active_key3 = shortcut_keys['ACTIVE_KEY3']
+			key2 = ""
+		if shortcut_keys[shortcut + '_KEY3'] != 'None':
+			key3 = shortcut_keys[shortcut + '_KEY3']
 		else:
-			active_key3 = ""
-
-		if active_key1 + active_key2 + active_key3 != "":
-			return active_key1 + active_key2 + active_key3
+			key3 = ""
+			
+		if key1 + key2 + key3 != "":
+			return key1 + key2 + key3
 		else:
 			return None
-		#'''
-		
-		
 		
 	def advanced_find_active(self, action):
 		doc = self._window.get_active_document()
@@ -232,15 +232,13 @@ class AdvancedFindWindowHelper:
 	def advanced_find_in_doc(self, doc, search_pattern, options, forward_flg = True, replace_flg = False, around_flg = False):
 		if search_pattern == "":
 			return
-			
-		try:
+		
+		if doc.get_has_selection():
 			selection_start, selection_end = doc.get_selection_bounds()
 			if forward_flg == True:
 				doc.place_cursor(selection_end)
 			else:
 				doc.place_cursor(selection_start)
-		except:
-			pass
 		
 		regex = self.create_regex(search_pattern, options)
 		
@@ -255,7 +253,7 @@ class AdvancedFindWindowHelper:
 				match = regex.search(line)
 				if match:
 					result_start = doc.get_iter_at_offset(line_start.get_offset() + match.start())
-					print line_start.get_offset() + match.start()
+					#print line_start.get_offset() + match.start()
 					result_end = doc.get_iter_at_offset(line_start.get_offset() + match.end())
 					doc.select_range(result_start, result_end)
 					view.scroll_to_cursor()
@@ -321,6 +319,37 @@ class AdvancedFindWindowHelper:
 			else:
 				self.show_message_dialog(self.msgDialog, _("Nothing is found."))
 				
+	def auto_select_word(self):
+		doc = self._window.get_active_document()
+		if doc.get_has_selection():
+			start, end = doc.get_selection_bounds()
+			return doc.get_text(start, end)
+		else:
+			current_iter = doc.get_iter_at_mark(doc.get_insert())
+			iter_idx = current_iter.get_line_index()
+			line_num = current_iter.get_line()
+			lines = doc.get_text(doc.get_start_iter(), doc.get_end_iter()).splitlines(True)
+			line = lines[line_num]
+			results = re.findall('[_a-zA-Z][_a-zA-Z0-9]*', line)
+			select_text = ''
+			match_pos = 0
+			for result in results:
+				match = re.search(result, line[match_pos:])
+				if match:
+					if match.start() + match_pos <= iter_idx and iter_idx <= match.end() + match_pos:
+						select_text = result
+						break
+					else:
+						match_pos += match.end()
+			return select_text
+	
+	def select_find_next(self, action):
+		#print self.auto_select_word()
+		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.options, True, False, False)
+
+	def select_find_previous(self, action):
+		#print self.auto_select_word()
+		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.options, False, False, False)
 
 	def advanced_find_all_in_doc(self, parent_it, doc, search_pattern, options, replace_flg = False):
 		if search_pattern == "":
@@ -331,7 +360,8 @@ class AdvancedFindWindowHelper:
 		self.result_highlight_off(doc)
 		start, end = doc.get_bounds()
 		text = unicode(doc.get_text(start, end), 'utf-8')
-		lines = re.findall('.*\\n', text + u'\n')
+		#lines = re.findall('.*\\n', text + u'\n')
+		lines = text.splitlines(True)
 		#print lines
 
 		tree_it = None
