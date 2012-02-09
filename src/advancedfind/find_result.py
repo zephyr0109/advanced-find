@@ -224,8 +224,6 @@ class FindResultView(Gtk.HBox):
 		
 		parent_it = model.iter_parent(it)
 		if parent_it:
-			#uri = urllib.quote(model.get_value(parent_it, 6).encode('utf-8')).replace('%3A//', '://')
-			#uri = urllib.quote(model.get_value(parent_it, 6)).replace('%3A//', '://')
 			uri = model.get_value(parent_it, 6)
 			tab = model.get_value(parent_it, 3)
 		else:
@@ -240,8 +238,8 @@ class FindResultView(Gtk.HBox):
 			
 		# Still nothing? Open the file then
 		if not tab:
-			#tab = self._window.create_tab_from_uri(uri, None, line_num, False, False)
-			if not uri.startswith('smb://'):
+			m = re.search('[a-zA-Z0-9]+\:\/\/.+', uri)
+			if m == None:
 				tab = self._window.create_tab_from_location(Gio.file_new_for_uri('file://' + uri), None, line_num, 0, False, False)
 			else:
 				tab = self._window.create_tab_from_location(Gio.file_new_for_uri(uri), None, line_num, 0, False, False)

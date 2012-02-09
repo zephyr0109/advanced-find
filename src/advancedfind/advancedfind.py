@@ -584,10 +584,16 @@ class AdvancedFindWindowHelper:
 				doc.apply_tag_by_name('result_highlight', doc.get_iter_at_offset(result_start), doc.get_iter_at_offset(result_start + result_len))
 		
 	def result_highlight_off(self, doc):
+		if doc.get_tag_table().lookup('result_highlight'):
+			start, end = doc.get_bounds()
+			doc.remove_tag_by_name('result_highlight', start, end)
+			
+		'''
 		start, end = doc.get_bounds()
 		if doc.get_tag_table().lookup('result_highlight') == None:
 			tag = doc.create_tag("result_highlight", foreground=self.result_highlight['FOREGROUND_COLOR'], background=self.result_highlight['BACKGROUND_COLOR'])
 		doc.remove_tag_by_name('result_highlight', start, end)
+		#'''
 
 	def show_bottom_panel(self):
 		panel = self._window.get_bottom_panel()
