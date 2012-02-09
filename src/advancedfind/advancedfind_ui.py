@@ -53,6 +53,7 @@ class AdvancedFindUI(object):
 		try:
 			self._plugin = plugin
 			self._instance = self._plugin.get_instance()
+			self._window = self._instance._window
 		except:
 			pass
 
@@ -86,7 +87,8 @@ class AdvancedFindUI(object):
 							"on_allFilesInPathRadiobutton_toggled" : self.scopeRadiobuttonGroup_action })
 
 		self.findDialog = ui.get_object("findDialog")
-		self.findDialog.set_keep_above(True)
+		#self.findDialog.set_keep_above(True)
+		self.findDialog.set_transient_for(self._window)
 
 		self.findTextEntry = ui.get_object("findTextComboboxentry")
 		#self.findTextListstore = ui.get_object("findTextListstore")

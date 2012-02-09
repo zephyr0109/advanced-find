@@ -98,7 +98,6 @@ class AdvancedFindWindowHelper:
 			elif self.options[key] == 'False':
 				self.options[key] = False
 		self.shortcuts = self.config_manager.load_configure('shortcut')
-		#self.active_shortcut = self.get_shortcut_keys(self.shortcuts)
 		self.result_highlight = self.config_manager.load_configure('result_highlight')
 
 		self._results_view = FindResultView(window)
@@ -166,27 +165,6 @@ class AdvancedFindWindowHelper:
 		dlg.set_property('text', text)
 		dlg.run()
 		dlg.hide()
-		
-	'''
-	def get_shortcut_keys(self, shortcut_keys, shortcut):
-		if shortcut_keys[shortcut + '_KEY1'] != 'None':
-			key1 = '<' + shortcut_keys[shortcut + '_KEY1'] + '>'
-		else:
-			key1 = ""
-		if shortcut_keys[shortcut + '_KEY2'] != 'None':
-			key2 = '<' + shortcut_keys[shortcut + '_KEY2'] + '>'
-		else:
-			key2 = ""
-		if shortcut_keys[shortcut + '_KEY3'] != 'None':
-			key3 = shortcut_keys[shortcut + '_KEY3']
-		else:
-			key3 = ""
-			
-		if key1 + key2 + key3 != "":
-			return key1 + key2 + key3
-		else:
-			return None
-	#'''
 		
 	def advanced_find_active(self, action):
 		doc = self._window.get_active_document()

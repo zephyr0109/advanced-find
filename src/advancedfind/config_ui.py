@@ -46,6 +46,7 @@ class ConfigUI(object):
 	def __init__(self, plugin):
 		self._plugin = plugin
 		self._instance = self._plugin.get_instance()
+		self._window = self._instance._window
 	
 		#Set the Glade file
 		gladefile = os.path.join(os.path.dirname(__file__),"config.glade")
@@ -53,6 +54,8 @@ class ConfigUI(object):
 		UI.set_translation_domain('advancedfind')
 		UI.add_from_file(gladefile)
 		self.configWindow = UI.get_object("configWindow")
+		#self.configWindow.set_transient_for(self._window)
+		
 		self.fgColorbutton = UI.get_object("fgColorbutton")
 		self.bgColorbutton = UI.get_object("bgColorbutton")
 		
