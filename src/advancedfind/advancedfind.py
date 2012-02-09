@@ -362,11 +362,16 @@ class AdvancedFindWindowHelper:
 		end_pos = end.get_offset()
 
 		if selection_only == True:
-			sel_start, sel_end = doc.get_selection_bounds()
-			if sel_start:
+			try:
+				sel_start, sel_end = doc.get_selection_bounds()
+			except:
+				return
+				
+			if sel_start and sel_end:
 				start_pos = sel_start.get_offset()
-			if sel_end:
 				end_pos = sel_end.get_offset()
+			else:
+				return
 
 		tree_it = None
 		match = regex.search(text, start_pos, end_pos)
@@ -503,12 +508,13 @@ class AdvancedFindWindowHelper:
 	def result_highlight_on(self, file_it):
 		if file_it == None:
 			return
+
 		if self._results_view.findResultTreemodel.iter_has_child(file_it):
+			tab = self._results_view.findResultTreemodel.get_value(file_it, 3)
+			if not tab:
+				return
 			for n in range(0,self._results_view.findResultTreemodel.iter_n_children(file_it)):
 				it = self._results_view.findResultTreemodel.iter_nth_child(file_it, n)
-				tab = self._results_view.findResultTreemodel.get_value(it, 3)
-				if not tab:
-					continue
 				
 				result_start = self._results_view.findResultTreemodel.get_value(it, 4)
 				result_len = self._results_view.findResultTreemodel.get_value(it, 5)
