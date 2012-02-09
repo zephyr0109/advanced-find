@@ -40,11 +40,17 @@ from config_ui import ConfigUI
 
 import gettext
 APP_NAME = 'advancedfind'
-LOCALE_DIR = '/usr/share/locale'
-#LOCALE_DIR = os.path.join(os.path.dirname(__file__), 'locale')
-#if not os.path.exists(LOCALE_DIR):
-#	LOCALE_DIR = '/usr/share/locale'
-gettext.install(APP_NAME, LOCALE_DIR, unicode=True)
+#LOCALE_DIR = '/usr/share/locale'
+LOCALE_DIR = os.path.join(os.path.dirname(__file__), 'locale')
+if not os.path.exists(LOCALE_DIR):
+	LOCALE_DIR = '/usr/share/locale'
+try:
+	t = gettext.translation(APP_NAME, LOCALE_DIR)
+	_ = t.gettext
+	#Gtk.glade.bindtextdomain(APP_NAME, LOCALE_DIR)
+except:
+	pass
+#gettext.install(APP_NAME, LOCALE_DIR, unicode=True)
 
 
 # Menu item example, insert a new item in the Edit menu
@@ -226,10 +232,10 @@ class AdvancedFindWindowHelper:
 		dlg.run()
 		dlg.hide()
 		
-	def advanced_find_configure(self, window, tab, data = None):
+	def advanced_find_configure(self, action, data = None):
 		config_ui = ConfigUI(self._plugin)
 		
-	def advanced_find_active(self, window, tab, data = None):
+	def advanced_find_active(self, action, data = None):
 		doc = self._window.get_active_document()
 		if not doc:
 			return
@@ -368,17 +374,17 @@ class AdvancedFindWindowHelper:
 					return match.group(0)
 			return ''
 					
-	def find_next(self, window, tab, data = None):
+	def find_next(self, action, data = None):
 		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.find_options, True, False, False)
 	
-	def find_previous(self, window, tab, data = None):	
+	def find_previous(self, action, data = None):		
 		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.find_options, False, False, False)
 		
-	def select_find_next(self, window, tab, data = None):
+	def select_find_next(self, action, data = None):
 		#print self.auto_select_word()
 		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.find_options, True, False, False)
 
-	def select_find_previous(self, window, tab, data = None):
+	def select_find_previous(self, action, data = None):
 		#print self.auto_select_word()
 		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.find_options, False, False, False)
 		
@@ -494,8 +500,8 @@ class AdvancedFindWindowHelper:
 			if self.check_file_pattern(file_path, unicode(file_pattern, 'utf-8')):
 				if os.path.isfile(file_path):
 					pipe = subprocess.PIPE
-					p1 = subprocess.Popen(["file", "-i", file_path], stdout=pipe)
-					p2 = subprocess.Popen(["grep", "text"], stdin=p1.stdout, stdout=pipe)
+					p1 = subprocess.Popen(["file", "--mime-type", file_path], stdout=pipe)
+					p2 = subprocess.Popen(["grep", "-E", "text|xml"], stdin=p1.stdout, stdout=pipe)
 					output = p2.communicate()[0]
 					if output:
 						temp_doc = Gedit.Document()

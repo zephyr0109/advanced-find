@@ -47,8 +47,8 @@ class ConfigUI(object):
 		self.fgColorbutton = UI.get_object("fgColorbutton")
 		self.bgColorbutton = UI.get_object("bgColorbutton")
 
-		self.fgColorbutton.set_color(Gdk.color_parse(self._instance.result_highlight['FOREGROUND_COLOR'])[1])
-		self.bgColorbutton.set_color(Gdk.color_parse(self._instance.result_highlight['BACKGROUND_COLOR'])[1])
+		self.fgColorbutton.set_color(Gdk.color_parse(self._instance.result_highlight['FOREGROUND_COLOR']))
+		self.bgColorbutton.set_color(Gdk.color_parse(self._instance.result_highlight['BACKGROUND_COLOR']))
 
 		self.rootFollowFilebrowserCheckbutton = UI.get_object("rootFollowFilebrowserCheckbutton")
 		self.rootFollowFilebrowserCheckbutton.set_active(self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'])

@@ -153,6 +153,7 @@
                           <object class="GtkVButtonBox" id="vbuttonbox1">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="homogeneous">True</property>
                             <child>
                               <object class="GtkRadioButton" id="forwardRadiobutton">
                                 <property name="label" translatable="yes">Forward</property>
@@ -238,6 +239,7 @@
                           <object class="GtkVButtonBox" id="vbuttonbox2">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="homogeneous">True</property>
                             <child>
                               <object class="GtkRadioButton" id="currentFileRadiobutton">
                                 <property name="label" translatable="yes">Current Document</property>
