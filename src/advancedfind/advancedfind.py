@@ -219,7 +219,10 @@ class AdvancedFindWindowHelper:
 			selection_start, selection_end = doc.get_selection_bounds()
 			match = regex.search(doc.get_text(selection_start, selection_end))
 			if match and replace_flg == True:
-				replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+				if options['REGEX_SEARCH'] == False:
+					replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+				else:
+					replace_text = match.expand(unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8'))
 				doc.delete_selection(False, False)
 				doc.insert_at_cursor(replace_text)
 				return		
@@ -242,7 +245,10 @@ class AdvancedFindWindowHelper:
 					view.scroll_to_cursor()
 					
 					if replace_flg == True:
-						replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+						if options['REGEX_SEARCH'] == False:
+							replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+						else:
+							replace_text = match.expand(unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8'))
 						doc.delete_selection(False, False)
 						doc.insert_at_cursor(replace_text)
 						replace_end = doc.get_iter_at_mark(doc.get_insert())
@@ -282,7 +288,10 @@ class AdvancedFindWindowHelper:
 					view.scroll_to_cursor()
 					
 					if replace_flg == True:
-						replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+						if options['REGEX_SEARCH'] == False:
+							replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+						else:
+							replace_text = match.expand(unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8'))
 						doc.delete_selection(False, False)
 						doc.insert_at_cursor(replace_text)
 						replace_end = doc.get_iter_at_mark(doc.get_insert())
@@ -354,8 +363,8 @@ class AdvancedFindWindowHelper:
 		new_text = list(text)
 		text_changed = False
 		replace_cnt = 0
-		replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
-		replace_text_len = len(replace_text)
+		#replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+		#replace_text_len = len(replace_text)
 
 		for i in range(len(lines)):
 			results = regex.findall(lines[i])
@@ -376,7 +385,12 @@ class AdvancedFindWindowHelper:
 					match = regex.search(lines[i][match_pos:])
 					result_offset_start = line_start.get_offset() + match.start() + match_pos
 					result_len = len(match.group(0))
-					replace_offset = result_len - replace_text_len
+					if options['REGEX_SEARCH'] == False:
+						replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+					else:
+						replace_text = match.expand(unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8'))
+					#replace_offset = result_len - replace_text_len
+					replace_offset = result_len - len(replace_text)
 					
 					if replace_flg == True:
 						self._results_view.append_find_result(tree_it, str(i+1), lines[i].strip(), tab, result_offset_start - (replace_offset * replace_cnt), replace_text_len)
