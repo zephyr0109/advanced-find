@@ -1,0 +1,140 @@
+# Chinese translations for .gnome package.
+# Copyright (C) 2010 THE .gnome'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the .gnome package.
+# swatch <swatch.code@gmail.com>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: .gnome 2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-08 23:53+0800\n"
+"PO-Revision-Date: 2010-10-08 23:56+0800\n"
+"Last-Translator: swatch <swatch.code@gmail.com>\n"
+"Language-Team: Chinese (traditional)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: advancedfind.py:126 FindDialog.glade.h:5
+msgid "Advanced Find / Replace"
+msgstr ""
+
+#: FindDialog.glade.h:1
+msgid "..."
+msgstr "..."
+
+#: FindDialog.glade.h:2
+msgid "<b>Direction</b>"
+msgstr "方向"
+
+#: FindDialog.glade.h:3
+msgid "<b>Options</b>"
+msgstr "選項"
+
+#: FindDialog.glade.h:4
+msgid "<b>Scope</b>"
+msgstr "範圍"
+
+#: FindDialog.glade.h:6
+msgid "All Documents in Directory"
+msgstr "選擇的資料夾內的所有文件"
+
+#: FindDialog.glade.h:7
+msgid "All Opened Documents"
+msgstr "所有已開啟的文件"
+
+#: FindDialog.glade.h:8
+msgid "Backward"
+msgstr "向前"
+
+#: FindDialog.glade.h:9
+msgid "Cancel"
+msgstr "取消"
+
+#: FindDialog.glade.h:10
+msgid "Close"
+msgstr "關閉"
+
+#: FindDialog.glade.h:11
+msgid "Current Document"
+msgstr "目前的文件"
+
+#: FindDialog.glade.h:12
+msgid "Directory : "
+msgstr "資料夾路徑 : "
+
+#: FindDialog.glade.h:13
+msgid "Directory follow current doc."
+msgstr "選擇目前文件所在的資料夾"
+
+#: FindDialog.glade.h:14
+msgid "Directoy include sub-folder"
+msgstr "包含所有子資料夾"
+
+#: FindDialog.glade.h:15
+msgid "Filter : "
+msgstr "檔案類型 : "
+
+#: FindDialog.glade.h:16
+msgid "Find"
+msgstr "搜尋"
+
+#: FindDialog.glade.h:17
+msgid "Find All"
+msgstr "搜尋全部"
+
+#: FindDialog.glade.h:18
+msgid "Find what : "
+msgstr "搜尋 : "
+
+#: FindDialog.glade.h:19
+msgid "Forward"
+msgstr "向後"
+
+#: FindDialog.glade.h:20
+msgid "Match case"
+msgstr "符合大小寫"
+
+#: FindDialog.glade.h:21
+msgid "Match whole word"
+msgstr "符合整個字詞"
+
+#: FindDialog.glade.h:22
+msgid "Ok"
+msgstr "確定"
+
+#: FindDialog.glade.h:23
+msgid "Regular Expression"
+msgstr "使用正則表達式"
+
+#: FindDialog.glade.h:24
+msgid "Replace"
+msgstr "取代"
+
+#: FindDialog.glade.h:25
+msgid "Replace All"
+msgstr "取代全部"
+
+#: FindDialog.glade.h:26
+msgid "Replace with : "
+msgstr "取代為 : "
+
+#: FindDialog.glade.h:27
+msgid "Select a directory"
+msgstr "選擇資料夾"
+
+#: FindDialog.glade.h:28
+msgid "Wrap around"
+msgstr ""
+
+#: config.glade.h:1
+msgid "<b>Highlight Setting</b>"
+msgstr "高亮度設定"
+
+#: config.glade.h:2
+msgid "Background color : "
+msgstr "背景顏色 : "
+
+#: config.glade.h:3
+msgid "Foreground color : "
+msgstr "文字顏色 : "

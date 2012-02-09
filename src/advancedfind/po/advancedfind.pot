@@ -1,0 +1,141 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-08 23:53+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: advancedfind.py:126 FindDialog.glade.h:5
+msgid "Advanced Find / Replace"
+msgstr ""
+
+#: FindDialog.glade.h:1
+msgid "..."
+msgstr ""
+
+#: FindDialog.glade.h:2
+msgid "<b>Direction</b>"
+msgstr ""
+
+#: FindDialog.glade.h:3
+msgid "<b>Options</b>"
+msgstr ""
+
+#: FindDialog.glade.h:4
+msgid "<b>Scope</b>"
+msgstr ""
+
+#: FindDialog.glade.h:6
+msgid "All Documents in Directory"
+msgstr ""
+
+#: FindDialog.glade.h:7
+msgid "All Opened Documents"
+msgstr ""
+
+#: FindDialog.glade.h:8
+msgid "Backward"
+msgstr ""
+
+#: FindDialog.glade.h:9
+msgid "Cancel"
+msgstr ""
+
+#: FindDialog.glade.h:10
+msgid "Close"
+msgstr ""
+
+#: FindDialog.glade.h:11
+msgid "Current Document"
+msgstr ""
+
+#: FindDialog.glade.h:12
+msgid "Directory : "
+msgstr ""
+
+#: FindDialog.glade.h:13
+msgid "Directory follow current doc."
+msgstr ""
+
+#: FindDialog.glade.h:14
+msgid "Directoy include sub-folder"
+msgstr ""
+
+#: FindDialog.glade.h:15
+msgid "Filter : "
+msgstr ""
+
+#: FindDialog.glade.h:16
+msgid "Find"
+msgstr ""
+
+#: FindDialog.glade.h:17
+msgid "Find All"
+msgstr ""
+
+#: FindDialog.glade.h:18
+msgid "Find what : "
+msgstr ""
+
+#: FindDialog.glade.h:19
+msgid "Forward"
+msgstr ""
+
+#: FindDialog.glade.h:20
+msgid "Match case"
+msgstr ""
+
+#: FindDialog.glade.h:21
+msgid "Match whole word"
+msgstr ""
+
+#: FindDialog.glade.h:22
+msgid "Ok"
+msgstr ""
+
+#: FindDialog.glade.h:23
+msgid "Regular Expression"
+msgstr ""
+
+#: FindDialog.glade.h:24
+msgid "Replace"
+msgstr ""
+
+#: FindDialog.glade.h:25
+msgid "Replace All"
+msgstr ""
+
+#: FindDialog.glade.h:26
+msgid "Replace with : "
+msgstr ""
+
+#: FindDialog.glade.h:27
+msgid "Select a directory"
+msgstr ""
+
+#: FindDialog.glade.h:28
+msgid "Wrap around"
+msgstr ""
+
+#: config.glade.h:1
+msgid "<b>Highlight Setting</b>"
+msgstr ""
+
+#: config.glade.h:2
+msgid "Background color : "
+msgstr ""
+
+#: config.glade.h:3
+msgid "Foreground color : "
+msgstr ""

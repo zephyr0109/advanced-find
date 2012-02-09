@@ -208,16 +208,18 @@ class AdvancedFindWindowHelper:
 
 	def create_regex(self, pattern, options):
 		if options['REGEX_SEARCH'] == False:
-			pattern = re.escape(pattern)
+			pattern = re.escape(unicode(pattern, "utf-8"))
+		else:
+			pattern = unicode(pattern, "utf-8")
 		
 		if options['MATCH_WHOLE_WORD'] == True:
-			pattern = "\\b%s\\b" % pattern
+			pattern = '\\b%s\\b' % pattern
 			
 		if options['MATCH_CASE'] == True:
-			regex = re.compile(unicode(pattern, "utf-8"))
+			regex = re.compile(pattern)
 		else:
-			regex = re.compile(unicode(pattern, "utf-8"), re.IGNORECASE)
-
+			regex = re.compile(pattern, re.IGNORECASE)
+		
 		return regex
 		
 	def advanced_find_in_doc(self, doc, search_pattern, options, forward_flg = True, replace_flg = False):
@@ -246,6 +248,7 @@ class AdvancedFindWindowHelper:
 				match = regex.search(line)
 				if match:
 					result_start = doc.get_iter_at_offset(line_start.get_offset() + match.start())
+					print line_start.get_offset() + match.start()
 					result_end = doc.get_iter_at_offset(line_start.get_offset() + match.end())
 					doc.select_range(result_start, result_end)
 					view.scroll_to_cursor()
@@ -332,25 +335,25 @@ class AdvancedFindWindowHelper:
 		replace_text_len = len(replace_text)
 
 		for i in range(len(lines)):
-			result = regex.findall(lines[i])
+			results = regex.findall(lines[i])
 			line_start = doc.get_iter_at_line(i)
 				
-			if result:
+			if results:
 				if not tree_it:
 					uri = urllib.unquote(doc.get_uri()[7:]).decode('utf-8')
 					tree_it = self._results_view.append_find_result_filename(parent_it, doc.get_short_name_for_display(), uri)
 				tab = gedit.tab_get_from_document(doc)
 
 				match_pos = 0
-				for cnt in range(0,len(result)):
+				for cnt in range(0, len(results)):
 					match = regex.search(lines[i][match_pos:])
 					result_offset_start = line_start.get_offset() + match.start() + match_pos
 					result_len = len(match.group(0))
 					replace_offset = result_len - replace_text_len
 					
 					if replace_flg == True:
-						self._results_view.append_find_result(tree_it, str(i+1), lines[i].strip(), tab, result_offset_start - (replace_offset*replace_cnt), replace_text_len)
-						replace_start_idx = result_offset_start - (replace_offset*replace_cnt)
+						self._results_view.append_find_result(tree_it, str(i+1), lines[i].strip(), tab, result_offset_start - (replace_offset * replace_cnt), replace_text_len)
+						replace_start_idx = result_offset_start - (replace_offset * replace_cnt)
 						new_text[replace_start_idx:replace_start_idx + result_len] = replace_text
 						replace_cnt += 1
 						text_changed = True
