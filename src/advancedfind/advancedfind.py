@@ -97,8 +97,8 @@ class AdvancedFindWindowHelper:
 				self.options[key] = True
 			elif self.options[key] == 'False':
 				self.options[key] = False
-		self.shortcut = self.config_manager.load_configure('shortcut')
-		#self.active_shortcut = self.get_shortcut_keys(self.shortcut)
+		self.shortcuts = self.config_manager.load_configure('shortcut')
+		#self.active_shortcut = self.get_shortcut_keys(self.shortcuts)
 		self.result_highlight = self.config_manager.load_configure('result_highlight')
 
 		self._results_view = FindResultView(window)
@@ -127,7 +127,7 @@ class AdvancedFindWindowHelper:
 		self._result_view = None
 		
 		self.config_manager.update_config_file(self.config_manager.config_file, 'search_option', self.options)
-		#self.config_manager.update_config_file(self.config_manager.config_file, 'shortcut', self.shortcut)
+		#self.config_manager.update_config_file(self.config_manager.config_file, 'shortcut', self.shortcuts)
 		self.config_manager.update_config_file(self.config_manager.config_file, 'result_highlight', self.result_highlight)
 	
 	def _insert_menu(self):
@@ -136,9 +136,9 @@ class AdvancedFindWindowHelper:
 
 		# Create a new action group
 		self._action_group = gtk.ActionGroup("AdvancedFindReplaceActions")
-		self._action_group.add_actions( [("advanced_find_active", None, _("Advanced Find/Replace"), self.get_shortcut_keys(self.shortcut, 'ACTIVE'), _("Advanced Find/Replace"), self.advanced_find_active),
-										("select_find_next", None, _("Select and Find Next"), self.get_shortcut_keys(self.shortcut, 'SELECT_FIND_NEXT'), _("Select and Find Next"), self.select_find_next),
-										("select_find_previous", None, _("Select and Find Previous"), self.get_shortcut_keys(self.shortcut, 'SELECT_FIND_PREVIOUS'), _("Select and Find Previous"), self.select_find_previous)]) 
+		self._action_group.add_actions( [("advanced_find_active", None, _("Advanced Find/Replace"), self.shortcuts['ACTIVATE'], _("Advanced Find/Replace"), self.advanced_find_active),
+										("select_find_next", None, _("Select and Find Next"), self.shortcuts['SELECT_FIND_NEXT'], _("Select and Find Next"), self.select_find_next),
+										("select_find_previous", None, _("Select and Find Previous"), self.shortcuts['SELECT_FIND_PREVIOUS'], _("Select and Find Previous"), self.select_find_previous)]) 
 
 		# Insert the action group
 		manager.insert_action_group(self._action_group, -1)
@@ -167,6 +167,7 @@ class AdvancedFindWindowHelper:
 		dlg.run()
 		dlg.hide()
 		
+	'''
 	def get_shortcut_keys(self, shortcut_keys, shortcut):
 		if shortcut_keys[shortcut + '_KEY1'] != 'None':
 			key1 = '<' + shortcut_keys[shortcut + '_KEY1'] + '>'
@@ -185,6 +186,7 @@ class AdvancedFindWindowHelper:
 			return key1 + key2 + key3
 		else:
 			return None
+	#'''
 		
 	def advanced_find_active(self, action):
 		doc = self._window.get_active_document()

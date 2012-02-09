@@ -6,15 +6,9 @@
 	<search_option name="INCLUDE_SUBFOLDER">False</search_option>
 	<search_option name="INCLUDE_HIDDEN">True</search_option>
 	<search_option name="REGEX_SEARCH">False</search_option>
-	<shortcut name="ACTIVE_KEY1">ctrl</shortcut>
-	<shortcut name="ACTIVE_KEY2">shift</shortcut>
-	<shortcut name="ACTIVE_KEY3">F</shortcut>
-	<shortcut name="SELECT_FIND_NEXT_KEY1">ctrl</shortcut>
-	<shortcut name="SELECT_FIND_NEXT_KEY2">None</shortcut>
-	<shortcut name="SELECT_FIND_NEXT_KEY3">F3</shortcut>
-	<shortcut name="SELECT_FIND_PREVIOUS_KEY1">ctrl</shortcut>
-	<shortcut name="SELECT_FIND_PREVIOUS_KEY2">shift</shortcut>
-	<shortcut name="SELECT_FIND_PREVIOUS_KEY3">F3</shortcut>
+	<shortcut name="ACTIVATE">&lt;ctrl&gt;&lt;shift&gt;F</shortcut>
+	<shortcut name="SELECT_FIND_NEXT">&lt;ctrl&gt;F3</shortcut>
+	<shortcut name="SELECT_FIND_PREVIOUS">&lt;ctrl&gt;&lt;shift&gt;F3</shortcut>
 	<result_highlight name="FOREGROUND_COLOR">#ffffffff0000</result_highlight>
 	<result_highlight name="BACKGROUND_COLOR">red</result_highlight>
 </manifest>
