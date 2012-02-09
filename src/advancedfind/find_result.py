@@ -190,7 +190,8 @@ class FindResultView(Gtk.HBox):
 		
 		parent_it = model.iter_parent(it)
 		if parent_it:
-			uri = urllib.quote(model.get_value(parent_it, 6).encode('utf-8')).replace('%3A//', '://')
+			#uri = urllib.quote(model.get_value(parent_it, 6).encode('utf-8')).replace('%3A//', '://')
+			uri = urllib.quote(model.get_value(parent_it, 6)).replace('%3A//', '://')
 		else:
 			return
 			

@@ -35,6 +35,7 @@ import re
 from advancedfind_ui import AdvancedFindUI
 from find_result import FindResultView
 import config_manager
+from config_ui import ConfigUI
 
 
 import gettext
@@ -47,6 +48,32 @@ gettext.install(APP_NAME, LOCALE_DIR, unicode=True)
 
 
 # Menu item example, insert a new item in the Edit menu
+'''
+ui_str = """<ui>
+	<menubar name="MenuBar">
+		<menu name="SearchMenu" action="Search">
+			<placeholder name="SearchOps_0">
+				<separator/>
+				<menu name="AdvancedFindMenu" action="AdvancedFindMenu">
+					<placeholder name="AdvancedFindMenuHolder">
+						<menuitem name="advanced_find_active" action="advanced_find_active"/>
+						<menuitem name="find_next" action="find_next"/>
+						<menuitem name="find_previous" action="find_previous"/>
+						<menuitem name="select_find_next" action="select_find_next"/>
+						<menuitem name="select_find_previous" action="select_find_previous"/>
+						<separator/>
+						<menuitem name="advanced_find_configure" action="advanced_find_configure"/>
+					</placeholder>
+				</menu>
+				<separator/>
+			</placeholder>
+		</menu>
+	</menubar>
+</ui>
+"""
+#'''
+
+#'''
 ui_str = """<ui>
 	<menubar name="MenuBar">
 		<menu name="SearchMenu" action="Search">
@@ -56,11 +83,13 @@ ui_str = """<ui>
 				<menuitem name="find_previous" action="find_previous"/>
 				<menuitem name="select_find_next" action="select_find_next"/>
 				<menuitem name="select_find_previous" action="select_find_previous"/>
+				<menuitem name="advanced_find_configure" action="advanced_find_configure"/>
 			</placeholder>
 		</menu>
 	</menubar>
 </ui>
 """
+#'''
 
 
 class AdvancedFindWindowHelper:
@@ -143,11 +172,13 @@ class AdvancedFindWindowHelper:
 
 		# Create a new action group
 		self._action_group = Gtk.ActionGroup("AdvancedFindReplaceActions")
-		self._action_group.add_actions( [("advanced_find_active", None, _("Advanced Find/Replace"), self.shortcuts['ACTIVATE'], _("Advanced Find/Replace"), self.advanced_find_active),
+		self._action_group.add_actions( #[("AdvancedFindMenu", None, _('Advanced Find/Replace'))] + \
+										[("advanced_find_active", None, _("Advanced Find/Replace"), self.shortcuts['ACTIVATE'], _("Advanced Find/Replace"), self.advanced_find_active),
 										("find_next", None, _("Find Next"), self.shortcuts['FIND_NEXT'], _("Find Next"), self.find_next),
 										("find_previous", None, _("Find Previous"), self.shortcuts['FIND_PREVIOUS'], _("Find Previous"), self.find_previous),
 										("select_find_next", None, _("Select and Find Next"), self.shortcuts['SELECT_FIND_NEXT'], _("Select and Find Next"), self.select_find_next),
-										("select_find_previous", None, _("Select and Find Previous"), self.shortcuts['SELECT_FIND_PREVIOUS'], _("Select and Find Previous"), self.select_find_previous)]) 
+										("select_find_previous", None, _("Select and Find Previous"), self.shortcuts['SELECT_FIND_PREVIOUS'], _("Select and Find Previous"), self.select_find_previous),
+										("advanced_find_configure", None, _("Advanced Find/Replace Configure"), None, _("Advanced Find/Replace Configure"), self.advanced_find_configure)]) 
 
 		# Insert the action group
 		manager.insert_action_group(self._action_group, -1)
@@ -175,6 +206,9 @@ class AdvancedFindWindowHelper:
 		dlg.set_property('text', text)
 		dlg.run()
 		dlg.hide()
+		
+	def advanced_find_configure(self, window, tab, data = None):
+		config_ui = ConfigUI(self._plugin)
 		
 	def advanced_find_active(self, window, tab, data = None):
 		doc = self._window.get_active_document()
@@ -366,6 +400,8 @@ class AdvancedFindWindowHelper:
 					line_num = doc.get_iter_at_offset(match.start()).get_line()
 					line_start_pos = doc.get_iter_at_line(line_num).get_offset()
 					line_end_pos = doc.get_iter_at_line(doc.get_iter_at_offset(match.end()).get_line()+1).get_offset()
+					if line_end_pos == line_start_pos:
+						line_end_pos = end_pos
 					line_text = text[line_start_pos:line_end_pos]
 					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, tab, match.start(), match.end()-match.start(), "", line_start_pos)
 					start_pos = match.end() + 1
@@ -394,14 +430,22 @@ class AdvancedFindWindowHelper:
 				
 				start, end = doc.get_bounds()
 				text = unicode(doc.get_text(start, end, True), 'utf-8')
-				for i in range(len(results)):
-					line_num = doc.get_iter_at_offset(results[i][0]).get_line()
+
+				for result in results:
+					line_num = doc.get_iter_at_offset(result[0]).get_line()
 					line_start_pos = doc.get_iter_at_line(line_num).get_offset()
-					line_end_pos = doc.get_iter_at_line(doc.get_iter_at_offset(results[i][0]+results[i][1]).get_line()+1).get_offset()
+					line_end_pos = result[0]+result[1]
 					line_text = text[line_start_pos:line_end_pos]
-					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, tab, results[i][0], results[i][1], "", line_start_pos, True)
+					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, tab, result[0], result[1], "", line_start_pos, True)
 			
 		self.result_highlight_on(tree_it)
+		
+	def check_file_pattern(self,path, pattern_text):
+		pattern_list = re.split('\s*\|\s*', pattern_text)
+		for pattern in pattern_list:
+			if fnmatch.fnmatch(path, pattern):
+				return True
+		return False
 			
 	def find_all_in_dir(self, parent_it, dir_path, file_pattern, search_pattern, options, replace_flg = False):
 		if search_pattern == "":
@@ -425,7 +469,7 @@ class AdvancedFindWindowHelper:
 					path_list.append(f)
 					
 		for file_path in path_list:
-			if fnmatch.fnmatch(file_path, unicode(file_pattern, 'utf-8')):
+			if self.check_file_pattern(file_path, unicode(file_pattern, 'utf-8')):
 				if os.path.isfile(file_path):
 					pipe = subprocess.PIPE
 					p1 = subprocess.Popen(["file", "-i", file_path], stdout=pipe)

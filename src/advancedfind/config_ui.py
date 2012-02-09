@@ -24,7 +24,7 @@
 
 
 
-from gi.repository import Gtk, Gedit
+from gi.repository import Gtk, Gedit, Gdk
 import os.path
 	
 #from gettext import gettext as _
@@ -33,7 +33,7 @@ import os.path
 
 class ConfigUI(object):
 	def __init__(self, plugin):
-		self._plugin = plugin
+		#self._plugin = plugin
 		self._instance, self._window = plugin.get_instance()
 	
 		#Set the Glade file
@@ -46,9 +46,9 @@ class ConfigUI(object):
 		
 		self.fgColorbutton = UI.get_object("fgColorbutton")
 		self.bgColorbutton = UI.get_object("bgColorbutton")
-		
-		self.fgColorbutton.set_color(Gtk.gdk.color_parse(self._instance.result_highlight['FOREGROUND_COLOR']))
-		self.bgColorbutton.set_color(Gtk.gdk.color_parse(self._instance.result_highlight['BACKGROUND_COLOR']))
+
+		self.fgColorbutton.set_color(Gdk.color_parse(self._instance.result_highlight['FOREGROUND_COLOR'])[1])
+		self.bgColorbutton.set_color(Gdk.color_parse(self._instance.result_highlight['BACKGROUND_COLOR'])[1])
 
 		self.rootFollowFilebrowserCheckbutton = UI.get_object("rootFollowFilebrowserCheckbutton")
 		self.rootFollowFilebrowserCheckbutton.set_active(self._instance.options['ROOT_FOLLOW_FILEBROWSER'])
