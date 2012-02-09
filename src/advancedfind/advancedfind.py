@@ -510,6 +510,11 @@ class AdvancedFindWindowHelper:
 			grep_cmd = ['grep', '-E', '-l', search_pattern, dir_path]
 		p = subprocess.Popen(grep_cmd, stdout=subprocess.PIPE)
 		for f in p.stdout:
+			p1 = subprocess.Popen(['file', '--mime', f[:-1]], stdout=subprocess.PIPE)
+			p2 = subprocess.Popen(['grep', 'charset=binary'], stdin=p1.stdout, stdout=subprocess.PIPE)
+			output = p2.communicate()[0]
+			if output:
+				continue
 			if self.check_file_pattern(f, unicode(file_pattern, 'utf-8')):
 				file_list.append(f[:-1])
 		
@@ -538,6 +543,7 @@ class AdvancedFindWindowHelper:
 				temp_doc = Gedit.Document()
 				file_uri = 'file://' + file_path
 				temp_doc.load(Gio.file_new_for_uri(file_uri), Gedit.encoding_get_from_charset('utf-8'), 0, 0, False)
+				#temp_doc.load(Gio.file_new_for_uri(file_uri), None, 0, 0, False)
 				f_temp = open(file_path, 'r')
 				try:
 					text = unicode(f_temp.read(), 'utf-8')
