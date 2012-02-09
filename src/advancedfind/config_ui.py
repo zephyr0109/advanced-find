@@ -46,8 +46,6 @@ import os.path
 class ConfigUI(object):
 	def __init__(self, plugin):
 		self._plugin = plugin
-		#self._instance = self._plugin.get_instance()
-		#self._window = self._instance.window
 		self._instance, self._window = plugin.get_instance()
 	
 		#Set the Glade file

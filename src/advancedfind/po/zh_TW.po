@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-24 20:25+0800\n"
+"POT-Creation-Date: 2011-03-09 23:20+0800\n"
 "PO-Revision-Date: 2010-10-17 20:15+0800\n"
 "Last-Translator: swatch <swatch.code@gmail.com>\n"
 "Language-Team: none\n"
@@ -27,11 +27,11 @@ msgstr "選取並尋找下一個"
 msgid "Select and Find Previous"
 msgstr "選取並尋找上一個"
 
-#: ../advancedfind.py:279 ../advancedfind.py:323
+#: ../advancedfind.py:281 ../advancedfind.py:325
 msgid "Nothing is found."
 msgstr "找不到符合的字詞"
 
-#: ../advancedfind_ui.py:314
+#: ../advancedfind_ui.py:313
 msgid "Replace in this scope is not supported."
 msgstr "取代功能不支援所選擇的範圍"
 
@@ -73,7 +73,7 @@ msgstr "背景顏色"
 
 #: ../config.glade:102
 #, fuzzy
-msgid "<b>Highlight Settings</b>"
+msgid "<b>Result Highlighting</b>"
 msgstr "<b>高亮度標示設定</b>"
 
 #: ../config.glade:137
@@ -82,7 +82,7 @@ msgstr "使用檔案瀏覽器的根資料夾路徑"
 
 #: ../config.glade:173
 #, fuzzy
-msgid "<b>Other Settings</b>"
+msgid "<b>Others</b>"
 msgstr "<b>其他設定</b>"
 
 #: ../FindDialog.glade:67

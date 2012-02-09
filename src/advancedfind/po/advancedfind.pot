@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-24 20:26+0800\n"
+"POT-Creation-Date: 2011-03-09 23:21+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,11 +28,11 @@ msgstr ""
 msgid "Select and Find Previous"
 msgstr ""
 
-#: ../advancedfind.py:279 ../advancedfind.py:323
+#: ../advancedfind.py:281 ../advancedfind.py:325
 msgid "Nothing is found."
 msgstr ""
 
-#: ../advancedfind_ui.py:314
+#: ../advancedfind_ui.py:313
 msgid "Replace in this scope is not supported."
 msgstr ""
 
@@ -73,7 +73,7 @@ msgid "Background color : "
 msgstr ""
 
 #: ../config.glade:102
-msgid "<b>Highlight Settings</b>"
+msgid "<b>Result Highlighting</b>"
 msgstr ""
 
 #: ../config.glade:137
@@ -81,7 +81,7 @@ msgid "Root Follow Filebrowser"
 msgstr ""
 
 #: ../config.glade:173
-msgid "<b>Other Settings</b>"
+msgid "<b>Others</b>"
 msgstr ""
 
 #: ../FindDialog.glade:67

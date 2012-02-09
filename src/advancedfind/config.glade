@@ -99,7 +99,7 @@
             <child type="label">
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">&lt;b&gt;Highlight Settings&lt;/b&gt;</property>
+                <property name="label" translatable="yes">&lt;b&gt;Result Highlighting&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
               </object>
             </child>
@@ -170,7 +170,7 @@
             <child type="label">
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">&lt;b&gt;Other Settings&lt;/b&gt;</property>
+                <property name="label" translatable="yes">&lt;b&gt;Others&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
               </object>
             </child>
