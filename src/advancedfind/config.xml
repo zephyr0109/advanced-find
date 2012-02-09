@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?><manifest>
+	<search_option name="MATCH_WHOLE_WORD">False</search_option>
+	<search_option name="MATCH_CASE">False</search_option>
+	<search_option name="WRAP_AROUND">False</search_option>
+</manifest>

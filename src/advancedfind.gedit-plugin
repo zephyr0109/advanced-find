@@ -1,0 +1,9 @@
+[Gedit Plugin]
+Loader=python
+Module=advancedfind
+IAge=2
+Name=Advanced Find
+Description=Advanced Find/Replace
+Authors=Swatch
+Copyright=GPLv2
+Website=https://code.google.com/p/tongwen-python/
