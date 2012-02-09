@@ -55,32 +55,6 @@ except:
 
 
 # Menu item example, insert a new item in the Edit menu
-'''
-ui_str = """<ui>
-	<menubar name="MenuBar">
-		<menu name="SearchMenu" action="Search">
-			<placeholder name="SearchOps_0">
-				<separator/>
-				<menu name="AdvancedFindMenu" action="AdvancedFindMenu">
-					<placeholder name="AdvancedFindMenuHolder">
-						<menuitem name="advanced_find_active" action="advanced_find_active"/>
-						<menuitem name="find_next" action="find_next"/>
-						<menuitem name="find_previous" action="find_previous"/>
-						<menuitem name="select_find_next" action="select_find_next"/>
-						<menuitem name="select_find_previous" action="select_find_previous"/>
-						<separator/>
-						<menuitem name="advanced_find_configure" action="advanced_find_configure"/>
-					</placeholder>
-				</menu>
-				<separator/>
-			</placeholder>
-		</menu>
-	</menubar>
-</ui>
-"""
-#'''
-
-#'''
 ui_str = """<ui>
 	<menubar name="MenuBar">
 		<menu name="SearchMenu" action="Search">
@@ -96,7 +70,6 @@ ui_str = """<ui>
 	</menubar>
 </ui>
 """
-#'''
 
 
 class AdvancedFindWindowHelper:
@@ -527,19 +500,15 @@ class AdvancedFindWindowHelper:
 		#d_list = []
 		file_list = []
 		grep_cmd = ['grep', '-l']
-		if find_options['REGEX_SEARCH'] == True:
-			grep_cmd.append('-E')
 		if find_options['INCLUDE_SUBFOLDER'] == True:
 			grep_cmd.append('-R')
-		grep_cmd = grep_cmd + [search_pattern, dir_path]
-		#print grep_cmd
-		'''
-		if find_options['INCLUDE_SUBFOLDER'] == True:
-			grep_cmd = ['grep', '-E', '-l', '-R', search_pattern, dir_path]
+		if find_options['REGEX_SEARCH'] == True:
+			grep_cmd = grep_cmd + ['-E', search_pattern, dir_path]
 		else:
-			grep_cmd = ['grep', '-E', '-l', search_pattern, dir_path]
-		#'''
-		p = subprocess.Popen(grep_cmd, stdout=subprocess.PIPE)
+			grep_cmd = grep_cmd + [re.escape(search_pattern).replace('\(','(').replace('\)',')').replace('\n','n'), dir_path]
+		#print grep_cmd
+
+		p = subprocess.Popen(grep_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		for f in p.stdout:
 			p1 = subprocess.Popen(['file', '--mime', f[:-1]], stdout=subprocess.PIPE)
 			p2 = subprocess.Popen(['grep', 'charset=binary'], stdin=p1.stdout, stdout=subprocess.PIPE)
