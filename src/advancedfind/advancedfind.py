@@ -283,11 +283,15 @@ class AdvancedFindWindowHelper:
 		
 		if find_options['MATCH_WHOLE_WORD'] == True:
 			pattern = r'\b%s\b' % pattern
-			
-		if find_options['MATCH_CASE'] == True:
-			regex = re.compile(pattern, re.MULTILINE)
-		else:
-			regex = re.compile(pattern, re.IGNORECASE | re.MULTILINE)
+		
+		re_flg = re.MULTILINE
+		if find_options['MATCH_CASE'] == False:
+			re_flg |= re.IGNORECASE
+		try:
+			regex = re.compile(pattern, re_flg)
+		except:
+			print 'regex compile failed'
+			regex = None
 		
 		return regex
 		
@@ -296,6 +300,8 @@ class AdvancedFindWindowHelper:
 			return
 
 		regex = self.create_regex(search_pattern, find_options)
+		if not regex:
+			return
 		
 		if doc.get_has_selection():
 			sel_start, sel_end = doc.get_selection_bounds()
@@ -404,6 +410,8 @@ class AdvancedFindWindowHelper:
 			return
 		
 		regex = self.create_regex(search_pattern, find_options)
+		if not regex:
+			return
 
 		self.result_highlight_off(doc)
 		start, end = doc.get_bounds()
@@ -441,9 +449,16 @@ class AdvancedFindWindowHelper:
 				while(match):
 					line_num = doc.get_iter_at_offset(match.start()).get_line()
 					line_start_pos = doc.get_iter_at_line(line_num).get_offset()
-					line_end_pos = doc.get_iter_at_line(doc.get_iter_at_offset(match.end()).get_line()+1).get_offset()
-					if line_end_pos == line_start_pos:
+					match_end_line_cnt = doc.get_iter_at_offset(match.end()).get_line() + 1
+					if match_end_line_cnt == doc.get_line_count():
 						line_end_pos = end_pos
+					else:
+						line_end_pos = doc.get_iter_at_line(match_end_line_cnt).get_offset()
+					'''
+					line_end_pos = doc.get_iter_at_line(doc.get_iter_at_offset(match.end()).get_line()+1).get_offset()
+					if line_end_pos == line_start_pos or match_end_line_cnt == doc.get_line_count():
+						line_end_pos = end_pos
+					#'''
 					line_text = text[line_start_pos:line_end_pos]
 					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, match.start(), match.end()-match.start(), "", line_start_pos)
 					start_pos = match.end() + 1
@@ -481,9 +496,16 @@ class AdvancedFindWindowHelper:
 					line_num = doc.get_iter_at_offset(result[0]).get_line()
 					line_start_pos = doc.get_iter_at_line(line_num).get_offset()
 					#line_end_pos = result[0]+result[1]
+					match_end_line_cnt = doc.get_iter_at_offset(result[0]+result[1]).get_line() + 1
+					if match_end_line_cnt == doc.get_line_count():
+						line_end_pos = end_pos
+					else:
+						line_end_pos = doc.get_iter_at_line(match_end_line_cnt).get_offset()
+					'''
 					line_end_pos = doc.get_iter_at_line(doc.get_iter_at_offset(result[0]+result[1]).get_line()+1).get_offset()
 					if line_end_pos == line_start_pos:
 						line_end_pos = end_pos
+					#'''
 					line_text = text[line_start_pos:line_end_pos]
 					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, result[0], result[1], "", line_start_pos, True)
 			
@@ -504,10 +526,19 @@ class AdvancedFindWindowHelper:
 
 		#d_list = []
 		file_list = []
+		grep_cmd = ['grep', '-l']
+		if find_options['REGEX_SEARCH'] == True:
+			grep_cmd.append('-E')
+		if find_options['INCLUDE_SUBFOLDER'] == True:
+			grep_cmd.append('-R')
+		grep_cmd = grep_cmd + [search_pattern, dir_path]
+		#print grep_cmd
+		'''
 		if find_options['INCLUDE_SUBFOLDER'] == True:
 			grep_cmd = ['grep', '-E', '-l', '-R', search_pattern, dir_path]
 		else:
 			grep_cmd = ['grep', '-E', '-l', search_pattern, dir_path]
+		#'''
 		p = subprocess.Popen(grep_cmd, stdout=subprocess.PIPE)
 		for f in p.stdout:
 			p1 = subprocess.Popen(['file', '--mime', f[:-1]], stdout=subprocess.PIPE)

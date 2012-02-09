@@ -46,6 +46,7 @@
                         </child>
                         <child>
                           <object class="GtkColorButton" id="fgColorbutton">
+                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -88,6 +89,7 @@
                         </child>
                         <child>
                           <object class="GtkColorButton" id="bgColorbutton">
+                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -147,7 +149,6 @@
         <child>
           <object class="GtkFrame" id="frame1">
             <property name="visible">True</property>
-            <property name="sensitive">False</property>
             <property name="can_focus">False</property>
             <property name="label_xalign">0</property>
             <property name="shadow_type">none</property>
@@ -167,6 +168,7 @@
                         <child>
                           <object class="GtkCheckButton" id="rootFollowFilebrowserCheckbutton">
                             <property name="label" translatable="yes">Root Follow Filebrowser</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>

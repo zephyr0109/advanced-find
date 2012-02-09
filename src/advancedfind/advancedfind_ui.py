@@ -22,7 +22,7 @@
 #
 
 
-from gi.repository import Gtk, Gedit
+from gi.repository import GObject, Gtk, Gedit, Gio
 
 import os.path
 import os
@@ -135,12 +135,10 @@ class AdvancedFindUI(object):
 		self.pathComboboxtext = ui.get_object("pathComboboxtext")
 		self.pathComboboxtext.set_entry_text_column(0)
 		filebrowser_root = self.get_filebrowser_root()
-		'''
 		if filebrowser_root != None and self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'] == True:
 			self.pathComboboxtext.get_child().set_text(filebrowser_root)
 		else:
 			self.pathComboboxtext.get_child().set_text(self.selectPathFilechooserdialog.get_filename())
-		#'''
 			
 		try:
 			for path in self._instance.file_path_history:
@@ -236,7 +234,7 @@ class AdvancedFindUI(object):
 
 	def on_findDialog_focus_out_event_action(self, object, event):
 		#object.set_opacity(0.5)
-		object.set_opacity(self.opacityScale.get_value())
+		object.set_opacity(self.opacityScale.get_value()/100)
 	
 	'''	
 	def esc_accel_action(self, accelgroup, window, key, modifier):
@@ -473,7 +471,25 @@ class AdvancedFindUI(object):
 
 	# filebrowser integration
 	def get_filebrowser_root(self):
-		return 'none'
+		base_key = 'org.gnome.gedit.plugins.filebrowser'
+		setting = Gio.Settings.new(base_key)
+		root_str = setting.get_string('virtual-root')
+		#print root_str
+		if not root_str:
+			return None
+		'''
+		path = Gio.Vfs.get_default().get_file_for_uri(root_str).get_path()
+		print path + '#'
+		return path
+		#'''
+		#'''
+		if root_str.startswith('file://'):
+			return root_str[7:]
+		else:
+			return None
+		#'''
+		
+		
 		'''
 		base = u'/apps/gedit-2/plugins/filebrowser/on_load'
 		client = gconf.client_get_default()

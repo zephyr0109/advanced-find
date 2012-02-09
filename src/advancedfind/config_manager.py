@@ -86,7 +86,7 @@ class ConfigManager:
 		f.close
 		
 	def boolean(self, string):
-		return string.lower() in ['true', 'yes', 't', 'y', 'ok']
+		return string.lower() in ['true', 'yes', 't', 'y', 'ok', '1']
 		
 	def to_bool(self, dic):
 		for key in dic.keys():

@@ -78,6 +78,7 @@ class FindResultView(Gtk.HBox):
 		v_buttonbox = Gtk.VButtonBox()
 		v_buttonbox.set_layout(Gtk.ButtonBoxStyle.END)
 		v_buttonbox.set_spacing(5)
+		v_buttonbox.set_homogeneous(True)
 		self.selectNextButton = Gtk.Button(_("Next"))
 		self.selectNextButton.set_no_show_all(True)
 		self.selectNextButton.connect("clicked", self.on_selectNextButton_clicked_action)
