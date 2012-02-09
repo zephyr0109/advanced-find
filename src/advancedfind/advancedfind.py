@@ -484,10 +484,20 @@ class AdvancedFindWindowHelper:
 		start_time = time.time()
 		if search_pattern == "":
 			return
-			
-		d_list = []
+
+		#d_list = []
 		file_list = []
 		
+		if find_options['INCLUDE_SUBFOLDER'] == True:
+			grep_cmd = ['grep', '-E', '-l', '-R', search_pattern, dir_path]
+		else:
+			grep_cmd = ['grep', '-E', '-l', search_pattern, dir_path]
+		p = subprocess.Popen(grep_cmd, stdout=subprocess.PIPE)
+		for f in p.stdout:
+			if self.check_file_pattern(f, unicode(file_pattern, 'utf-8')):
+				file_list.append(f[:-1])
+		
+		'''
 		for root, dirs, files in os.walk(unicode(dir_path, 'utf-8')):
 			for d in dirs:
 				d_list.append(os.path.join(root, d))	
@@ -499,15 +509,16 @@ class AdvancedFindWindowHelper:
 						if os.path.dirname(f) not in d_list:
 							file_list.append(os.path.join(root, f))
 				self.find_ui.do_events()
+		#'''
 					
 		mid_time = time.time()
 		print 'Use ' + str(mid_time-start_time) + ' seconds to find files.'
-		
 					
 		for file_path in file_list:
 			if os.path.isfile(file_path):
 				temp_doc = Gedit.Document()
-				file_uri = "file://" + urllib.pathname2url(file_path.encode('utf-8'))
+				#file_uri = "file://" + urllib.pathname2url(file_path.encode('utf-8'))
+				file_uri = ('file://' + file_path).encode('utf-8')
 				temp_doc.load(Gio.file_new_for_uri(file_uri), Gedit.encoding_get_from_charset('utf-8'), 0, 0, False)
 				f_temp = open(file_path, 'r')
 				try:
