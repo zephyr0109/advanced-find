@@ -2,7 +2,7 @@
 
 
 # findadvance_ui.py
-# v0.1.1
+# v0.1.2
 #
 # Copyright 2010 swatch
 #
@@ -68,6 +68,8 @@ class AdvancedFindUI(object):
 							"on_matchWholeWordCheckbutton_toggled" : self.on_matchWholeWordCheckbutton_toggled_action,
 							"on_matchCaseCheckbutton_toggled" : self.on_matchCaseCheckbutton_toggled_action,
 							"on_wrapAroundCheckbutton_toggled" : self.on_wrapAroundCheckbutton_toggled_action,
+							"on_followCurrentDocCheckbutton_toggled" : self.on_followCurrentDocCheckbutton_toggled_action,
+							"on_includeSubfolderCheckbutton_toggled" : self.on_includeSubfolderCheckbutton_toggled_action,
 							
 							"on_forwardRadiobutton_toggled" : self.directionRadiobuttonGroup_action,
 							"on_backwardRadiobutton_toggled" : self.directionRadiobuttonGroup_action,
@@ -118,6 +120,7 @@ class AdvancedFindUI(object):
 		self.pathComboboxentry = self.ui.get_object("pathComboboxentry")
 		self.pathComboboxentry.set_text_column(0)
 		self.pathComboboxentry.child.set_text(self.selectPathFilechooserdialog.get_filename())
+		#self.pathComboboxentry.child.set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
 		try:
 			for path in self._instance.path_list:
 				self.pathComboboxentry.append_text(path)
@@ -127,13 +130,25 @@ class AdvancedFindUI(object):
 		self.matchWholeWordCheckbutton = self.ui.get_object("matchWholeWordCheckbutton")
 		self.matchCaseCheckbutton = self.ui.get_object("matchCaseCheckbutton")
 		self.wrapAroundCheckbutton = self.ui.get_object("wrapAroundCheckbutton")
+		self.followCurrentDocCheckbutton = self.ui.get_object("followCurrentDocCheckbutton")
+		self.includeSubfolderCheckbutton = self.ui.get_object("includeSubfolderCheckbutton")
 
 		self.forwardRadiobutton = self.ui.get_object("forwardRadiobutton")
 		self.backwardRadiobutton = self.ui.get_object("backwardRadiobutton")
+		if self._instance.forwardFlg == True:
+			self.forwardRadiobutton.set_active(True)
+		else:
+			self.backwardRadiobutton.set_active(True)
 
 		self.currentFileRadiobutton = self.ui.get_object("currentFileRadiobutton")
 		self.allFilesRadiobutton = self.ui.get_object("allFilesRadiobutton")
 		self.allFilesInPathRadiobutton = self.ui.get_object("allFilesInPathRadiobutton")
+		if self._instance.scopeFlg == 0:
+			self.currentFileRadiobutton.set_active(True)
+		elif self._instance.scopeFlg == 1:
+			self.allFilesRadiobutton.set_active(True)
+		elif self._instance.scopeFlg == 2:
+			self.allFilesInPathRadiobutton.set_active(True)
 
 		self.findButton = self.ui.get_object("findButton")
 		self.replaceButton = self.ui.get_object("replaceButton")
@@ -156,9 +171,13 @@ class AdvancedFindUI(object):
 		self.matchWholeWordCheckbutton.set_active(self.options['MATCH_WHOLE_WORD'])
 		self.matchCaseCheckbutton.set_active(self.options['MATCH_CASE'])
 		self.wrapAroundCheckbutton.set_active(self.options['WRAP_AROUND'])
+		self.followCurrentDocCheckbutton.set_active(self.options['FOLLOW_CURRENT_DOC'])
+		self.includeSubfolderCheckbutton.set_active(self.options['INCLUDE_SUBFOLDER'])
 
-		self.forwardFlg = True
-		self.scopeFlg = 0 #current document
+		if self.options['FOLLOW_CURRENT_DOC'] == True:
+			self.pathComboboxentry.child.set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
+
+		#self._instance.scopeFlg = 0 #current document
 
 	def on_findDialog_destroy_action(self, object):
 		try:
@@ -175,6 +194,7 @@ class AdvancedFindUI(object):
 		replace_text = self.replaceTextEntry.get_active_text()
 		file_filter = self.filterComboboxentry.get_active_text()
 		path = self.pathComboboxentry.get_active_text()
+		self._instance.current_pattern = find_text
 		
 		if find_text != "" and find_text not in self._instance.find_list:
 			self._instance.find_list.append(find_text)
@@ -199,11 +219,12 @@ class AdvancedFindUI(object):
 			return
 		
 		search_pattern = self.findTextEntry.get_active_text()
+		self._instance.curretn_pattern = search_pattern
 		if search_pattern == "":
 			return
 		
 		self.append_combobox_list()
-		self._instance.advanced_find_in_doc(doc, search_pattern, self.options, self.forwardFlg)
+		self._instance.advanced_find_in_doc(doc, search_pattern, self.options, self._instance.forwardFlg)
 		
 	def on_replaceButton_clicked_action(self, object):
 		doc = self._instance._window.get_active_document()
@@ -211,11 +232,12 @@ class AdvancedFindUI(object):
 			return
 		
 		search_pattern = self.findTextEntry.get_active_text()
+		self._instance.curretn_pattern = search_pattern
 		if search_pattern == "":
 			return
 		
 		self.append_combobox_list()
-		self._instance.advanced_find_in_doc(doc, search_pattern, self.options, self.forwardFlg, True)
+		self._instance.advanced_find_in_doc(doc, search_pattern, self.options, self._instance.forwardFlg, True)
 
 	def on_findAllButton_clicked_action(self, object):
 		search_pattern = self.findTextEntry.get_active_text()
@@ -226,14 +248,14 @@ class AdvancedFindUI(object):
 		
 		it = self._instance._results_view.append_find_pattern(search_pattern)
 		
-		if self.scopeFlg == 0: #current
+		if self._instance.scopeFlg == 0: #current
 			doc = self._instance._window.get_active_document()
 			if not doc:
 				return
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self.options)
 			self._instance._results_view.show_find_result()
 			self._instance.show_bottom_panel()
-		elif self.scopeFlg == 1: #all opened
+		elif self._instance.scopeFlg == 1: #all opened
 			docs = self._instance._window.get_documents()
 			if not docs:
 				return
@@ -241,7 +263,7 @@ class AdvancedFindUI(object):
 				self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self.options)
 			self._instance._results_view.show_find_result()
 			self._instance.show_bottom_panel()
-		elif self.scopeFlg == 2: #files in directory
+		elif self._instance.scopeFlg == 2: #files in directory
 			dir_path = self.pathComboboxentry.get_active_text()
 			file_pattern = self.filterComboboxentry.get_active_text()
 			self._instance.find_all_in_dir(it, dir_path, file_pattern, search_pattern, self.options)
@@ -255,14 +277,14 @@ class AdvancedFindUI(object):
 
 		it = self._instance._results_view.append_find_pattern(search_pattern, True, self.replaceTextEntry.child.get_text())
 		
-		if self.scopeFlg == 0: #current
+		if self._instance.scopeFlg == 0: #current
 			doc = self._instance._window.get_active_document()
 			if not doc:
 				return
 			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self.options, True)
 			self._instance._results_view.show_find_result()
 			self._instance.show_bottom_panel()
-		elif self.scopeFlg == 1: #all opened
+		elif self._instance.scopeFlg == 1: #all opened
 			docs = self._instance._window.get_documents()
 			if not docs:
 				return
@@ -270,7 +292,7 @@ class AdvancedFindUI(object):
 				self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self.options, True)
 			self._instance._results_view.show_find_result()
 			self._instance.show_bottom_panel()
-		elif self.scopeFlg == 2: #files in directory
+		elif self._instance.scopeFlg == 2: #files in directory
 			path = str(self._instance._results_view.findResultTreemodel.iter_n_children(None) - 1)
 			it = self._instance._results_view.findResultTreemodel.get_iter(path)
 			self._instance._results_view.findResultTreemodel.set_value(it, 2, "Replace in All Documents in Directory is not supported.")
@@ -301,19 +323,29 @@ class AdvancedFindUI(object):
 
 	def on_wrapAroundCheckbutton_toggled_action(self, object):
 		self.options['WRAP_AROUND'] = object.get_active()
+		
+	def on_followCurrentDocCheckbutton_toggled_action(self, object):
+		self.options['FOLLOW_CURRENT_DOC'] = object.get_active()
+		if object.get_active() == True:
+			self.pathComboboxentry.child.set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
+		else:
+			self.pathComboboxentry.child.set_text(self.selectPathFilechooserdialog.get_filename())
+			
+	def on_includeSubfolderCheckbutton_toggled_action(self, object):
+		self.options['INCLUDE_SUBFOLDER'] = object.get_active()
 
 
 	# radiobutton
 	def directionRadiobuttonGroup_action(self, object):
-		self.forwardFlg = self.forwardRadiobutton.get_active()
+		self._instance.forwardFlg = self.forwardRadiobutton.get_active()
 
 	def scopeRadiobuttonGroup_action(self, object):
 		if self.currentFileRadiobutton.get_active() == True:
-			self.scopeFlg = 0
+			self._instance.scopeFlg = 0
 		elif self.allFilesRadiobutton.get_active() == True:
-			self.scopeFlg = 1
+			self._instance.scopeFlg = 1
 		elif self.allFilesInPathRadiobutton.get_active() == True:
-			self.scopeFlg = 2
+			self._instance.scopeFlg = 2
 
 
 if __name__ == "__main__":

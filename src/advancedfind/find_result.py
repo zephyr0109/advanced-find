@@ -2,7 +2,7 @@
 
 
 # find_result.py
-# v0.1.1
+# v0.1.2
 #
 # Copyright 2010 swatch
 #
@@ -80,12 +80,15 @@ class FindResultView(gtk.HBox):
 		self.collapseAllButton.connect("clicked", self.on_collapseAllButton_clicked_action)
 		self.clearButton = gtk.Button("Clear")
 		self.clearButton.connect("clicked", self.on_clearButton_clicked_action)
+		#self.findAgainButton = gtk.Button("Find again")
+		#self.findAgainButton.connect("clicked", self.on_findAgainButton_clicked_action)
 		self.closeButton = gtk.Button("Close")
 		self.closeButton.connect("clicked", self.on_closeButton_clicked_action)
 		v_buttonbox.pack_start(self.selectNextButton, False, False, 5)
 		v_buttonbox.pack_start(self.expandAllButton, False, False, 5)
 		v_buttonbox.pack_start(self.collapseAllButton, False, False, 5)
 		v_buttonbox.pack_start(self.clearButton, False, False, 5)
+		#v_buttonbox.pack_start(self.findAgainButton, False, False, 5)
 		v_buttonbox.pack_start(self.closeButton, False, False, 5)
 		v_box.pack_end(v_buttonbox, False, False, 5)
 		
@@ -172,6 +175,9 @@ class FindResultView(gtk.HBox):
 		
 	def on_clearButton_clicked_action(self, object):
 		self.clear_find_result()
+		
+	#def on_findAgainButton_clicked_action(self, object):
+	#	pass
 
 	def on_closeButton_clicked_action(self, boject):
 		self._window.get_bottom_panel().set_property("visible", False)

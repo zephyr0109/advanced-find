@@ -330,15 +330,39 @@
                             <signal name="toggled" handler="on_wrapAroundCheckbutton_toggled"/>
                           </object>
                           <packing>
+                            <property name="top_attach">2</property>
+                            <property name="bottom_attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkCheckButton" id="followCurrentDocCheckbutton">
+                            <property name="label" translatable="yes">Directory follow current doc.</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="draw_indicator">True</property>
+                            <signal name="toggled" handler="on_followCurrentDocCheckbutton_toggled"/>
+                          </object>
+                          <packing>
                             <property name="left_attach">1</property>
                             <property name="right_attach">2</property>
                           </packing>
                         </child>
                         <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
+                          <object class="GtkCheckButton" id="includeSubfolderCheckbutton">
+                            <property name="label" translatable="yes">Directoy include sub-folder</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="draw_indicator">True</property>
+                            <signal name="toggled" handler="on_includeSubfolderCheckbutton_toggled"/>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                            <property name="top_attach">1</property>
+                            <property name="bottom_attach">2</property>
+                          </packing>
                         </child>
                         <child>
                           <placeholder/>
@@ -586,9 +610,9 @@
     <property name="type_hint">normal</property>
     <property name="transient_for">findDialog</property>
     <property name="has_separator">False</property>
-    <property name="action">select-folder</property>
-    <property name="local_only">False</property>
     <property name="create_folders">False</property>
+    <property name="local_only">False</property>
+    <property name="action">select-folder</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>

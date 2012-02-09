@@ -2,7 +2,7 @@
 
 
 # findadvance.py
-# v0.1.1
+# v0.1.2
 #
 # Copyright 2010 swatch
 #
@@ -63,6 +63,9 @@ class AdvancedFindWindowHelper:
 		self.replace_list = []
 		self.filter_list = []
 		self.path_list = []
+		self.current_pattern = ""
+		self.forwardFlg = True
+		self.scopeFlg = 0
 
 		self._results_view = FindResultView(window)
 		self._window.get_bottom_panel().add_item(self._results_view, "Advanced Find/Replace", "gtk-find-and-replace")
@@ -131,7 +134,7 @@ class AdvancedFindWindowHelper:
 			start, end = doc.get_selection_bounds()
 			search_text = unicode(doc.get_text(start,end))
 		except:
-			search_text = ""
+			search_text = self.current_pattern
 
 		if self.find_dialog == None:
 			self.find_dialog = AdvancedFindUI(self._plugin)
@@ -189,7 +192,6 @@ class AdvancedFindWindowHelper:
 						replace_end = doc.get_iter_at_mark(doc.get_insert())
 						replace_start = doc.get_iter_at_offset(replace_end.get_offset() - len(replace_text))
 						doc.select_range(replace_start, replace_end)
-						print str(replace_start.get_offset()) + " , " + str(replace_end.get_offset())
 						view.scroll_to_cursor()
 						
 					return
@@ -297,11 +299,31 @@ class AdvancedFindWindowHelper:
 		if search_pattern == "":
 			return
 		
-		for f in os.listdir(unicode(dir_path, 'utf-8')):
-			if fnmatch.fnmatch(f, unicode(file_pattern, 'utf-8')):
-				file_path = unicode(dir_path + "/", 'utf-8') + f
+		d_list = []
+		f_list = []
+		path_list = []
+		
+		for root, dirs, files in os.walk(unicode(dir_path, 'utf-8')):
+			for d in dirs:
+				d_list.append(os.path.join(root, d))	
+			for f in files:
+				f_list.append(os.path.join(root, f))
+		
+		if options['INCLUDE_SUBFOLDER'] == True:
+			path_list = f_list
+		else:
+			for f in f_list:
+				if os.path.dirname(f) not in d_list:
+					path_list.append(f)
+
+		#for f in os.listdir(unicode(dir_path, 'utf-8')):
+		for file_path in path_list:
+			#if fnmatch.fnmatch(f, unicode(file_pattern, 'utf-8')):
+			if fnmatch.fnmatch(file_path, unicode(file_pattern, 'utf-8')):
+				#file_path = unicode(dir_path + "/", 'utf-8') + f
 
 				if os.path.isfile(file_path):
+					#print file_path
 					pipe = subprocess.PIPE
 					p1 = subprocess.Popen(["file", "-i", file_path], stdout=pipe)
 					p2 = subprocess.Popen(["grep", "text"], stdin=p1.stdout, stdout=pipe)
@@ -311,11 +333,15 @@ class AdvancedFindWindowHelper:
 						file_uri = "file://" + urllib.pathname2url(file_path.encode('utf-8'))
 						temp_doc.load(file_uri, gedit.encoding_get_from_charset('utf-8'), 0, False)
 						f_temp = open(file_path, 'r')
-						text = unicode(f_temp.read(), 'utf-8')
+						try:
+							text = unicode(f_temp.read(), 'utf-8')
+						except:
+							text = f_temp.read()
 						f_temp.close()
 						temp_doc.set_text(text)
 						
 						self.advanced_find_all_in_doc(parent_it, temp_doc, search_pattern, options, replace_flg)
+
 		self._results_view.show_find_result()
 		self.show_bottom_panel()
 
