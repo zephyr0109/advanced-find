@@ -410,9 +410,9 @@ class AdvancedFindWindowHelper:
 				if doc_uri == None:
 					uri = ''
 				else:
+					tab = Gedit.Tab.get_from_document(doc)
 					uri = urllib.unquote(doc.get_uri_for_display()).decode('utf-8')
-				tree_it = self._results_view.append_find_result_filename(parent_it, doc.get_short_name_for_display(), uri)
-			tab = Gedit.Tab.get_from_document(doc)
+				tree_it = self._results_view.append_find_result_filename(parent_it, doc.get_short_name_for_display(), tab, uri)
 
 			if replace_flg == False:
 				while(match):
@@ -422,7 +422,7 @@ class AdvancedFindWindowHelper:
 					if line_end_pos == line_start_pos:
 						line_end_pos = end_pos
 					line_text = text[line_start_pos:line_end_pos]
-					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, tab, match.start(), match.end()-match.start(), "", line_start_pos)
+					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, match.start(), match.end()-match.start(), "", line_start_pos)
 					start_pos = match.end() + 1
 					match = regex.search(text, start_pos, end_pos)
 			else:
@@ -453,9 +453,12 @@ class AdvancedFindWindowHelper:
 				for result in results:
 					line_num = doc.get_iter_at_offset(result[0]).get_line()
 					line_start_pos = doc.get_iter_at_line(line_num).get_offset()
-					line_end_pos = result[0]+result[1]
+					#line_end_pos = result[0]+result[1]
+					line_end_pos = doc.get_iter_at_line(doc.get_iter_at_offset(result[0]+result[1]).get_line()+1).get_offset()
+					if line_end_pos == line_start_pos:
+						line_end_pos = end_pos
 					line_text = text[line_start_pos:line_end_pos]
-					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, tab, result[0], result[1], "", line_start_pos, True)
+					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, result[0], result[1], "", line_start_pos, True)
 			
 		self.result_highlight_on(tree_it)
 		
@@ -472,7 +475,7 @@ class AdvancedFindWindowHelper:
 			
 		d_list = []
 		f_list = []
-		file_path_history = []
+		file_list = []
 		
 		for root, dirs, files in os.walk(unicode(dir_path, 'utf-8')):
 			for d in dirs:
@@ -481,13 +484,13 @@ class AdvancedFindWindowHelper:
 				f_list.append(os.path.join(root, f))
 		
 		if find_options['INCLUDE_SUBFOLDER'] == True:
-			file_path_history = f_list
+			file_list = f_list
 		else:
 			for f in f_list:
 				if os.path.dirname(f) not in d_list:
-					file_path_history.append(f)
+					file_list.append(f)
 					
-		for file_path in file_path_history:
+		for file_path in file_list:
 			if self.check_file_pattern(file_path, unicode(file_pattern, 'utf-8')):
 				if os.path.isfile(file_path):
 					pipe = subprocess.PIPE

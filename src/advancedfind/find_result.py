@@ -183,7 +183,7 @@ class FindResultView(Gtk.HBox):
 		except:
 			return
 		
-		tab = model.get_value(it, 3)
+		#tab = model.get_value(it, 3)
 		result_start = model.get_value(it, 4)
 		result_len = model.get_value(it, 5)
 		#uri = model.get_value(it, 6)
@@ -192,6 +192,7 @@ class FindResultView(Gtk.HBox):
 		if parent_it:
 			#uri = urllib.quote(model.get_value(parent_it, 6).encode('utf-8')).replace('%3A//', '://')
 			uri = urllib.quote(model.get_value(parent_it, 6)).replace('%3A//', '://')
+			tab = model.get_value(parent_it, 3)
 		else:
 			return
 			
@@ -349,12 +350,12 @@ class FindResultView(Gtk.HBox):
 			it = self.findResultTreemodel.append(None, [idx, mode, '', None, 0, 0, ''])
 		return it
 	
-	def append_find_result_filename(self, parent_it, filename, uri):
-		filename_str = self.result_format['FILENAME'] % {'FILENAME' : filename}
-		it = self.findResultTreemodel.append(parent_it, [0, filename_str, '', None, 0, 0, uri])
+	def append_find_result_filename(self, parent_it, filename, tab, uri):
+		filename_str = self.result_format['FILENAME'] % {'FILENAME' : self.to_xml_text(filename)}
+		it = self.findResultTreemodel.append(parent_it, [0, filename_str, '', tab, 0, 0, uri])
 		return it
 		
-	def append_find_result(self, parent_it, line, text, tab, result_offset_start = 0, result_len = 0, uri = "", line_start_pos = 0, replace_flg = False):
+	def append_find_result(self, parent_it, line, text, result_offset_start = 0, result_len = 0, uri = "", line_start_pos = 0, replace_flg = False):
 		result_line = self.result_format['LINE'] % {'LINE_NUM' : line}
 		markup_start = result_offset_start - line_start_pos
 		markup_end = markup_start + result_len
@@ -365,10 +366,10 @@ class FindResultView(Gtk.HBox):
 
 		if replace_flg == False:
 			result_text = (text_header + self.result_format['FIND_RESULT_TEXT'] % {'RESULT_TEXT' : text_marked} + text_footer).rstrip()
-			self.findResultTreemodel.append(parent_it, [int(line), result_line, result_text, tab, result_offset_start, result_len, uri])
+			self.findResultTreemodel.append(parent_it, [int(line), result_line, result_text, None, result_offset_start, result_len, uri])
 		else:
 			result_text = (text_header + self.result_format['REPLACE_RESULT_TEXT'] % {'RESULT_TEXT' : text_marked} + text_footer).rstrip()
-			self.findResultTreemodel.append(parent_it, [int(line), result_line, result_text, tab, result_offset_start, result_len, uri])
+			self.findResultTreemodel.append(parent_it, [int(line), result_line, result_text, None, result_offset_start, result_len, uri])
 		
 	def show_find_result(self):
 		path = Gtk.TreePath.new_from_string(str(self.findResultTreemodel.iter_n_children(None) - 1))

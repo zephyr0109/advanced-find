@@ -4,12 +4,12 @@
 	<FindOption name="MATCH_CASE" value="False"/>
 	<FindOption name="WRAP_AROUND" value="False"/>
 	<FindOption name="FOLLOW_CURRENT_DOC" value="True"/>
-	<FindOption name="ROOT_FOLLOW_FILEBROWSER" value="True"/>
+	<FindOption name="ROOT_FOLLOW_FILEBROWSER" value="False"/>
 	<FindOption name="INCLUDE_SUBFOLDER" value="False"/>
 	<FindOption name="INCLUDE_HIDDEN" value="True"/>
 	<FindOption name="REGEX_SEARCH" value="False"/>
 	<FindGUI name="PATH_EXPANDED" value="True"/>
-	<FindGUI name="OPTIONS_EXPANDED" value="False"/>
+	<FindGUI name="OPTIONS_EXPANDED" value="True"/>
 	<Shortcut name="ACTIVATE" value="&lt;ctrl&gt;&lt;shift&gt;F"/>
 	<Shortcut name="FIND_NEXT" value="F3"/>
 	<Shortcut name="FIND_PREVIOUS" value="&lt;shift&gt;F3"/>
