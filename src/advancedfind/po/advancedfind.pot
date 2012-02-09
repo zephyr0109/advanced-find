@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-25 00:55+0800\n"
+"POT-Creation-Date: 2011-11-27 16:18+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../advancedfind.py:151 ../advancedfind.py:204 ../advancedfind.py:595
+#: ../advancedfind.py:151 ../advancedfind.py:204 ../advancedfind.py:594
 #: ../FindDialog.glade:12
 msgid "Advanced Find/Replace"
 msgstr ""
@@ -167,11 +167,11 @@ msgid "Wrap around"
 msgstr ""
 
 #: ../FindDialog.glade:412
-msgid "Directory follow current doc."
+msgid "Directory follows current doc."
 msgstr ""
 
 #: ../FindDialog.glade:428
-msgid "Directoy include sub-folder"
+msgid "Directory includes sub-folder"
 msgstr ""
 
 #: ../FindDialog.glade:446

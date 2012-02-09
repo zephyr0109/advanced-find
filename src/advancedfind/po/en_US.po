@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-25 00:55+0800\n"
+"POT-Creation-Date: 2011-11-27 16:18+0800\n"
 "PO-Revision-Date: 2010-10-17 19:33+0800\n"
 "Last-Translator: swatch <swatch.code@gmail.com>\n"
 "Language-Team: none\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../advancedfind.py:151 ../advancedfind.py:204 ../advancedfind.py:595
+#: ../advancedfind.py:151 ../advancedfind.py:204 ../advancedfind.py:594
 #: ../FindDialog.glade:12
 msgid "Advanced Find/Replace"
 msgstr "Advanced Find/Replace"
@@ -167,12 +167,12 @@ msgid "Wrap around"
 msgstr "Wrap around"
 
 #: ../FindDialog.glade:412
-msgid "Directory follow current doc."
-msgstr "Directory follow current doc."
+msgid "Directory follows current doc."
+msgstr "Directory follows current doc."
 
 #: ../FindDialog.glade:428
-msgid "Directoy include sub-folder"
-msgstr "Directoy include sub-folder"
+msgid "Directory includes sub-folder"
+msgstr "Directory includes sub-folder"
 
 #: ../FindDialog.glade:446
 msgid "Regular expression"

@@ -409,7 +409,7 @@
                     </child>
                     <child>
                       <object class="GtkCheckButton" id="followCurrentDocCheckbutton">
-                        <property name="label" translatable="yes">Directory follow current doc.</property>
+                        <property name="label" translatable="yes">Directory follows current doc.</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -425,7 +425,7 @@
                     </child>
                     <child>
                       <object class="GtkCheckButton" id="includeSubfolderCheckbutton">
-                        <property name="label" translatable="yes">Directoy include sub-folder</property>
+                        <property name="label" translatable="yes">Directory includes sub-folder</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>

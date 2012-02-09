@@ -434,7 +434,7 @@ class AdvancedFindWindowHelper:
 					uri = ''
 				else:
 					tab = Gedit.Tab.get_from_document(doc)
-					uri = urllib.unquote(doc.get_uri_for_display()).decode('utf-8')
+					uri = urllib.unquote(doc.get_uri_for_display())
 				tree_it = self._results_view.append_find_result_filename(parent_it, doc.get_short_name_for_display(), tab, uri)
 
 			if replace_flg == False:
@@ -536,8 +536,7 @@ class AdvancedFindWindowHelper:
 		for file_path in file_list:
 			if os.path.isfile(file_path):
 				temp_doc = Gedit.Document()
-				#file_uri = "file://" + urllib.pathname2url(file_path.encode('utf-8'))
-				file_uri = ('file://' + file_path).encode('utf-8')
+				file_uri = 'file://' + file_path
 				temp_doc.load(Gio.file_new_for_uri(file_uri), Gedit.encoding_get_from_charset('utf-8'), 0, 0, False)
 				f_temp = open(file_path, 'r')
 				try:

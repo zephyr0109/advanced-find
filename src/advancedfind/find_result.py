@@ -220,12 +220,12 @@ class FindResultView(Gtk.HBox):
 		
 		result_start = model.get_value(it, 4)
 		result_len = model.get_value(it, 5)
-		#uri = model.get_value(it, 6)
 		
 		parent_it = model.iter_parent(it)
 		if parent_it:
 			#uri = urllib.quote(model.get_value(parent_it, 6).encode('utf-8')).replace('%3A//', '://')
-			uri = urllib.quote(model.get_value(parent_it, 6)).replace('%3A//', '://')
+			#uri = urllib.quote(model.get_value(parent_it, 6)).replace('%3A//', '://')
+			uri = model.get_value(parent_it, 6)
 			tab = model.get_value(parent_it, 3)
 		else:
 			return
@@ -234,13 +234,16 @@ class FindResultView(Gtk.HBox):
 		if not tab:
 			docs = self._window.get_documents()
 			for doc in docs:
-				if doc.get_uri_for_display() == uri:
-					tab = Gedit.Tab.get_from_document(doc)					
+				if urllib.unquote(doc.get_uri_for_display()) == uri:
+					tab = Gedit.Tab.get_from_document(doc)
 			
 		# Still nothing? Open the file then
 		if not tab:
 			#tab = self._window.create_tab_from_uri(uri, None, line_num, False, False)
-			tab = self._window.create_tab_from_location(Gio.file_new_for_uri('file://' + uri), None, line_num, 0, False, False)
+			if not uri.startswith('smb://'):
+				tab = self._window.create_tab_from_location(Gio.file_new_for_uri('file://' + uri), None, line_num, 0, False, False)
+			else:
+				tab = self._window.create_tab_from_location(Gio.file_new_for_uri(uri), None, line_num, 0, False, False)
 			self.do_events()
 			
 		if tab:
