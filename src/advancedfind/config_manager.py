@@ -36,26 +36,53 @@ class ConfigManager:
 	def get_configure(self, branch, attr):
 		root = self.dom.documentElement
 		nodes = root.getElementsByTagName(branch)
-		for i in range(0, len(nodes)):
-			if nodes[i].getAttribute('name') == attr:
-				return nodes[i].firstChild.nodeValue
+		for node in nodes:
+			if node.getAttribute('name') == attr:
+				#return node.firstChild.nodeValue
+				return node.getAttribute('value')
 	
 	def load_configure(self, branch):
 		root = self.dom.documentElement
 		nodes = root.getElementsByTagName(branch)
 		dic = {}
-		for i in range(0, len(nodes)):
-			dic[nodes[i].getAttribute('name')] = nodes[i].firstChild.nodeValue
+		for node in nodes:
+			#dic[node.getAttribute('name')] = node.firstChild.nodeValue
+			dic[node.getAttribute('name')] = node.getAttribute('value')
 		return dic
 	
-	def update_config_file(self, filename, branch, dic):
+	def load_list(self, branch):
 		root = self.dom.documentElement
 		nodes = root.getElementsByTagName(branch)
-		for i in range(0, len(nodes)):
-			nodes[i].firstChild.nodeValue = dic[nodes[i].getAttribute('name')]
-
+		patterns = []
+		for node in nodes:
+			patterns.append(node.getAttribute('name'))
+		return patterns
+	
+	def update_list(self, branch, patterns):
+		root = self.dom.documentElement
+		nodes = root.getElementsByTagName(branch)
+		for node in nodes:
+			root.removeChild(node).unlink()
+		for pattern in patterns:
+			node = root.appendChild(self.dom.createElement(branch))
+			node.setAttribute('name', pattern)
+					
+	def update_configure(self, branch, dic):
+		root = self.dom.documentElement
+		nodes = root.getElementsByTagName(branch)
+		for node in nodes:
+			#node.firstChild.nodeValue = dic[node.getAttribute('name')]
+			node.setAttribute('value', unicode(dic[node.getAttribute('name')]))
+		
+	def update_config_file(self, filename):
+		xml_text = self.dom.toprettyxml('\t', '\n', 'utf-8')
+		lines = xml_text.splitlines(True)
+		newlines = []
+		for line in lines:
+			if line not in ['\n', '\t\n']:
+				newlines.append(line)
 		f = open(filename, 'w+')
-		f.write(self.dom.toprettyxml('', '', 'utf-8'))
+		f.write("".join(newlines))
 		f.close
 		
 	def boolean(self, string):
@@ -68,8 +95,6 @@ class ConfigManager:
 	
 if __name__ == '__main__':
 	config_manager = ConfigManager('config.xml')
-	print config_manager.get_configure('shortcut', 'ADVANCED_FIND_ACTIVE')
-	print config_manager.convert_to_shortcut_string(config_manager.get_configure('shortcut', 'ADVANCED_FIND_ACTIVE'))
-	print config_manager.load_configure('search_option')
-	#dic = {u'MATCH_CASE': u'True', u'MATCH_WHOLE_WORD': u'True', u'WRAP_AROUND': u'True', u'RE_SEARCH': u'True'}
-	#config_manager.update_config_file('config1.xml', 'search_option', dic)
+	#print config_manager.get_configure('shortcut', 'ADVANCED_FIND_ACTIVE')
+	#print config_manager.convert_to_shortcut_string(config_manager.get_configure('shortcut', 'ADVANCED_FIND_ACTIVE'))
+

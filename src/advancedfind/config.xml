@@ -1,24 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?><manifest>
-	<search_option name="MATCH_WHOLE_WORD">False</search_option>
-	<search_option name="MATCH_CASE">False</search_option>
-	<search_option name="WRAP_AROUND">False</search_option>
-	<search_option name="FOLLOW_CURRENT_DOC">True</search_option>
-	<search_option name="ROOT_FOLLOW_FILEBROWSER">True</search_option>
-	<search_option name="INCLUDE_SUBFOLDER">False</search_option>
-	<search_option name="INCLUDE_HIDDEN">True</search_option>
-	<search_option name="REGEX_SEARCH">False</search_option>
-	<find_dialog name="PATH_EXPANDED">True</find_dialog>
-	<find_dialog name="OPTIONS_EXPANDED">True</find_dialog>
-	<shortcut name="ACTIVATE">&lt;ctrl&gt;&lt;shift&gt;F</shortcut>
-	<shortcut name="FIND_NEXT">F3</shortcut>
-	<shortcut name="FIND_PREVIOUS">&lt;shift&gt;F3</shortcut>
-	<shortcut name="SELECT_FIND_NEXT">&lt;ctrl&gt;F3</shortcut>
-	<shortcut name="SELECT_FIND_PREVIOUS">&lt;ctrl&gt;&lt;shift&gt;F3</shortcut>
-	<result_highlight name="FOREGROUND_COLOR">#ffffffff0000</result_highlight>
-	<result_highlight name="BACKGROUND_COLOR">red</result_highlight>
-	<show_button name="NEXT_BUTTON">True</show_button>
-	<show_button name="EXPAND_ALL_BUTTON">True</show_button>
-	<show_button name="COLLAPSE_ALL_BUTTON">True</show_button>
-	<show_button name="CLEAR_HIGHLIGHT_BUTTON">True</show_button>
-	<show_button name="CLEAR_BUTTON">True</show_button>
+<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+	<FindOption name="MATCH_WHOLE_WORD" value="False"/>
+	<FindOption name="MATCH_CASE" value="False"/>
+	<FindOption name="WRAP_AROUND" value="False"/>
+	<FindOption name="FOLLOW_CURRENT_DOC" value="True"/>
+	<FindOption name="ROOT_FOLLOW_FILEBROWSER" value="True"/>
+	<FindOption name="INCLUDE_SUBFOLDER" value="False"/>
+	<FindOption name="INCLUDE_HIDDEN" value="True"/>
+	<FindOption name="REGEX_SEARCH" value="False"/>
+	<FindGUI name="PATH_EXPANDED" value="True"/>
+	<FindGUI name="OPTIONS_EXPANDED" value="True"/>
+	<Shortcut name="ACTIVATE" value="&lt;ctrl&gt;&lt;shift&gt;F"/>
+	<Shortcut name="FIND_NEXT" value="F3"/>
+	<Shortcut name="FIND_PREVIOUS" value="&lt;shift&gt;F3"/>
+	<Shortcut name="SELECT_FIND_NEXT" value="&lt;ctrl&gt;F3"/>
+	<Shortcut name="SELECT_FIND_PREVIOUS" value="&lt;ctrl&gt;&lt;shift&gt;F3"/>
+	<ResultDisplay name="FOREGROUND_COLOR" value="#ffffffff0000"/>
+	<ResultDisplay name="BACKGROUND_COLOR" value="red"/>
+	<ResultGUI name="NEXT_BUTTON" value="True"/>
+	<ResultGUI name="EXPAND_ALL_BUTTON" value="True"/>
+	<ResultGUI name="COLLAPSE_ALL_BUTTON" value="True"/>
+	<ResultGUI name="CLEAR_HIGHLIGHT_BUTTON" value="True"/>
+	<ResultGUI name="CLEAR_BUTTON" value="True"/>
 </manifest>
