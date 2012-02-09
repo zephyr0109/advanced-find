@@ -40,7 +40,7 @@ from advancedfind_ui import AdvancedFindUI
 from find_result import FindResultView
 import config_manager
 
-import time
+#import time
 
 
 import gettext
@@ -437,12 +437,12 @@ class AdvancedFindWindowHelper:
 	def check_file_pattern(self, path, pattern_text):
 		pattern_list = re.split('\s*\|\s*', pattern_text)
 		for pattern in pattern_list:
-			if fnmatch.fnmatch(path, pattern):
+			if fnmatch.fnmatch(os.path.basename(path).strip(), pattern):
 				return True
 		return False
 		
 	def find_all_in_dir(self, parent_it, dir_path, file_pattern, search_pattern, find_options, replace_flg = False):
-		start_time = time.time()
+		#start_time = time.time()
 		if search_pattern == "":
 			return
 			
@@ -472,8 +472,8 @@ class AdvancedFindWindowHelper:
 				self.find_ui.do_events()
 		#'''
 					
-		mid_time = time.time()
-		print 'Use ' + str(mid_time-start_time) + ' seconds to find files.'
+		#mid_time = time.time()
+		#print 'Use ' + str(mid_time-start_time) + ' seconds to find files.'
 					
 		for file_path in file_list:
 			if os.path.isfile(file_path):
@@ -496,9 +496,9 @@ class AdvancedFindWindowHelper:
 				self.advanced_find_all_in_doc(parent_it, temp_doc, search_pattern, find_options, replace_flg)
 				self.find_ui.do_events()
 
-		end_time = time.time()						
-		print 'Use ' + str(end_time-mid_time) + ' seconds to find results.'
-		print 'Total use ' + str(end_time-start_time) + ' seconds.'
+		#end_time = time.time()						
+		#print 'Use ' + str(end_time-mid_time) + ' seconds to find results.'
+		#print 'Total use ' + str(end_time-start_time) + ' seconds.'
 						
 	def result_highlight_on(self, file_it):
 		if file_it == None:
