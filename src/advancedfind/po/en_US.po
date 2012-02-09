@@ -22,11 +22,11 @@ msgstr "Advanced Find/Replace"
 
 #: ../advancedfind.py:140
 msgid "Select and Find Next"
-msgstr "Select a directory"
+msgstr "Select and Find Next"
 
 #: ../advancedfind.py:141
 msgid "Select and Find Previous"
-msgstr "Select a directory"
+msgstr "Select and Find Previous"
 
 #: ../advancedfind.py:282 ../advancedfind.py:322
 msgid "Nothing is found."

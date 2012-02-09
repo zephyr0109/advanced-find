@@ -225,18 +225,15 @@ class AdvancedFindWindowHelper:
 		view = self._window.get_active_view()
 		if forward_flg == True:
 			find_start = doc.get_iter_at_mark(doc.get_insert())
-			next_flg = view.forward_display_line(find_start)
-
-			while next_flg == True:
-				line_start = doc.get_iter_at_mark(doc.get_insert())
-				line = unicode(doc.get_text(find_start, line_start), 'utf-8')
+			lines = unicode(doc.get_text(find_start, doc.get_end_iter()), 'utf-8').splitlines(True)
+			for line in lines:
 				match = regex.search(line)
 				if match:
-					result_start = doc.get_iter_at_offset(line_start.get_offset() + match.start())
-					#print line_start.get_offset() + match.start()
-					result_end = doc.get_iter_at_offset(line_start.get_offset() + match.end())
+					result_start = doc.get_iter_at_offset(find_start.get_offset() + match.start())
+					result_end = doc.get_iter_at_offset(find_start.get_offset() + match.end())
 					doc.select_range(result_start, result_end)
 					view.scroll_to_cursor()
+					
 					if replace_flg == True:
 						replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
 						doc.delete_selection(False, False)
@@ -248,35 +245,35 @@ class AdvancedFindWindowHelper:
 						
 					return
 				else:
-					doc.place_cursor(doc.get_iter_at_offset(line_start.get_offset() + len(line)))
-					find_start = doc.get_iter_at_mark(doc.get_insert())
-					next_flg = view.forward_display_line(find_start)
-			
+					find_start = doc.get_iter_at_offset(find_start.get_offset() + len(line))
+					
 			if options['WRAP_AROUND'] == True and around_flg == False:
 				find_start = doc.get_start_iter()
 				doc.place_cursor(find_start)
 				self.advanced_find_in_doc(doc, search_pattern, options, forward_flg, replace_flg, True)
 			else:
 				self.show_message_dialog(self.msgDialog, _("Nothing is found."))
-
+					
 		else:
 			find_end = doc.get_iter_at_mark(doc.get_insert())
-			previous_flg = view.backward_display_line(find_end)
-
-			while previous_flg == True:
-				line_start = doc.get_iter_at_mark(doc.get_insert())
-				line = unicode(doc.get_text(line_start, find_end), 'utf-8')
+			lines = unicode(doc.get_text(doc.get_start_iter(), find_end), 'utf-8').splitlines(True)
+			back_lines = []
+			for i in range(-1, -1-len(lines), -1):
+				back_lines.append(lines[i])
+				
+			for line in back_lines:
+				line_start = doc.get_iter_at_offset(find_end.get_offset() - len(line))
 				result = regex.findall(line)
 				if result:
 					match_pos = 0
 					for idx in range(0, len(result)):
 						match = regex.search(line[match_pos:])
-						result_start = doc.get_iter_at_offset(find_end.get_offset() + match.start() + match_pos)
-						result_end = doc.get_iter_at_offset(find_end.get_offset() + match.end() + match_pos)
+						result_start = doc.get_iter_at_offset(line_start.get_offset() + match.start() + match_pos)
+						result_end = doc.get_iter_at_offset(line_start.get_offset() + match.end() + match_pos)
 						match_pos += match.end()
 					doc.select_range(result_start, result_end)
 					view.scroll_to_cursor()
-
+					
 					if replace_flg == True:
 						replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
 						doc.delete_selection(False, False)
@@ -288,9 +285,8 @@ class AdvancedFindWindowHelper:
 						
 					return
 				else:
-					doc.place_cursor(doc.get_iter_at_offset(line_start.get_offset() - len(line)))
+					doc.place_cursor(doc.get_iter_at_offset(find_end.get_offset() - len(line)))
 					find_end = doc.get_iter_at_mark(doc.get_insert())
-					previous_flg = view.backward_display_line(find_end)
 
 			if options['WRAP_AROUND'] == True and around_flg == False:
 				find_end = doc.get_end_iter()
@@ -298,6 +294,7 @@ class AdvancedFindWindowHelper:
 				self.advanced_find_in_doc(doc, search_pattern, options, forward_flg, replace_flg, True)
 			else:
 				self.show_message_dialog(self.msgDialog, _("Nothing is found."))
+			
 				
 	def auto_select_word(self):
 		doc = self._window.get_active_document()
@@ -309,6 +306,8 @@ class AdvancedFindWindowHelper:
 			iter_idx = current_iter.get_line_index()
 			line_num = current_iter.get_line()
 			lines = doc.get_text(doc.get_start_iter(), doc.get_end_iter()).splitlines(True)
+			if lines == []:
+				return ""
 			line = lines[line_num]
 			results = re.findall('[_a-zA-Z][_a-zA-Z0-9]*', line)
 			select_text = ''
@@ -357,7 +356,11 @@ class AdvancedFindWindowHelper:
 				
 			if results:
 				if not tree_it:
-					uri = urllib.unquote(doc.get_uri()[7:]).decode('utf-8')
+					doc_uri = doc.get_uri()
+					if doc_uri == None:
+						uri = ''
+					else:
+						uri = urllib.unquote(doc.get_uri()[7:]).decode('utf-8')
 					tree_it = self._results_view.append_find_result_filename(parent_it, doc.get_short_name_for_display(), uri)
 				tab = gedit.tab_get_from_document(doc)
 
