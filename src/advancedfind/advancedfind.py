@@ -2,7 +2,7 @@
 
 
 # findadvance.py
-# v0.1.0
+# v0.1.1
 #
 # Copyright 2010 swatch
 #
@@ -28,6 +28,10 @@ from gettext import gettext as _
 import gtk
 import gedit
 import os.path
+import os
+import fnmatch
+import subprocess
+import urllib
 import re
 
 from advancedfind_ui import AdvancedFindUI
@@ -57,9 +61,11 @@ class AdvancedFindWindowHelper:
 		self.find_dialog = None
 		self.find_list = []
 		self.replace_list = []
+		self.filter_list = []
+		self.path_list = []
 
 		self._results_view = FindResultView(window)
-		self._window.get_bottom_panel().add_item(self._results_view, "Advanced Find", "gtk-find")
+		self._window.get_bottom_panel().add_item(self._results_view, "Advanced Find/Replace", "gtk-find-and-replace")
 
 		# Insert menu items
 		self._insert_menu()
@@ -73,6 +79,8 @@ class AdvancedFindWindowHelper:
 		self.find_dialog = None
 		self.find_list = None
 		self.replace_list = None
+		self.filter_list = None
+		self.path_list = None
 		self._result_view = None
 	
 	def _insert_menu(self):
@@ -145,8 +153,8 @@ class AdvancedFindWindowHelper:
 
 		return regex
 		
-	def advanced_find_in_doc(self, doc, pattern, options, forward_flg = True, replace_flg = False):
-		if pattern == "":
+	def advanced_find_in_doc(self, doc, search_pattern, options, forward_flg = True, replace_flg = False):
+		if search_pattern == "":
 			return
 			
 		try:
@@ -158,7 +166,7 @@ class AdvancedFindWindowHelper:
 		except:
 			pass
 		
-		regex = self.create_regex(pattern, options)
+		regex = self.create_regex(search_pattern, options)
 		
 		view = self._window.get_active_view()
 		if forward_flg == True:
@@ -167,7 +175,7 @@ class AdvancedFindWindowHelper:
 
 			while next_flg == True:
 				line_start = doc.get_iter_at_mark(doc.get_insert())
-				line = doc.get_text(find_start, line_start)
+				line = unicode(doc.get_text(find_start, line_start), 'utf-8')
 				match = regex.search(line)
 				if match:
 					result_start = doc.get_iter_at_offset(line_start.get_offset() + match.start())
@@ -181,6 +189,7 @@ class AdvancedFindWindowHelper:
 						replace_end = doc.get_iter_at_mark(doc.get_insert())
 						replace_start = doc.get_iter_at_offset(replace_end.get_offset() - len(replace_text))
 						doc.select_range(replace_start, replace_end)
+						print str(replace_start.get_offset()) + " , " + str(replace_end.get_offset())
 						view.scroll_to_cursor()
 						
 					return
@@ -192,16 +201,17 @@ class AdvancedFindWindowHelper:
 			if options['WRAP_AROUND'] == True:
 				find_start = doc.get_start_iter()
 				doc.place_cursor(find_start)
-				self.advanced_find_in_doc(doc, pattern, options, forward_flg, replace_flg)
-			#self.show_message_dialog("End of file.")
-		#'''
+				self.advanced_find_in_doc(doc, search_pattern, options, forward_flg, replace_flg)
+			#else:
+			#	self.show_message_dialog("End of file.")
+
 		else:
 			find_end = doc.get_iter_at_mark(doc.get_insert())
 			previous_flg = view.backward_display_line(find_end)
 
 			while previous_flg == True:
 				line_start = doc.get_iter_at_mark(doc.get_insert())
-				line = doc.get_text(line_start, find_end)
+				line = unicode(doc.get_text(line_start, find_end), 'utf-8')
 				result = regex.findall(line)
 				if result:
 					match_pos = 0
@@ -231,27 +241,27 @@ class AdvancedFindWindowHelper:
 			if options['WRAP_AROUND'] == True:
 				find_end = doc.get_end_iter()
 				doc.place_cursor(find_end)
-				self.advanced_find_in_doc(doc, pattern, options, forward_flg, replace_flg)
-			#self.show_message_dialog("End of file.")
-		#'''
+				self.advanced_find_in_doc(doc, search_pattern, options, forward_flg, replace_flg)
+			#else:
+			#	self.show_message_dialog("End of file.")
 				
 
-	def advanced_find_all_in_doc(self, parent_it, doc, pattern, options, replace_flg = False):
-		if pattern == "":
+	def advanced_find_all_in_doc(self, parent_it, doc, search_pattern, options, replace_flg = False):
+		if search_pattern == "":
 			return
 		
-		regex = self.create_regex(pattern, options)
+		regex = self.create_regex(search_pattern, options)
 
 		start, end = doc.get_bounds()
 		text = unicode(doc.get_text(start, end), 'utf-8')
 		lines = text.splitlines()
-		m = re.search('(\n|\r|\r\n)', text)
-		eol = m.group(0)
-		
+
 		tree_it = None
-		new_lines = list('')
+		new_text = list(text)
 		text_changed = False
 		replace_cnt = 0
+		replace_text = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+		replace_text_len = len(replace_text)
 
 		for i in range(len(lines)):
 			result = regex.findall(lines[i])
@@ -259,42 +269,61 @@ class AdvancedFindWindowHelper:
 				
 			if result:
 				if not tree_it:
-					uri = doc.get_uri_for_display()
+					uri = urllib.unquote(doc.get_uri()[7:]).decode('utf-8')
 					tree_it = self._results_view.append_find_result_filename(parent_it, doc.get_short_name_for_display(), uri)
 				tab = gedit.tab_get_from_document(doc)
+
 				match_pos = 0
-				line_list = list(lines[i])
 				for cnt in range(0,len(result)):
 					match = regex.search(lines[i][match_pos:])
 					result_offset_start = line_start.get_offset() + match.start() + match_pos
 					result_len = len(match.group(0))
-					line_list[match.start()+match_pos:match.end()+match_pos] = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
+					replace_offset = result_len - replace_text_len
 					
 					if replace_flg == True:
-						replace_text_len = len(unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8'))
-						replace_offset = (result_len - replace_text_len) * replace_cnt
-						self._results_view.append_find_result(tree_it, str(i+1), lines[i].strip(), tab, result_offset_start - replace_offset, replace_text_len)
+						self._results_view.append_find_result(tree_it, str(i+1), lines[i].strip(), tab, result_offset_start - (replace_offset*replace_cnt), replace_text_len)
+						replace_start_idx = result_offset_start - (replace_offset*replace_cnt)
+						new_text[replace_start_idx:replace_start_idx + result_len] = replace_text
 						replace_cnt += 1
 						text_changed = True
 					else:
 						self._results_view.append_find_result(tree_it, str(i+1), lines[i].strip(), tab, result_offset_start, result_len)
 					match_pos += match.end()
-
-				new_lines.append("".join(line_list) + eol)
-
-			else:
-				new_lines.append(lines[i] + eol)
 				
-		if replace_flg == True and text_changed == True:
-			doc.set_text("".join(new_lines))
+		if text_changed == True:
+			doc.set_text("".join(new_text))
 
-				
-		self._results_view.show_find_result()
+	def find_all_in_dir(self, parent_it, dir_path, file_pattern, search_pattern, options, replace_flg = False):
+		if search_pattern == "":
+			return
 		
-		# display bottom panel if not displayed
+		for f in os.listdir(unicode(dir_path, 'utf-8')):
+			if fnmatch.fnmatch(f, unicode(file_pattern, 'utf-8')):
+				file_path = unicode(dir_path + "/", 'utf-8') + f
+
+				if os.path.isfile(file_path):
+					pipe = subprocess.PIPE
+					p1 = subprocess.Popen(["file", "-i", file_path], stdout=pipe)
+					p2 = subprocess.Popen(["grep", "text"], stdin=p1.stdout, stdout=pipe)
+					output = p2.communicate()[0]
+					if output:
+						temp_doc = gedit.Document()
+						file_uri = "file://" + urllib.pathname2url(file_path.encode('utf-8'))
+						temp_doc.load(file_uri, gedit.encoding_get_from_charset('utf-8'), 0, False)
+						f_temp = open(file_path, 'r')
+						text = unicode(f_temp.read(), 'utf-8')
+						f_temp.close()
+						temp_doc.set_text(text)
+						
+						self.advanced_find_all_in_doc(parent_it, temp_doc, search_pattern, options, replace_flg)
+		self._results_view.show_find_result()
+		self.show_bottom_panel()
+
+	def show_bottom_panel(self):
 		panel = self._window.get_bottom_panel()
 		if panel.get_property("visible") == False:
 			panel.set_property("visible", True)
 		panel.activate_item(self._results_view)
 		
-
+		
+		

@@ -2,8 +2,13 @@
 Loader=python
 Module=advancedfind
 IAge=2
-Name=Advanced Find
-Description=Advanced Find/Replace
+
+Name=Advanced Find/Replace
+Name[zh_TW]=Advanced Find/Replace
+
+Description=Search and replace a string in multiple file.
+Description[zh_TW]=在多個文件中搜尋/取代
+
 Authors=Swatch
 Copyright=GPLv2
-Website=https://code.google.com/p/tongwen-python/
+Website=http://code.google.com/p/advanced-find/

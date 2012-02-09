@@ -2,7 +2,7 @@
 
 
 # findadvance_ui.py
-# v0.1.0
+# v0.1.1
 #
 # Copyright 2010 swatch
 #
@@ -36,6 +36,9 @@ except:
 	sys.exit(1)
 
 import os.path
+import os
+import fnmatch
+import subprocess
 #import pango
 import re
 import config_manager
@@ -49,76 +52,98 @@ class AdvancedFindUI(object):
 			pass
 
 		gladefile = os.path.join(os.path.dirname(__file__),"FindDialog.glade")
-		ui = gtk.Builder()
-		ui.add_from_file(gladefile)
-		ui.connect_signals({ "on_findDialog_destroy" : self.on_findDialog_destroy_action,
+		self.ui = gtk.Builder()
+		self.ui.add_from_file(gladefile)
+		self.ui.connect_signals({ "on_findDialog_destroy" : self.on_findDialog_destroy_action,
 							
 							"on_findButton_clicked" : self.on_findButton_clicked_action,
 							"on_replaceButton_clicked" : self.on_replaceButton_clicked_action,
 							"on_findAllButton_clicked" : self.on_findAllButton_clicked_action,
 							"on_replaceAllButton_clicked" : self.on_replaceAllButton_clicked_action,
 							"on_closeButton_clicked" : self.on_closeButton_clicked_action,
-
+							"on_selectPathButton_clicked" : self.on_selectPathButton_clicked_action,
+							"on_selectPathDialogOkButton_clicked" : self.on_selectPathDialogOkButton_clicked_action,
+							"on_selectPathDialogCancelButton_clicked" : self.on_selectPathDialogCancelButton_clicked_action,
+							
 							"on_matchWholeWordCheckbutton_toggled" : self.on_matchWholeWordCheckbutton_toggled_action,
 							"on_matchCaseCheckbutton_toggled" : self.on_matchCaseCheckbutton_toggled_action,
 							"on_wrapAroundCheckbutton_toggled" : self.on_wrapAroundCheckbutton_toggled_action,
-
+							
 							"on_forwardRadiobutton_toggled" : self.directionRadiobuttonGroup_action,
 							"on_backwardRadiobutton_toggled" : self.directionRadiobuttonGroup_action,
-
+							
 							"on_currentFileRadiobutton_toggled" : self.scopeRadiobuttonGroup_action,
 							"on_allFilesRadiobutton_toggled" : self.scopeRadiobuttonGroup_action,
 							"on_allFilesInPathRadiobutton_toggled" : self.scopeRadiobuttonGroup_action })
 
-		self.findDialog = ui.get_object("findDialog")
+		self.findDialog = self.ui.get_object("findDialog")
 		self.findDialog.set_keep_above(True)
 
-		#self.findTextEntry = ui.get_object("findTextEntry")
-		#self.replaceTextEntry = ui.get_object("replaceTextEntry")
-		
-		self.findTextEntry = ui.get_object("findTextComboboxentry")
-		#self.findTextListstore = ui.get_object("findTextListstore")
+		self.findTextEntry = self.ui.get_object("findTextComboboxentry")
+		#self.findTextListstore = self.ui.get_object("findTextListstore")
 		#find_cell = gtk.CellRendererText()
 		#self.findTextEntry.pack_start(find_cell, True)
 		#self.findTextEntry.add_attribute(find_cell, 'text', 0)
 		self.findTextEntry.set_text_column(0)
-		for find_text in self._instance.find_list:
-			self.findTextEntry.append_text(find_text)
+		try:
+			for find_text in self._instance.find_list:
+				self.findTextEntry.append_text(find_text)
+		except:
+			pass
 
-		self.replaceTextEntry = ui.get_object("replaceTextComboboxentry")
-		#self.replaceTextListstore = ui.get_object("replaceTextListstore")
+		self.replaceTextEntry = self.ui.get_object("replaceTextComboboxentry")
+		#self.replaceTextListstore = self.ui.get_object("replaceTextListstore")
 		#replace_cell = gtk.CellRendererText()
 		#self.replaceTextEntry.pack_start(replace_cell, True)
 		#self.replaceTextEntry.add_attribute(replace_cell, 'text', 0)
 		self.replaceTextEntry.set_text_column(0)
-		for replace_text in self._instance.replace_list:
-			self.replaceTextEntry.append_text(replace_text)
+		try:
+			for replace_text in self._instance.replace_list:
+				self.replaceTextEntry.append_text(replace_text)
+		except:
+			pass
 			
-		self.filterComboboxentry = ui.get_object("filterComboboxentry")
+		self.filterComboboxentry = self.ui.get_object("filterComboboxentry")
 		self.filterComboboxentry.set_text_column(0)
-		self.filterComboboxentry.child.set_text("*.*")
+		self.filterComboboxentry.child.set_text("*")
+		#self.filterComboboxentry.append_text("*")
+		try:
+			for file_filter in self._instance.filter_list:
+				self.filterComboboxentry.append_text(file_filter)
+		except:
+			pass
+			
+		self.selectPathFilechooserdialog = self.ui.get_object("selectPathFilechooserdialog")
 		
-		self.pathFilechooserbutton = ui.get_object("pathFilechooserbutton")
+		self.pathComboboxentry = self.ui.get_object("pathComboboxentry")
+		self.pathComboboxentry.set_text_column(0)
+		self.pathComboboxentry.child.set_text(self.selectPathFilechooserdialog.get_filename())
+		try:
+			for path in self._instance.path_list:
+				self.pathComboboxentry.append_text(path)
+		except:
+			pass
+		
+		self.matchWholeWordCheckbutton = self.ui.get_object("matchWholeWordCheckbutton")
+		self.matchCaseCheckbutton = self.ui.get_object("matchCaseCheckbutton")
+		self.wrapAroundCheckbutton = self.ui.get_object("wrapAroundCheckbutton")
 
-		self.matchWholeWordCheckbutton = ui.get_object("matchWholeWordCheckbutton")
-		self.matchCaseCheckbutton = ui.get_object("matchCaseCheckbutton")
-		self.wrapAroundCheckbutton = ui.get_object("wrapAroundCheckbutton")
+		self.forwardRadiobutton = self.ui.get_object("forwardRadiobutton")
+		self.backwardRadiobutton = self.ui.get_object("backwardRadiobutton")
 
-		self.forwardRadiobutton = ui.get_object("forwardRadiobutton")
-		self.backwardRadiobutton = ui.get_object("backwardRadiobutton")
+		self.currentFileRadiobutton = self.ui.get_object("currentFileRadiobutton")
+		self.allFilesRadiobutton = self.ui.get_object("allFilesRadiobutton")
+		self.allFilesInPathRadiobutton = self.ui.get_object("allFilesInPathRadiobutton")
 
-		self.currentFileRadiobutton = ui.get_object("currentFileRadiobutton")
-		self.allFilesRadiobutton = ui.get_object("allFilesRadiobutton")
-
-		self.findButton = ui.get_object("findButton")
-		self.replaceButton = ui.get_object("replaceButton")
-		self.findAllButton = ui.get_object("findAllButton")
-		self.replaceAllButton = ui.get_object("replaceAllButton")
-		self.closeButton = ui.get_object("closeButton")
+		self.findButton = self.ui.get_object("findButton")
+		self.replaceButton = self.ui.get_object("replaceButton")
+		self.findAllButton = self.ui.get_object("findAllButton")
+		self.replaceAllButton = self.ui.get_object("replaceAllButton")
+		self.closeButton = self.ui.get_object("closeButton")
+		self.selectPathButton = self.ui.get_object("selectPathButton")
 
 		self.findDialog.show()
 
-		#'''
 		configfile = os.path.join(os.path.dirname(__file__), "config.xml")
 		self.config_manager = config_manager.ConfigManager(configfile)
 		self.options = self.config_manager.load_configure('search_option')
@@ -131,7 +156,6 @@ class AdvancedFindUI(object):
 		self.matchWholeWordCheckbutton.set_active(self.options['MATCH_WHOLE_WORD'])
 		self.matchCaseCheckbutton.set_active(self.options['MATCH_CASE'])
 		self.wrapAroundCheckbutton.set_active(self.options['WRAP_AROUND'])
-		#'''
 
 		self.forwardFlg = True
 		self.scopeFlg = 0 #current document
@@ -146,6 +170,27 @@ class AdvancedFindUI(object):
 	def main(self):
 		gtk.main()
 
+	def append_combobox_list(self):
+		find_text = self.findTextEntry.get_active_text()
+		replace_text = self.replaceTextEntry.get_active_text()
+		file_filter = self.filterComboboxentry.get_active_text()
+		path = self.pathComboboxentry.get_active_text()
+		
+		if find_text != "" and find_text not in self._instance.find_list:
+			self._instance.find_list.append(find_text)
+			self.findTextEntry.append_text(find_text)
+			
+		if replace_text != "" and replace_text not in self._instance.replace_list:
+			self._instance.replace_list.append(replace_text)
+			self.replaceTextEntry.append_text(replace_text)
+			
+		if file_filter != "" and file_filter not in self._instance.filter_list:
+			self._instance.filter_list.append(file_filter)
+			self.filterComboboxentry.append_text(file_filter)
+			
+		if path != "" and path not in self._instance.path_list:
+			self._instance.path_list.append(path)
+			self.pathComboboxentry.append_text(path)
 
 	# button actions       
 	def on_findButton_clicked_action(self, object):
@@ -153,100 +198,99 @@ class AdvancedFindUI(object):
 		if not doc:
 			return
 		
-		pattern = self.findTextEntry.get_active_text()
-		if pattern == "":
+		search_pattern = self.findTextEntry.get_active_text()
+		if search_pattern == "":
 			return
-			
-		if pattern not in self._instance.find_list:
-			self._instance.find_list.append(pattern)
-			self.findTextEntry.append_text(pattern)
-			
-		self._instance.advanced_find_in_doc(doc, pattern, self.options, self.forwardFlg)
+		
+		self.append_combobox_list()
+		self._instance.advanced_find_in_doc(doc, search_pattern, self.options, self.forwardFlg)
 		
 	def on_replaceButton_clicked_action(self, object):
 		doc = self._instance._window.get_active_document()
 		if not doc:
 			return
 		
-		pattern = self.findTextEntry.get_active_text()
-		if pattern == "":
+		search_pattern = self.findTextEntry.get_active_text()
+		if search_pattern == "":
 			return
-			
-		if pattern not in self._instance.find_list:
-			self._instance.find_list.append(pattern)
-			self.findTextEntry.append_text(pattern)
-			
-		replace_text = self.replaceTextEntry.get_active_text()
-		if replace_text != "" and replace_text not in self._instance.replace_list:
-			self._instance.replace_list.append(replace_text)
-			self.replaceTextEntry.append_text(replace_text)
-			
-			
-		self._instance.advanced_find_in_doc(doc, pattern, self.options, self.forwardFlg, True)
+		
+		self.append_combobox_list()
+		self._instance.advanced_find_in_doc(doc, search_pattern, self.options, self.forwardFlg, True)
 
 	def on_findAllButton_clicked_action(self, object):
-		pattern = self.findTextEntry.get_active_text()
-		if pattern == "":
+		search_pattern = self.findTextEntry.get_active_text()
+		if search_pattern == "":
 			return
-			
-		if pattern not in self._instance.find_list:
-			self._instance.find_list.append(pattern)
-			self.findTextEntry.append_text(pattern)
-
-		it = self._instance._results_view.append_find_pattern(pattern)
+		
+		self.append_combobox_list()
+		
+		it = self._instance._results_view.append_find_pattern(search_pattern)
 		
 		if self.scopeFlg == 0: #current
 			doc = self._instance._window.get_active_document()
 			if not doc:
 				return
-			self._instance.advanced_find_all_in_doc(it, doc, pattern, self.options)
-			'''
-			start, end = doc.get_bounds()
-			text = doc.get_text(start, end)
-			self._instance.advanced_find_all_in_text(it, text, pattern, self.options)
-			#'''
+			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self.options)
+			self._instance._results_view.show_find_result()
+			self._instance.show_bottom_panel()
 		elif self.scopeFlg == 1: #all opened
 			docs = self._instance._window.get_documents()
 			if not docs:
 				return
 			for doc in docs:
-				self._instance.advanced_find_all_in_doc(it, doc, pattern, self.options)
-			'''
-			for doc in docs:
-				start, end = doc.get_bounds()
-				self._instance.advanced_find_all_in_text(it, doc.get_text(start, end), pattern, self.options)
-			#'''
+				self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self.options)
+			self._instance._results_view.show_find_result()
+			self._instance.show_bottom_panel()
+		elif self.scopeFlg == 2: #files in directory
+			dir_path = self.pathComboboxentry.get_active_text()
+			file_pattern = self.filterComboboxentry.get_active_text()
+			self._instance.find_all_in_dir(it, dir_path, file_pattern, search_pattern, self.options)
 
 	def on_replaceAllButton_clicked_action(self, object):
-		pattern = self.findTextEntry.get_active_text()
-		if pattern == "":
+		search_pattern = self.findTextEntry.get_active_text()
+		if search_pattern == "":
 			return
-			
-		if pattern not in self._instance.find_list:
-			self._instance.find_list.append(pattern)
-			self.findTextEntry.append_text(pattern)
-			
-		replace_text = self.replaceTextEntry.get_active_text()
-		if replace_text != "" and replace_text not in self._instance.replace_list:
-			self._instance.replace_list.append(replace_text)
-			self.replaceTextEntry.append_text(replace_text)
+		
+		self.append_combobox_list()
 
-		it = self._instance._results_view.append_find_pattern(pattern, True, self.replaceTextEntry.child.get_text())
+		it = self._instance._results_view.append_find_pattern(search_pattern, True, self.replaceTextEntry.child.get_text())
 		
 		if self.scopeFlg == 0: #current
 			doc = self._instance._window.get_active_document()
 			if not doc:
 				return
-			self._instance.advanced_find_all_in_doc(it, doc, pattern, self.options, True)
+			self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self.options, True)
+			self._instance._results_view.show_find_result()
+			self._instance.show_bottom_panel()
 		elif self.scopeFlg == 1: #all opened
 			docs = self._instance._window.get_documents()
 			if not docs:
 				return
 			for doc in docs:
-				self._instance.advanced_find_all_in_doc(it, doc, pattern, self.options, True)
+				self._instance.advanced_find_all_in_doc(it, doc, search_pattern, self.options, True)
+			self._instance._results_view.show_find_result()
+			self._instance.show_bottom_panel()
+		elif self.scopeFlg == 2: #files in directory
+			path = str(self._instance._results_view.findResultTreemodel.iter_n_children(None) - 1)
+			it = self._instance._results_view.findResultTreemodel.get_iter(path)
+			self._instance._results_view.findResultTreemodel.set_value(it, 2, "Replace in All Documents in Directory is not supported.")
 
 	def on_closeButton_clicked_action(self, object):
 		self.findDialog.destroy()
+		
+	def on_selectPathButton_clicked_action(self, object):
+		self.selectPathFilechooserdialog.show()
+
+	# select path file chooserr dialog actions
+	def on_selectPathDialogOkButton_clicked_action(self, object):
+		folder_path = self.selectPathFilechooserdialog.get_filename()
+		self.selectPathFilechooserdialog.select_filename(folder_path)
+		self.pathComboboxentry.child.set_text(folder_path)
+		self.append_combobox_list()
+		self.selectPathFilechooserdialog.hide()
+		
+	def on_selectPathDialogCancelButton_clicked_action(self, object):
+		self.selectPathFilechooserdialog.hide()
 
 	# options    
 	def on_matchWholeWordCheckbutton_toggled_action(self, object):

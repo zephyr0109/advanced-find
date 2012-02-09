@@ -2,7 +2,7 @@
 
 
 # find_result.py
-# v0.1.0
+# v0.1.1
 #
 # Copyright 2010 swatch
 #
@@ -33,8 +33,10 @@ try:
     import gtk.glade
 except:
     sys.exit(1)
-    
+
+import gedit
 import os.path
+import urllib
 #import pango
 import re
 
@@ -45,9 +47,11 @@ class FindResultView(gtk.HBox):
 		
 		# initialize find result treeview
 		self.findResultTreeview = gtk.TreeView()
-		self.findResultTreeview.append_column(gtk.TreeViewColumn("column0", gtk.CellRendererText(), text=1))
-		self.findResultTreeview.append_column(gtk.TreeViewColumn("column1", gtk.CellRendererText(), text=2))
-		self.findResultTreeview.append_column(gtk.TreeViewColumn("column2", gtk.CellRendererText(), text=6))
+		self.findResultTreeview.append_column(gtk.TreeViewColumn("line", gtk.CellRendererText(), text=1))
+		self.findResultTreeview.append_column(gtk.TreeViewColumn("content", gtk.CellRendererText(), text=2))
+		#self.findResultTreeview.append_column(gtk.TreeViewColumn("result_start", gtk.CellRendererText(), text=4))
+		#self.findResultTreeview.append_column(gtk.TreeViewColumn("result_len", gtk.CellRendererText(), text=5))
+		self.findResultTreeview.append_column(gtk.TreeViewColumn("uri", gtk.CellRendererText(), text=6))
 		self.findResultTreeview.set_headers_visible(False)
 		self.findResultTreeview.set_rules_hint(True)
 		self.findResultTreemodel = gtk.TreeStore(int, str, str, object, int, int, str)
@@ -107,9 +111,17 @@ class FindResultView(gtk.HBox):
 		tab = model.get_value(it, 3)
 		result_start = model.get_value(it, 4)
 		result_len = model.get_value(it, 5)
-		uri = model.get_value(it, 6)
+		#uri = model.get_value(it, 6)
 		
-
+		parent_it = model.iter_parent(it)
+		if parent_it:
+			uri = "file://" + urllib.pathname2url(model.get_value(parent_it, 6).encode('utf-8'))
+		else:
+			uri = ""
+			
+		if uri == "":
+			return
+		
 		# Tab wasn't passed, try to find one		
 		if not tab:
 			for doc in self._window.get_documents():
@@ -118,17 +130,16 @@ class FindResultView(gtk.HBox):
 			
 		# Still nothing? Open the file then
 		if not tab:
-			enc = self._window.get_active_tab().get_document().get_encoding()
-			tab = self._window.create_tab_from_uri(uri, enc, line, False, True)
+			tab = self._window.create_tab_from_uri(uri, None, line, False, False)
 			
 		if tab:
 			self._window.set_active_tab(tab)
 			doc = tab.get_document()
-			doc.goto_line(int(line) - 1)
+			view = tab.get_view()
 			if result_len > 0:
 				doc.select_range(doc.get_iter_at_offset(result_start), doc.get_iter_at_offset(result_start + result_len))
 			
-			tab.get_view().scroll_to_cursor()
+			view.scroll_to_cursor()
 
 	def on_selectNextButton_clicked_action(self, object):
 		path, column = self.findResultTreeview.get_cursor()
@@ -150,7 +161,6 @@ class FindResultView(gtk.HBox):
 		 		path = self.findResultTreemodel.get_path(it2)
 		else:
 			path = self.findResultTreemodel.get_path(it1) 
-		#print path
 		self.findResultTreeview.set_cursor(path, column, False)
 
 		
@@ -187,9 +197,10 @@ class FindResultView(gtk.HBox):
 		path = str(self.findResultTreemodel.iter_n_children(None) - 1)
 		self.findResultTreeview.expand_row(path, True)
 		pattern_it = self.findResultTreemodel.get_iter(path)
-		file_it = self.findResultTreemodel.iter_nth_child(pattern_it, 0)
+		#file_it = self.findResultTreemodel.iter_nth_child(pattern_it, 0)
 		#cursor_it = self.findResultTreemodel.iter_nth_child(file_it, 0)
 		#self.findResultTreeview.set_cursor(self.findResultTreemodel.get_path(cursor_it))
+		self.findResultTreeview.set_cursor(self.findResultTreemodel.get_path(pattern_it))
 		
 		file_cnt = self.findResultTreemodel.iter_n_children(pattern_it)
 		total_hits = 0
@@ -199,7 +210,6 @@ class FindResultView(gtk.HBox):
 			total_hits += hits_cnt
 			self.findResultTreemodel.set_value(it1, 2, str(hits_cnt) + ' hits')
 		self.findResultTreemodel.set_value(pattern_it, 2, str(total_hits) + ' hits in ' + str(file_cnt) + ' files')
-
 		
 	def clear_find_result(self):
 		self.findResultTreemodel.clear()
