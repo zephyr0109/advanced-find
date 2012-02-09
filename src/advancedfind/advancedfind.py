@@ -2,7 +2,7 @@
 
 
 # findadvance.py
-# v0.0.3
+# v0.1.0
 #
 # Copyright 2010 swatch
 #
@@ -71,6 +71,9 @@ class AdvancedFindWindowHelper:
 		self._window = None
 		self._plugin = None
 		self.find_dialog = None
+		self.find_list = None
+		self.replace_list = None
+		self._result_view = None
 	
 	def _insert_menu(self):
 		# Get the GtkUIManager
@@ -248,6 +251,7 @@ class AdvancedFindWindowHelper:
 		tree_it = None
 		new_lines = list('')
 		text_changed = False
+		replace_cnt = 0
 
 		for i in range(len(lines)):
 			result = regex.findall(lines[i])
@@ -262,15 +266,18 @@ class AdvancedFindWindowHelper:
 				line_list = list(lines[i])
 				for cnt in range(0,len(result)):
 					match = regex.search(lines[i][match_pos:])
-					result_it_start = doc.get_iter_at_offset(line_start.get_offset() + match.start() + match_pos)
-					result_it_end = doc.get_iter_at_offset(line_start.get_offset() + match.end() + match_pos)
+					result_offset_start = line_start.get_offset() + match.start() + match_pos
+					result_len = len(match.group(0))
 					line_list[match.start()+match_pos:match.end()+match_pos] = unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8')
-
+					
 					if replace_flg == True:
-						self._results_view.append_find_result(tree_it, str(i+1), lines[i].strip(), tab, None, None)
+						replace_text_len = len(unicode(self.find_dialog.replaceTextEntry.get_active_text(), 'utf-8'))
+						replace_offset = (result_len - replace_text_len) * replace_cnt
+						self._results_view.append_find_result(tree_it, str(i+1), lines[i].strip(), tab, result_offset_start - replace_offset, replace_text_len)
+						replace_cnt += 1
 						text_changed = True
 					else:
-						self._results_view.append_find_result(tree_it, str(i+1), lines[i].strip(), tab, result_it_start, result_it_end)
+						self._results_view.append_find_result(tree_it, str(i+1), lines[i].strip(), tab, result_offset_start, result_len)
 					match_pos += match.end()
 
 				new_lines.append("".join(line_list) + eol)
@@ -279,7 +286,6 @@ class AdvancedFindWindowHelper:
 				new_lines.append(lines[i] + eol)
 				
 		if replace_flg == True and text_changed == True:
-			#print "".join(new_lines)
 			doc.set_text("".join(new_lines))
 
 				
@@ -290,5 +296,5 @@ class AdvancedFindWindowHelper:
 		if panel.get_property("visible") == False:
 			panel.set_property("visible", True)
 		panel.activate_item(self._results_view)
-
+		
 

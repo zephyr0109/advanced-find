@@ -2,7 +2,7 @@
 
 
 # find_result.py
-# v0.0.1
+# v0.1.0
 #
 # Copyright 2010 swatch
 #
@@ -45,11 +45,12 @@ class FindResultView(gtk.HBox):
 		
 		# initialize find result treeview
 		self.findResultTreeview = gtk.TreeView()
-		self.findResultTreeview.append_column(gtk.TreeViewColumn("column0", gtk.CellRendererText(), markup=1))
+		self.findResultTreeview.append_column(gtk.TreeViewColumn("column0", gtk.CellRendererText(), text=1))
 		self.findResultTreeview.append_column(gtk.TreeViewColumn("column1", gtk.CellRendererText(), text=2))
 		self.findResultTreeview.append_column(gtk.TreeViewColumn("column2", gtk.CellRendererText(), text=6))
 		self.findResultTreeview.set_headers_visible(False)
-		self.findResultTreemodel = gtk.TreeStore(int, str, str, object, object, object, str)
+		self.findResultTreeview.set_rules_hint(True)
+		self.findResultTreemodel = gtk.TreeStore(int, str, str, object, int, int, str)
 		self.findResultTreemodel.set_sort_column_id(0, gtk.SORT_ASCENDING)
 		self.findResultTreeview.connect("cursor-changed", self.on_findResultTreeview_cursor_changed_action)
 		self.findResultTreeview.set_model(self.findResultTreemodel)
@@ -105,7 +106,7 @@ class FindResultView(gtk.HBox):
 		
 		tab = model.get_value(it, 3)
 		result_start = model.get_value(it, 4)
-		result_end = model.get_value(it, 5)
+		result_len = model.get_value(it, 5)
 		uri = model.get_value(it, 6)
 		
 
@@ -124,8 +125,9 @@ class FindResultView(gtk.HBox):
 			self._window.set_active_tab(tab)
 			doc = tab.get_document()
 			doc.goto_line(int(line) - 1)
-			if result_start != None and result_end != None:
-				doc.select_range(result_start, result_end)
+			if result_len > 0:
+				doc.select_range(doc.get_iter_at_offset(result_start), doc.get_iter_at_offset(result_start + result_len))
+			
 			tab.get_view().scroll_to_cursor()
 
 	def on_selectNextButton_clicked_action(self, object):
@@ -148,7 +150,7 @@ class FindResultView(gtk.HBox):
 		 		path = self.findResultTreemodel.get_path(it2)
 		else:
 			path = self.findResultTreemodel.get_path(it1) 
-		print path
+		#print path
 		self.findResultTreeview.set_cursor(path, column, False)
 
 		
@@ -169,25 +171,25 @@ class FindResultView(gtk.HBox):
 		idx = self.findResultTreemodel.iter_n_children(None)
 		header = '#' + str(idx) + ' - '
 		if replace_flg == True:
-			it = self.findResultTreemodel.append(None, [idx, header + 'Replace \"' + pattern + '\" with \"' + replace_text + ' \"', '', None, None, None, ''])
+			it = self.findResultTreemodel.append(None, [idx, header + 'Replace \"' + pattern + '\" with \"' + replace_text + ' \"', '', None, 0, 0, ''])
 		else:
-			it = self.findResultTreemodel.append(None, [idx, header + 'Search \"' + pattern + '\"', '', None, None, None, ''])
+			it = self.findResultTreemodel.append(None, [idx, header + 'Search \"' + pattern + '\"', '', None, 0, 0, ''])
 		return it
 	
 	def append_find_result_filename(self, parent_it, filename, uri):
-		it = self.findResultTreemodel.append(parent_it, [0, filename, '', None, None, None, uri])
+		it = self.findResultTreemodel.append(parent_it, [0, filename, '', None, 0, 0, uri])
 		return it
 		
-	def append_find_result(self, parent_it, line, text, tab, result_it_start, result_it_end, uri = ""):
-		self.findResultTreemodel.append(parent_it, [int(line), 'Line ' + line + ': ', text, tab, result_it_start, result_it_end, uri])
+	def append_find_result(self, parent_it, line, text, tab, result_offset_start = 0, result_len = 0, uri = ""):
+		self.findResultTreemodel.append(parent_it, [int(line), 'Line ' + line + ': ', text, tab, result_offset_start, result_len, uri])
 		
 	def show_find_result(self):
 		path = str(self.findResultTreemodel.iter_n_children(None) - 1)
 		self.findResultTreeview.expand_row(path, True)
 		pattern_it = self.findResultTreemodel.get_iter(path)
 		file_it = self.findResultTreemodel.iter_nth_child(pattern_it, 0)
-		cursor_it = self.findResultTreemodel.iter_nth_child(file_it, 0)
-		self.findResultTreeview.set_cursor(self.findResultTreemodel.get_path(cursor_it))
+		#cursor_it = self.findResultTreemodel.iter_nth_child(file_it, 0)
+		#self.findResultTreeview.set_cursor(self.findResultTreemodel.get_path(cursor_it))
 		
 		file_cnt = self.findResultTreemodel.iter_n_children(pattern_it)
 		total_hits = 0

@@ -2,7 +2,7 @@
 
 
 # findadvance_ui.py
-# v0.0.3
+# v0.1.0
 #
 # Copyright 2010 swatch
 #
@@ -93,7 +93,12 @@ class AdvancedFindUI(object):
 		self.replaceTextEntry.set_text_column(0)
 		for replace_text in self._instance.replace_list:
 			self.replaceTextEntry.append_text(replace_text)
-
+			
+		self.filterComboboxentry = ui.get_object("filterComboboxentry")
+		self.filterComboboxentry.set_text_column(0)
+		self.filterComboboxentry.child.set_text("*.*")
+		
+		self.pathFilechooserbutton = ui.get_object("pathFilechooserbutton")
 
 		self.matchWholeWordCheckbutton = ui.get_object("matchWholeWordCheckbutton")
 		self.matchCaseCheckbutton = ui.get_object("matchCaseCheckbutton")
@@ -167,6 +172,10 @@ class AdvancedFindUI(object):
 		if pattern == "":
 			return
 			
+		if pattern not in self._instance.find_list:
+			self._instance.find_list.append(pattern)
+			self.findTextEntry.append_text(pattern)
+			
 		replace_text = self.replaceTextEntry.get_active_text()
 		if replace_text != "" and replace_text not in self._instance.replace_list:
 			self._instance.replace_list.append(replace_text)
@@ -191,17 +200,31 @@ class AdvancedFindUI(object):
 			if not doc:
 				return
 			self._instance.advanced_find_all_in_doc(it, doc, pattern, self.options)
+			'''
+			start, end = doc.get_bounds()
+			text = doc.get_text(start, end)
+			self._instance.advanced_find_all_in_text(it, text, pattern, self.options)
+			#'''
 		elif self.scopeFlg == 1: #all opened
 			docs = self._instance._window.get_documents()
 			if not docs:
 				return
-			for i in range(0,len(docs)):
-				self._instance.advanced_find_all_in_doc(it, docs[i], pattern, self.options)
+			for doc in docs:
+				self._instance.advanced_find_all_in_doc(it, doc, pattern, self.options)
+			'''
+			for doc in docs:
+				start, end = doc.get_bounds()
+				self._instance.advanced_find_all_in_text(it, doc.get_text(start, end), pattern, self.options)
+			#'''
 
 	def on_replaceAllButton_clicked_action(self, object):
 		pattern = self.findTextEntry.get_active_text()
 		if pattern == "":
 			return
+			
+		if pattern not in self._instance.find_list:
+			self._instance.find_list.append(pattern)
+			self.findTextEntry.append_text(pattern)
 			
 		replace_text = self.replaceTextEntry.get_active_text()
 		if replace_text != "" and replace_text not in self._instance.replace_list:
@@ -219,8 +242,8 @@ class AdvancedFindUI(object):
 			docs = self._instance._window.get_documents()
 			if not docs:
 				return
-			for i in range(0,len(docs)):
-				self._instance.advanced_find_all_in_doc(it, docs[i], pattern, self.options, True)
+			for doc in docs:
+				self._instance.advanced_find_all_in_doc(it, doc, pattern, self.options, True)
 
 	def on_closeButton_clicked_action(self, object):
 		self.findDialog.destroy()
@@ -245,6 +268,8 @@ class AdvancedFindUI(object):
 			self.scopeFlg = 0
 		elif self.allFilesRadiobutton.get_active() == True:
 			self.scopeFlg = 1
+		elif self.allFilesInPathRadiobutton.get_active() == True:
+			self.scopeFlg = 2
 
 
 if __name__ == "__main__":
