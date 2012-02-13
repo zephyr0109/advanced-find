@@ -155,7 +155,7 @@ class AdvancedFindWindowHelper:
 		self.replace_history = None
 		self.file_type_history = None
 		self.file_path_history = None
-		self._result_view = None
+		self._results_view = None
 		
 		'''
 		self.config_manager.update_config_file(self.config_manager.config_file, 'search_option', self.find_options)
@@ -500,6 +500,8 @@ class AdvancedFindWindowHelper:
 		#d_list = []
 		file_list = []
 		grep_cmd = ['grep', '-l']
+		if find_options['MATCH_CASE'] == False:
+			grep_cmd.append('-i')
 		if find_options['INCLUDE_SUBFOLDER'] == True:
 			grep_cmd.append('-R')
 		if find_options['REGEX_SEARCH'] == True:
