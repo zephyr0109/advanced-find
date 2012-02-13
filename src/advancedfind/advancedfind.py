@@ -483,7 +483,8 @@ class AdvancedFindWindowHelper:
 					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, result[0], result[1], "", line_start_pos, True)
 			
 		self.result_highlight_on(tree_it)
-		
+	
+	'''
 	def check_file_pattern(self, path, pattern_text):
 		pattern_list = re.split('\s*\|\s*', pattern_text)
 		#print os.path.basename(path).strip()
@@ -491,12 +492,13 @@ class AdvancedFindWindowHelper:
 			if fnmatch.fnmatch(os.path.basename(path).strip(), pattern):
 				return True
 		return False
+	#'''
 	
 	def find_all_in_dir(self, parent_it, dir_path, file_pattern, search_pattern, find_options, replace_flg = False):
 		#start_time = time.time()
 		if search_pattern == "":
 			return
-
+			
 		#d_list = []
 		file_list = []
 		grep_cmd = ['grep', '-l']
@@ -504,6 +506,11 @@ class AdvancedFindWindowHelper:
 			grep_cmd.append('-i')
 		if find_options['INCLUDE_SUBFOLDER'] == True:
 			grep_cmd.append('-R')
+
+		pattern_list = re.split('\s*\|\s*', file_pattern)
+		for f_pattern in pattern_list:
+			grep_cmd.append('--include=' + f_pattern)
+
 		if find_options['REGEX_SEARCH'] == True:
 			grep_cmd = grep_cmd + ['-E', search_pattern, dir_path]
 		else:
@@ -520,8 +527,12 @@ class AdvancedFindWindowHelper:
 			output = p2.communicate()[0]
 			if output:
 				continue
+			file_list.append(f[:-1])
+			'''
 			if self.check_file_pattern(f, unicode(file_pattern, 'utf-8')):
 				file_list.append(f[:-1])
+			#'''
+			
 		
 		'''
 		for root, dirs, files in os.walk(unicode(dir_path, 'utf-8')):
