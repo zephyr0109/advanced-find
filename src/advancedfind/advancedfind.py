@@ -502,6 +502,8 @@ class AdvancedFindWindowHelper:
 		#d_list = []
 		file_list = []
 		grep_cmd = ['grep', '-l']
+		if find_options['MATCH_WHOLE_WORD'] == True:
+			grep_cmd.append('-w')
 		if find_options['MATCH_CASE'] == False:
 			grep_cmd.append('-i')
 		if find_options['INCLUDE_SUBFOLDER'] == True:
