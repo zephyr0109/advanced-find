@@ -19,4 +19,8 @@ LOCALE_DEST=/usr/share/locale
 
 #sudo cp -rv ${PLUGIN_NAME}/locale/* ${LOCALE_DEST}
 
+CONFIG_DEST=~/.local/share/gedit/plugins
+rm -rf ${CONFIG_DEST}/${PLUGIN_NAME}
+
+
 

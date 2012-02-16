@@ -98,7 +98,11 @@ class AdvancedFindWindowHelper:
 		self.result_highlight_tag.set_property('style', pango.STYLE_ITALIC)
 		#'''
 		
-		configfile = os.path.join(os.path.dirname(__file__), "config.xml")
+		user_configfile = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME), 'config.xml')
+		if os.path.exists(user_configfile):
+			configfile = user_configfile
+		else:
+			configfile = os.path.join(os.path.dirname(__file__), "config.xml")
 		self.config_manager = config_manager.ConfigManager(configfile)
 		self.find_options = self.config_manager.load_configure('FindOption')
 		self.config_manager.to_bool(self.find_options)
