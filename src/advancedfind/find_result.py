@@ -1,12 +1,12 @@
 # -*- encoding:utf-8 -*-
 
 
-# find_result.py
+# find_result.py is part of advancedfind-gedit.
 #
 #
-# Copyright 2010 swatch
+# Copyright 2010-2012 swatch
 #
-# This program is free software; you can redistribute it and/or modify
+# advancedfind-gedit is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
@@ -188,7 +188,11 @@ class FindResultView(Gtk.HBox):
 		
 		self.show_buttons()
 
-		format_file = os.path.join(os.path.dirname(__file__), "result_format.xml")
+		user_formatfile = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME), 'result_format.xml')
+		if os.path.exists(user_formatfile):
+			format_file = user_formatfile
+		else:
+			format_file = os.path.join(os.path.dirname(__file__), "result_format.xml")
 		self.result_format = config_manager.ConfigManager(format_file).load_configure('result_format')
 		
 	def do_events(self):

@@ -1,12 +1,12 @@
 # -*- encoding:utf-8 -*-
 
 
-# findadvance.py
+# advancedfind.py is part of advancedfind-gedit.
 #
 #
-# Copyright 2010 swatch
+# Copyright 2010-2012 swatch
 #
-# This program is free software; you can redistribute it and/or modify
+# advancedfind-gedit is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
@@ -98,7 +98,11 @@ class AdvancedFindWindowHelper:
 		self.result_highlight_tag.set_property('style', pango.STYLE_ITALIC)
 		#'''
 		
-		configfile = os.path.join(os.path.dirname(__file__), "config.xml")
+		user_configfile = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME), 'config.xml')
+		if os.path.exists(user_configfile):
+			configfile = user_configfile
+		else:
+			configfile = os.path.join(os.path.dirname(__file__), "config.xml")
 		self.config_manager = config_manager.ConfigManager(configfile)
 		self.find_options = self.config_manager.load_configure('FindOption')
 		self.config_manager.to_bool(self.find_options)
@@ -155,7 +159,7 @@ class AdvancedFindWindowHelper:
 		self.replace_history = None
 		self.file_type_history = None
 		self.file_path_history = None
-		self._result_view = None
+		self._results_view = None
 		
 		'''
 		self.config_manager.update_config_file(self.config_manager.config_file, 'search_option', self.find_options)
@@ -483,7 +487,8 @@ class AdvancedFindWindowHelper:
 					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, result[0], result[1], "", line_start_pos, True)
 			
 		self.result_highlight_on(tree_it)
-		
+	
+	'''
 	def check_file_pattern(self, path, pattern_text):
 		pattern_list = re.split('\s*\|\s*', pattern_text)
 		#print os.path.basename(path).strip()
@@ -491,17 +496,27 @@ class AdvancedFindWindowHelper:
 			if fnmatch.fnmatch(os.path.basename(path).strip(), pattern):
 				return True
 		return False
+	#'''
 	
 	def find_all_in_dir(self, parent_it, dir_path, file_pattern, search_pattern, find_options, replace_flg = False):
 		#start_time = time.time()
 		if search_pattern == "":
 			return
-
+			
 		#d_list = []
 		file_list = []
 		grep_cmd = ['grep', '-l']
+		if find_options['MATCH_WHOLE_WORD'] == True:
+			grep_cmd.append('-w')
+		if find_options['MATCH_CASE'] == False:
+			grep_cmd.append('-i')
 		if find_options['INCLUDE_SUBFOLDER'] == True:
 			grep_cmd.append('-R')
+
+		pattern_list = re.split('\s*\|\s*', file_pattern)
+		for f_pattern in pattern_list:
+			grep_cmd.append('--include=' + f_pattern)
+
 		if find_options['REGEX_SEARCH'] == True:
 			grep_cmd = grep_cmd + ['-E', search_pattern, dir_path]
 		else:
@@ -518,8 +533,12 @@ class AdvancedFindWindowHelper:
 			output = p2.communicate()[0]
 			if output:
 				continue
+			file_list.append(f[:-1])
+			'''
 			if self.check_file_pattern(f, unicode(file_pattern, 'utf-8')):
 				file_list.append(f[:-1])
+			#'''
+			
 		
 		'''
 		for root, dirs, files in os.walk(unicode(dir_path, 'utf-8')):
