@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-PLUGIN_NAME="advancedfind"
+PLUGIN_NAME="advanced_find"
 
 ver_str=$(zenity --entry --title="Version" --text="Enter the version code : " --entry-text="")
 if [ "${ver_str}" == "" ]; then
