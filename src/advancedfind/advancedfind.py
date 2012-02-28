@@ -394,7 +394,10 @@ class AdvancedFindWindowHelper:
 						line_end_pos = end_pos
 					line_text = text[line_start_pos:line_end_pos]
 					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, match.start(), match.end()-match.start(), "", line_start_pos)
-					start_pos = match.end() + 1
+					if match.start() == match.end():
+						start_pos = match.end + 1
+					else:
+						start_pos = match.end()
 					if start_pos > end_pos:
 						#print 'EOF'
 						break
@@ -408,6 +411,8 @@ class AdvancedFindWindowHelper:
 						replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
 					else:
 						replace_text = match.expand(unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8'))
+					if match.start() == match.end():
+						break
 					replace_start_pos = match.start() + replace_offset
 					replace_end_pos = match.end() + replace_offset
 					replace_start = doc.get_iter_at_offset(replace_start_pos)
@@ -417,7 +422,7 @@ class AdvancedFindWindowHelper:
 					replace_text_len = len(replace_text)
 					results.append([replace_start_pos, replace_text_len])
 					replace_offset += replace_text_len - (match.end() - match.start())
-					start_pos = match.end() + 1
+					start_pos = match.end()
 					if start_pos > end_pos:
 						#print 'EOF'
 						break
