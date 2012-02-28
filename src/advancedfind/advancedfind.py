@@ -389,12 +389,22 @@ class AdvancedFindWindowHelper:
 				while(match):
 					line_num = doc.get_iter_at_offset(match.start()).get_line()
 					line_start_pos = doc.get_iter_at_line(line_num).get_offset()
+					'''
 					line_end_pos = doc.get_iter_at_line(doc.get_iter_at_offset(match.end()).get_line()+1).get_offset()
 					if line_end_pos == line_start_pos:
 						line_end_pos = end_pos
+					#'''
+					match_end_line_cnt = doc.get_iter_at_offset(match.end()).get_line() + 1
+					if match_end_line_cnt == doc.get_line_count():
+						line_end_pos = end_pos
+					else:
+						line_end_pos = doc.get_iter_at_line(match_end_line_cnt).get_offset()
 					line_text = text[line_start_pos:line_end_pos]
 					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, match.start(), match.end()-match.start(), "", line_start_pos)
-					start_pos = match.end() + 1
+					if match.start() == match.end():
+						start_pos = match.end() + 1
+					else:
+						start_pos = match.end()
 					if start_pos > end_pos:
 						#print 'EOF'
 						break
@@ -408,6 +418,8 @@ class AdvancedFindWindowHelper:
 						replace_text = unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8')
 					else:
 						replace_text = match.expand(unicode(self.find_ui.replaceTextEntry.get_active_text(), 'utf-8'))
+					if match.start() == match.end():
+						break
 					replace_start_pos = match.start() + replace_offset
 					replace_end_pos = match.end() + replace_offset
 					replace_start = doc.get_iter_at_offset(replace_start_pos)
@@ -417,7 +429,7 @@ class AdvancedFindWindowHelper:
 					replace_text_len = len(replace_text)
 					results.append([replace_start_pos, replace_text_len])
 					replace_offset += replace_text_len - (match.end() - match.start())
-					start_pos = match.end() + 1
+					start_pos = match.end()
 					if start_pos > end_pos:
 						#print 'EOF'
 						break
@@ -431,9 +443,16 @@ class AdvancedFindWindowHelper:
 					line_num = doc.get_iter_at_offset(result[0]).get_line()
 					line_start_pos = doc.get_iter_at_line(line_num).get_offset()
 					#line_end_pos = result[0]+result[1]
+					'''
 					line_end_pos = doc.get_iter_at_line(doc.get_iter_at_offset(result[0]+result[1]).get_line()+1).get_offset()
 					if line_end_pos == line_start_pos:
 						line_end_pos = end_pos
+					#'''
+					match_end_line_cnt = doc.get_iter_at_offset(result[0]+result[1]).get_line() + 1
+					if match_end_line_cnt == doc.get_line_count():
+						line_end_pos = end_pos
+					else:
+						line_end_pos = doc.get_iter_at_line(match_end_line_cnt).get_offset()
 					line_text = text[line_start_pos:line_end_pos]
 					self._results_view.append_find_result(tree_it, str(line_num+1), line_text, result[0], result[1], "", line_start_pos, True)
 			
