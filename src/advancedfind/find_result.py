@@ -212,7 +212,10 @@ class FindResultView(Gtk.HBox):
 		return regex.sub(r'\1', text)
 		
 	def on_findResultTreeview_cursor_changed_action(self, object):
-		model, it = object.get_selection().get_selected()
+		if object.get_selection():
+			model, it = object.get_selection().get_selected()
+		else:
+			return
 		if not it:
 			return
 		
@@ -244,7 +247,7 @@ class FindResultView(Gtk.HBox):
 		if not tab:
 			m = re.search('[a-zA-Z0-9]+\:\/\/.+', uri)
 			if m == None:
-				tab = self._window.create_tab_from_location(Gio.file_new_for_uri('file://' + uri), None, line_num, 0, False, False)
+				tab = self._window.create_tab_from_location(Gio.file_new_for_path(uri), None, line_num, 0, False, False)
 			else:
 				tab = self._window.create_tab_from_location(Gio.file_new_for_uri(uri), None, line_num, 0, False, False)
 			self.do_events()
