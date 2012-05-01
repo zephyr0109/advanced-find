@@ -517,9 +517,9 @@ class AdvancedFindWindowHelper:
 			grep_cmd.append('--include=' + f_pattern)
 
 		if find_options['REGEX_SEARCH'] == True:
-			grep_cmd = grep_cmd + ['-E', search_pattern, dir_path]
+			grep_cmd = grep_cmd + ['-E', '-e', search_pattern, dir_path]
 		else:
-			grep_cmd = grep_cmd + ['-F', search_pattern, dir_path]
+			grep_cmd = grep_cmd + ['-F', '-e', search_pattern, dir_path]
 		#print grep_cmd
 
 		p = subprocess.Popen(grep_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
