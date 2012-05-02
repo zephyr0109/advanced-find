@@ -108,8 +108,7 @@ class AdvancedFindWindowHelper:
 		self.config_manager.to_bool(self.find_options)
 		
 		self.find_dlg_setting = self.config_manager.load_configure('FindGUI')
-		self.find_dlg_setting['OPTIONS_EXPANDED'] = self.config_manager.boolean(self.find_dlg_setting['OPTIONS_EXPANDED'])
-		self.find_dlg_setting['PATH_EXPANDED'] = self.config_manager.boolean(self.find_dlg_setting['PATH_EXPANDED'])
+		self.config_manager.to_bool(self.find_dlg_setting)
 
 		self.shortcuts = self.config_manager.load_configure('Shortcut')
 		self.result_highlight = self.config_manager.load_configure('ResultDisplay')

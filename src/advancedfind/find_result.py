@@ -45,18 +45,21 @@ except:
 
 
 class FindResultView(Gtk.HBox):
-	def __init__(self, window, show_button_option):
+	def __init__(self, window, result_gui_settings):
 		Gtk.HBox.__init__(self)
 		self._window = window
-		self.show_button_option = show_button_option
+		self.result_gui_settings = result_gui_settings
 		
 		# initialize find result treeview
 		self.findResultTreeview = Gtk.TreeView()
-		self.findResultTreeview.append_column(Gtk.TreeViewColumn("line", Gtk.CellRendererText(), markup=1))
-		self.findResultTreeview.append_column(Gtk.TreeViewColumn("content", Gtk.CellRendererText(), markup=2))
+		resultsCellRendererText = Gtk.CellRendererText()
+		if not self.result_gui_settings['USE_DEFAULT_FONT']:
+			resultsCellRendererText.set_property('font', self.result_gui_settings['RESULT_FONT'])
+		self.findResultTreeview.append_column(Gtk.TreeViewColumn("line", resultsCellRendererText, markup=1))
+		self.findResultTreeview.append_column(Gtk.TreeViewColumn("content", resultsCellRendererText, markup=2))
 		#self.findResultTreeview.append_column(Gtk.TreeViewColumn("result_start", Gtk.CellRendererText(), text=4))
 		#self.findResultTreeview.append_column(Gtk.TreeViewColumn("result_len", Gtk.CellRendererText(), text=5))
-		self.findResultTreeview.append_column(Gtk.TreeViewColumn("uri", Gtk.CellRendererText(), text=6))
+		self.findResultTreeview.append_column(Gtk.TreeViewColumn("uri", resultsCellRendererText, text=6))
 		self.findResultTreeview.set_headers_visible(False)
 		self.findResultTreeview.set_rules_hint(True)
 		self.findResultTreemodel = Gtk.TreeStore(int, str, str, object, int, int, str)
@@ -310,50 +313,50 @@ class FindResultView(Gtk.HBox):
 				
 	def on_showNextButtonItem_activate(self, object):
 		if self.showNextButtonItem.get_active() == True:
-			self.show_button_option['NEXT_BUTTON'] = True
+			self.result_gui_settings['NEXT_BUTTON'] = True
 			self.selectNextButton.show()
 		else:
-			self.show_button_option['NEXT_BUTTON'] = False
+			self.result_gui_settings['NEXT_BUTTON'] = False
 			self.selectNextButton.hide()
 
 	def on_showExpandAllButtonItem_activate(self, object):
 		if self.showExpandAllButtonItem.get_active() == True:
-			self.show_button_option['EXPAND_ALL_BUTTON'] = True
+			self.result_gui_settings['EXPAND_ALL_BUTTON'] = True
 			self.expandAllButton.show()
 		else:
-			self.show_button_option['EXPAND_ALL_BUTTON'] = False
+			self.result_gui_settings['EXPAND_ALL_BUTTON'] = False
 			self.expandAllButton.hide()
 		
 	def on_showCollapseAllButtonItem_activate(self, object):
 		if self.showCollapseAllButtonItem.get_active() == True:
-			self.show_button_option['COLLAPSE_ALL_BUTTON'] = True
+			self.result_gui_settings['COLLAPSE_ALL_BUTTON'] = True
 			self.collapseAllButton.show()
 		else:
-			self.show_button_option['COLLAPSE_ALL_BUTTON'] = False
+			self.result_gui_settings['COLLAPSE_ALL_BUTTON'] = False
 			self.collapseAllButton.hide()
 		
 	def on_showClearHighlightButtonItem_activate(self, object):
 		if self.showClearHighlightButtonItem.get_active() == True:
-			self.show_button_option['CLEAR_HIGHLIGHT_BUTTON'] = True
+			self.result_gui_settings['CLEAR_HIGHLIGHT_BUTTON'] = True
 			self.clearHighlightButton.show()
 		else:
-			self.show_button_option['CLEAR_HIGHLIGHT_BUTTON'] = False
+			self.result_gui_settings['CLEAR_HIGHLIGHT_BUTTON'] = False
 			self.clearHighlightButton.hide()
 		
 	def on_showClearButtonItem_activate(self, object):
 		if self.showClearButtonItem.get_active() == True:
-			self.show_button_option['CLEAR_BUTTON'] = True
+			self.result_gui_settings['CLEAR_BUTTON'] = True
 			self.clearButton.show()
 		else:
-			self.show_button_option['CLEAR_BUTTON'] = False
+			self.result_gui_settings['CLEAR_BUTTON'] = False
 			self.clearButton.hide()
 			
 	def on_showStopButtonItem_activate(self, object):
 		if self.showStopButtonItem.get_active() == True:
-			self.show_button_option['STOP_BUTTON'] = True
+			self.result_gui_settings['STOP_BUTTON'] = True
 			self.stopButton.show()
 		else:
-			self.show_button_option['STOP_BUTTON'] = False
+			self.result_gui_settings['STOP_BUTTON'] = False
 			self.stopButton.hide()
 
 	def on_selectNextButton_clicked_action(self, object):
@@ -465,25 +468,25 @@ class FindResultView(Gtk.HBox):
 		self.findResultTreemodel.clear()
 		
 	def get_show_button_option(self):
-		return self.show_button_option
+		return self.result_gui_settings
 		
 	def show_buttons(self):
-		if self.show_button_option['NEXT_BUTTON'] == True:
+		if self.result_gui_settings['NEXT_BUTTON'] == True:
 			self.selectNextButton.show()
 			self.showNextButtonItem.set_active(True)
-		if self.show_button_option['EXPAND_ALL_BUTTON'] == True:
+		if self.result_gui_settings['EXPAND_ALL_BUTTON'] == True:
 			self.expandAllButton.show()
 			self.showExpandAllButtonItem.set_active(True)
-		if self.show_button_option['COLLAPSE_ALL_BUTTON'] == True:
+		if self.result_gui_settings['COLLAPSE_ALL_BUTTON'] == True:
 			self.collapseAllButton.show()
 			self.showCollapseAllButtonItem.set_active(True)
-		if self.show_button_option['CLEAR_HIGHLIGHT_BUTTON'] == True:
+		if self.result_gui_settings['CLEAR_HIGHLIGHT_BUTTON'] == True:
 			self.clearHighlightButton.show()
 			self.showClearHighlightButtonItem.set_active(True)
-		if self.show_button_option['CLEAR_BUTTON'] == True:
+		if self.result_gui_settings['CLEAR_BUTTON'] == True:
 			self.clearButton.show()
 			self.showClearButtonItem.set_active(True)
-		if self.show_button_option['STOP_BUTTON'] == True:
+		if self.result_gui_settings['STOP_BUTTON'] == True:
 			self.stopButton.show()
 			self.showStopButtonItem.set_active(True)
 			
