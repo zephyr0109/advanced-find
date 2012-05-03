@@ -16,8 +16,10 @@
 	<Shortcut name="FIND_PREVIOUS" value="&lt;shift&gt;F3"/>
 	<Shortcut name="SELECT_FIND_NEXT" value="&lt;ctrl&gt;F3"/>
 	<Shortcut name="SELECT_FIND_PREVIOUS" value="&lt;ctrl&gt;&lt;shift&gt;F3"/>
-	<ResultDisplay name="FOREGROUND_COLOR" value="#ffffffff0000"/>
-	<ResultDisplay name="BACKGROUND_COLOR" value="red"/>
+	<ResultDisplay name="FOREGROUND_COLOR" value="#fcfce9e94f4f"/>
+	<ResultDisplay name="BACKGROUND_COLOR" value="#efef29292929"/>
+	<ResultGUI name="USE_DEFAULT_FONT" value="True"/>
+	<ResultGUI name="RESULT_FONT" value="Sans 12"/>
 	<ResultGUI name="NEXT_BUTTON" value="True"/>
 	<ResultGUI name="EXPAND_ALL_BUTTON" value="False"/>
 	<ResultGUI name="COLLAPSE_ALL_BUTTON" value="False"/>

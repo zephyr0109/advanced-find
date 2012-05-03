@@ -46,9 +46,16 @@ class ConfigUI(object):
 		
 		self.fgColorbutton = UI.get_object("fgColorbutton")
 		self.bgColorbutton = UI.get_object("bgColorbutton")
-
 		self.fgColorbutton.set_color(Gdk.color_parse(self._instance.result_highlight['FOREGROUND_COLOR']))
 		self.bgColorbutton.set_color(Gdk.color_parse(self._instance.result_highlight['BACKGROUND_COLOR']))
+		
+		self.useDefaultFontCheckbutton = UI.get_object("useDefaultFontCheckbutton")
+		self.useDefaultFontCheckbutton.set_active(self._instance.result_gui_settings['USE_DEFAULT_FONT'])
+		self.resultFontbutton = UI.get_object("resultFontbutton")
+		if self._instance.result_gui_settings['USE_DEFAULT_FONT']:
+			self.resultFontbutton.get_parent().set_sensitive(False)
+		else:
+			self.resultFontbutton.get_parent().set_sensitive(True)
 
 		self.rootFollowFilebrowserCheckbutton = UI.get_object("rootFollowFilebrowserCheckbutton")
 		self.rootFollowFilebrowserCheckbutton.set_active(self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'])
@@ -58,6 +65,8 @@ class ConfigUI(object):
 		signals = { "on_configWindow_destroy" : self.on_configWindow_destroy,
 					"on_fgColorbutton_color_set" : self.on_fgColorbutton_color_set,
 					"on_bgColorbutton_color_set" : self.on_bgColorbutton_color_set,
+					"on_useDefaultFontCheckbutton_toggled" : self.on_useDefaultFontCheckbutton_toggled,
+					"on_resultFontbutton_font_set" : self.on_resultFontbutton_font_set,
 					"on_rootFollowFilebrowserCheckbutton_toggled" : self.on_rootFollowFilebrowserCheckbutton_toggled }
 		
 		UI.connect_signals(signals)
@@ -71,6 +80,16 @@ class ConfigUI(object):
 		
 	def on_bgColorbutton_color_set(self, widget):
 		self._instance.result_highlight['BACKGROUND_COLOR'] = widget.get_color().to_string()
+		
+	def on_useDefaultFontCheckbutton_toggled(self, object):
+		self._instance.result_gui_settings['USE_DEFAULT_FONT'] = object.get_active()
+		if object.get_active():
+			self.resultFontbutton.get_parent().set_sensitive(False)
+		else:
+			self.resultFontbutton.get_parent().set_sensitive(True)
+		
+	def on_resultFontbutton_font_set(self, object):
+		self._instance.result_gui_settings['RESULT_FONT'] = object.get_font_name()
 		
 	def on_rootFollowFilebrowserCheckbutton_toggled(self, widget):
 		self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'] = widget.get_active()

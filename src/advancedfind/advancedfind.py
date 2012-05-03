@@ -108,9 +108,7 @@ class AdvancedFindWindowHelper:
 		self.config_manager.to_bool(self.find_options)
 		
 		self.find_dlg_setting = self.config_manager.load_configure('FindGUI')
-		#self.config_manager.to_bool(self.find_dlg_setting)
-		self.config_manager.boolean(self.find_dlg_setting['OPTIONS_EXPANDED'])
-		self.config_manager.boolean(self.find_dlg_setting['PATH_EXPANDED'])
+		self.config_manager.to_bool(self.find_dlg_setting)
 
 		self.shortcuts = self.config_manager.load_configure('Shortcut')
 		self.result_highlight = self.config_manager.load_configure('ResultDisplay')
@@ -515,12 +513,15 @@ class AdvancedFindWindowHelper:
 
 		pattern_list = re.split('\s*\|\s*', file_pattern)
 		for f_pattern in pattern_list:
-			grep_cmd.append('--include=' + f_pattern)
+			if f_pattern.startswith('-'):
+				grep_cmd.append('--exclude=' + f_pattern[1:])
+			else:
+				grep_cmd.append('--include=' + f_pattern)
 
 		if find_options['REGEX_SEARCH'] == True:
-			grep_cmd = grep_cmd + ['-E', search_pattern, dir_path]
+			grep_cmd = grep_cmd + ['-E', '-e', search_pattern, dir_path]
 		else:
-			grep_cmd = grep_cmd + ['-F', search_pattern, dir_path]
+			grep_cmd = grep_cmd + ['-F', '-e', search_pattern, dir_path]
 		#print grep_cmd
 
 		p = subprocess.Popen(grep_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -563,9 +564,9 @@ class AdvancedFindWindowHelper:
 		for file_path in file_list:
 			if os.path.isfile(file_path):
 				temp_doc = Gedit.Document()
-				file_uri = 'file://' + file_path
-				temp_doc.load(Gio.file_new_for_uri(file_uri), Gedit.encoding_get_from_charset('utf-8'), 0, 0, False)
-				#temp_doc.load(Gio.file_new_for_uri(file_uri), None, 0, 0, False)
+				#file_uri = 'file://' + file_path
+				#temp_doc.load(Gio.file_new_for_uri(file_uri), Gedit.encoding_get_from_charset('utf-8'), 0, 0, False)
+				temp_doc.load(Gio.file_new_for_path(file_path), Gedit.encoding_get_from_charset('utf-8'), 0, 0, False)
 				f_temp = open(file_path, 'r')
 				try:
 					text = unicode(f_temp.read(), 'utf-8')

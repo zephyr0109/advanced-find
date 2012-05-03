@@ -51,6 +51,7 @@ class AdvancedFindUI(object):
 		ui.connect_signals({ "on_findDialog_destroy" : self.on_findDialog_destroy_action,
 							"on_findDialog_focus_in_event": self.on_findDialog_focus_in_event_action,
 							"on_findDialog_focus_out_event" : self.on_findDialog_focus_out_event_action,
+							"on_findDialog_show" : self.on_findDialog_show_action,
 							
 							"on_findEntry_icon_press" : self.findEntryIconPress,
 							"on_replaceEntry_icon_press" : self.replaceEntryIconPress,
@@ -122,7 +123,7 @@ class AdvancedFindUI(object):
 		
 		self.filterComboboxtext = ui.get_object("filterComboboxtext")
 		self.filterComboboxtext.set_entry_text_column(0)
-		self.filterComboboxtext.get_child().set_text("*")
+		#self.filterComboboxtext.get_child().set_text("*")
 		#self.filterComboboxtext.prepend_text("*")
 		try:
 			for file_filter in self._instance.file_type_history:
@@ -134,11 +135,13 @@ class AdvancedFindUI(object):
 		
 		self.pathComboboxtext = ui.get_object("pathComboboxtext")
 		self.pathComboboxtext.set_entry_text_column(0)
+		'''
 		filebrowser_root = self.get_filebrowser_root()
 		if filebrowser_root != None and self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'] == True:
 			self.pathComboboxtext.get_child().set_text(filebrowser_root)
 		else:
 			self.pathComboboxtext.get_child().set_text(self.selectPathFilechooserdialog.get_filename())
+		#'''
 			
 		try:
 			for path in self._instance.file_path_history:
@@ -212,6 +215,17 @@ class AdvancedFindUI(object):
 			self._instance.find_ui = None
 		except:
 			pass
+			
+	def on_findDialog_show_action(self,object):
+		self.filterComboboxtext.get_child().set_text("*")
+		if self.followCurrentDocCheckbutton.get_active() == True:
+			self.pathComboboxtext.get_child().set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
+		else:
+			filebrowser_root = self.get_filebrowser_root()
+			if filebrowser_root != None and self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'] == True:
+				self.pathComboboxtext.get_child().set_text(filebrowser_root)
+			else:
+				self.pathComboboxtext.get_child().set_text(self.selectPathFilechooserdialog.get_filename())
 			
 	def findEntryIconPress(self, object, icon_pos, event):
 		self.findTextComboboxtext.get_model().clear()
