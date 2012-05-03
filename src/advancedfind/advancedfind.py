@@ -513,7 +513,10 @@ class AdvancedFindWindowHelper:
 
 		pattern_list = re.split('\s*\|\s*', file_pattern)
 		for f_pattern in pattern_list:
-			grep_cmd.append('--include=' + f_pattern)
+			if f_pattern.startswith('-'):
+				grep_cmd.append('--exclude=' + f_pattern[1:])
+			else:
+				grep_cmd.append('--include=' + f_pattern)
 
 		if find_options['REGEX_SEARCH'] == True:
 			grep_cmd = grep_cmd + ['-E', '-e', search_pattern, dir_path]

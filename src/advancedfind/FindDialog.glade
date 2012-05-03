@@ -174,6 +174,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="margin_left">5</property>
+                    <property name="row_spacing">5</property>
+                    <property name="column_spacing">5</property>
                     <child>
                       <object class="GtkBox" id="box3">
                         <property name="visible">True</property>
@@ -238,7 +240,8 @@
                         <child internal-child="entry">
                           <object class="GtkEntry" id="comboboxtext-entry">
                             <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">Using '|' to seperate multiple types</property>
+                            <property name="tooltip_text" translatable="yes">Use '|' to seperate multiple types.
+Add '-' before the type to exclude it.</property>
                             <property name="invisible_char">●</property>
                             <property name="secondary_icon_stock">gtk-clear</property>
                             <property name="secondary_icon_tooltip_text" translatable="yes">Clear history</property>
