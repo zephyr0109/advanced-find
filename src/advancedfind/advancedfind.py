@@ -83,7 +83,7 @@ class AdvancedFindWindowHelper:
 		self.file_path_history = []
 		self.current_search_pattern = ""
 		self.current_replace_text = ""
-		#self.current_file_pattern = ""
+		self.current_file_pattern = "*"
 		#self.current_path = ""
 		self.forwardFlg = True
 		self.scopeFlg = 0
@@ -236,12 +236,13 @@ class AdvancedFindWindowHelper:
 		if self.current_replace_text != "":
 			self.find_ui.replaceTextComboboxtext.get_child().set_text(self.current_replace_text)
 
-		'''	
+
 		if self.current_file_pattern != "":
-			self.find_ui.filterComboboxentry.child.set_text(self.current_file_pattern)
-			
+			self.find_ui.filterComboboxtext.get_child().set_text(self.current_file_pattern)
+
+		'''	
 		if self.current_path != "":
-			self.find_ui.pathComboboxentry.child.set_text(self.current_path)
+			self.find_ui.pathComboboxentrytext.get_child().set_text(self.current_path)
 		#'''
 
 	def create_regex(self, pattern, find_options):

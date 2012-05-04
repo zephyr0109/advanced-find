@@ -208,6 +208,7 @@ class AdvancedFindUI(object):
 		#'''
 			
 	def on_findDialog_destroy_action(self, object):
+		#print 'findDialog destroy'
 		try:
 			self._instance.find_dlg_setting['PATH_EXPANDED'] = self.pathExpander.get_expanded()
 			self._instance.find_dlg_setting['OPTIONS_EXPANDED'] = self.optionsExpander.get_expanded()
@@ -217,7 +218,7 @@ class AdvancedFindUI(object):
 			pass
 			
 	def on_findDialog_show_action(self,object):
-		self.filterComboboxtext.get_child().set_text("*")
+		#print 'findDialog show'
 		if self.followCurrentDocCheckbutton.get_active() == True:
 			self.pathComboboxtext.get_child().set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
 		else:
@@ -244,10 +245,19 @@ class AdvancedFindUI(object):
 		self._instance.file_path_history = []
 		
 	def on_findDialog_focus_in_event_action(self, object, event):
+		#print 'findDialog focus in'
 		object.set_opacity(1)
+		if self.followCurrentDocCheckbutton.get_active() == True:
+			self.pathComboboxtext.get_child().set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
+		else:
+			filebrowser_root = self.get_filebrowser_root()
+			if filebrowser_root != None and self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'] == True:
+				self.pathComboboxtext.get_child().set_text(filebrowser_root)
+			else:
+				self.pathComboboxtext.get_child().set_text(self.selectPathFilechooserdialog.get_filename())
 
 	def on_findDialog_focus_out_event_action(self, object, event):
-		#object.set_opacity(0.5)
+		#print 'findDialog focus out'
 		object.set_opacity(self.opacityScale.get_value()/100)
 	
 	'''	
@@ -273,7 +283,7 @@ class AdvancedFindUI(object):
 		path = unicode(self.pathComboboxtext.get_active_text(), 'utf-8')
 		self._instance.current_search_pattern = find_text
 		self._instance.current_replace_text = replace_text
-		#self._instance.current_file_pattern = file_pattern
+		self._instance.current_file_pattern = file_pattern
 		#self._instance.current_path = path
 		
 		if find_text != "" and find_text not in self._instance.find_history:
@@ -377,6 +387,7 @@ class AdvancedFindUI(object):
 		#self._instance._results_view.set_sensitive(True)
 		self._instance._results_view.is_busy(False)
 		#self.do_events()
+		self.findDialog.destroy()
 
 	def on_replaceAllButton_clicked_action(self, object):
 		search_pattern = self.findTextComboboxtext.get_active_text()
@@ -421,6 +432,7 @@ class AdvancedFindUI(object):
 		#self._instance._results_view.set_sensitive(True)
 		self._instance._results_view.is_busy(False)
 		#self.do_events()
+		self.findDialog.destroy()
 
 	def on_closeButton_clicked_action(self, object):
 		self.findDialog.destroy()
@@ -430,6 +442,8 @@ class AdvancedFindUI(object):
 
 	# select path file chooserr dialog actions
 	def on_selectPathDialogOkButton_clicked_action(self, object):
+		if self.followCurrentDocCheckbutton.get_active() == True:
+			self.followCurrentDocCheckbutton.set_active(False)
 		folder_path = self.selectPathFilechooserdialog.get_filename()
 		self.selectPathFilechooserdialog.select_filename(folder_path)
 		self.pathComboboxtext.get_child().set_text(folder_path)
