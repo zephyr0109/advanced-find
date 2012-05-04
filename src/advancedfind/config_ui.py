@@ -52,6 +52,7 @@ class ConfigUI(object):
 		self.useDefaultFontCheckbutton = UI.get_object("useDefaultFontCheckbutton")
 		self.useDefaultFontCheckbutton.set_active(self._instance.result_gui_settings['USE_DEFAULT_FONT'])
 		self.resultFontbutton = UI.get_object("resultFontbutton")
+		self.resultFontbutton.set_font_name(self._instance.result_gui_settings['RESULT_FONT'])
 		if self._instance.result_gui_settings['USE_DEFAULT_FONT']:
 			self.resultFontbutton.get_parent().set_sensitive(False)
 		else:
