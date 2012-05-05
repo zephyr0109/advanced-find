@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-03 23:20+0800\n"
+"POT-Creation-Date: 2012-05-06 01:48+0800\n"
 "PO-Revision-Date: 2010-10-17 20:15+0800\n"
 "Last-Translator: swatch <swatch.code@gmail.com>\n"
 "Language-Team: none\n"
@@ -16,44 +16,44 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../advancedfind.py:126 ../advancedfind.py:179 ../advancedfind.py:631
+#: ../advancedfind.py:134 ../advancedfind.py:200 ../advancedfind.py:651
 #: ../FindDialog.glade:12
 msgid "Advanced Find/Replace"
 msgstr "進階搜尋/取代"
 
-#: ../advancedfind.py:180
+#: ../advancedfind.py:201
 msgid "Find Next"
 msgstr "尋找下一個"
 
-#: ../advancedfind.py:181
+#: ../advancedfind.py:202
 msgid "Find Previous"
 msgstr "尋找上一個"
 
-#: ../advancedfind.py:182
+#: ../advancedfind.py:203
 msgid "Select and Find Next"
 msgstr "選取並尋找下一個"
 
-#: ../advancedfind.py:183
+#: ../advancedfind.py:204
 msgid "Select and Find Previous"
 msgstr "選取並尋找上一個"
 
-#: ../advancedfind.py:184
+#: ../advancedfind.py:205
 msgid "Advanced Find/Replace Settings"
 msgstr "設定進階搜尋/取代"
 
-#: ../advancedfind.py:336
+#: ../advancedfind.py:358
 msgid "Nothing is found."
 msgstr "找不到符合的字詞"
 
-#: ../advancedfind_ui.py:345
+#: ../advancedfind_ui.py:419
 msgid "Finding..."
 msgstr "搜尋中…"
 
-#: ../advancedfind_ui.py:389
+#: ../advancedfind_ui.py:464
 msgid "Replacing..."
 msgstr "取代中…"
 
-#: ../advancedfind_ui.py:415
+#: ../advancedfind_ui.py:490
 msgid "Replace in this scope is not supported."
 msgstr "取代功能不支援所選擇的範圍"
 
@@ -121,11 +121,15 @@ msgstr "需重新啟動以套用設定"
 msgid "<b>Results list</b>"
 msgstr "<b>底部列表</b>"
 
-#: ../config.glade:277
+#: ../config.glade:278
 msgid "Root Follow Filebrowser"
 msgstr "使用檔案瀏覽器的根資料夾路徑"
 
-#: ../config.glade:314
+#: ../config.glade:296
+msgid "Keep history of patterns"
+msgstr "保存搜尋/取代記錄"
+
+#: ../config.glade:330
 msgid "<b>Others</b>"
 msgstr "<b>其他設定</b>"
 
@@ -137,20 +141,29 @@ msgstr "取代為 : "
 msgid "Find what : "
 msgstr "搜尋 : "
 
-#: ../FindDialog.glade:124 ../FindDialog.glade:148 ../FindDialog.glade:194
-#: ../FindDialog.glade:245
+#: ../FindDialog.glade:128 ../FindDialog.glade:158 ../FindDialog.glade:212
+#: ../FindDialog.glade:269
+msgid ""
+"Bookmark current pattern.\n"
+"Remove current pattern from bookmarks if exists."
+msgstr ""
+"將目前文字存為書籤，\n"
+"若書籤已存在則將之刪除。"
+
+#: ../FindDialog.glade:130 ../FindDialog.glade:160 ../FindDialog.glade:214
+#: ../FindDialog.glade:271
 msgid "Clear history"
 msgstr "清除記錄"
 
-#: ../FindDialog.glade:207
+#: ../FindDialog.glade:227
 msgid "..."
 msgstr "..."
 
-#: ../FindDialog.glade:212
+#: ../FindDialog.glade:232
 msgid "Choose a folder"
 msgstr "選擇資料夾"
 
-#: ../FindDialog.glade:241
+#: ../FindDialog.glade:264
 msgid ""
 "Use '|' to seperate multiple types.\n"
 "Add '-' before the type to exclude it."
@@ -158,111 +171,111 @@ msgstr ""
 "使用'|'分開多個檔案類型;\n"
 "在檔案類型前加上'-'表示排除"
 
-#: ../FindDialog.glade:261
+#: ../FindDialog.glade:287
 msgid "Directory : "
 msgstr "資料夾 : "
 
-#: ../FindDialog.glade:274
+#: ../FindDialog.glade:300
 msgid "Filter : "
 msgstr "檔案類型 : "
 
-#: ../FindDialog.glade:289
+#: ../FindDialog.glade:315
 msgid "<b>Path</b>"
 msgstr "<b>路徑</b>"
 
-#: ../FindDialog.glade:313
+#: ../FindDialog.glade:339
 msgid "Wrap around"
 msgstr "回到文件開頭/結尾搜尋"
 
-#: ../FindDialog.glade:332
+#: ../FindDialog.glade:358
 msgid "Directory follows current doc."
 msgstr "選擇目前文件所在的資料夾"
 
-#: ../FindDialog.glade:351
+#: ../FindDialog.glade:377
 msgid "Directory includes sub-folder"
 msgstr "包含所有子資料夾"
 
-#: ../FindDialog.glade:370
+#: ../FindDialog.glade:396
 msgid "Regular expression"
 msgstr "使用正則表達式"
 
-#: ../FindDialog.glade:389
+#: ../FindDialog.glade:415
 msgid "Match whole word"
 msgstr "符合整個字詞"
 
-#: ../FindDialog.glade:408
+#: ../FindDialog.glade:434
 msgid "Match case"
 msgstr "符合大小寫"
 
-#: ../FindDialog.glade:431
+#: ../FindDialog.glade:457
 msgid "<b>Options</b>"
 msgstr "<b>選項</b>"
 
-#: ../FindDialog.glade:466
+#: ../FindDialog.glade:492
 msgid "Forward"
 msgstr "向下"
 
-#: ../FindDialog.glade:485
+#: ../FindDialog.glade:511
 msgid "Backward"
 msgstr "向上"
 
-#: ../FindDialog.glade:513
+#: ../FindDialog.glade:539
 msgid "<b>Direction</b>"
 msgstr "<b>方向</b>"
 
-#: ../FindDialog.glade:542
+#: ../FindDialog.glade:568
 msgid "Current Document"
 msgstr "目前的文件"
 
-#: ../FindDialog.glade:561
+#: ../FindDialog.glade:587
 msgid "All Opened Documents"
 msgstr "所有開啟的文件"
 
-#: ../FindDialog.glade:580
+#: ../FindDialog.glade:606
 msgid "All Documents in Directory"
 msgstr "選擇的資料夾內的所有文件"
 
-#: ../FindDialog.glade:599
+#: ../FindDialog.glade:625
 msgid "Current Selected Text"
 msgstr "選取的文字"
 
-#: ../FindDialog.glade:624
+#: ../FindDialog.glade:650
 msgid "<b>Scope</b>"
 msgstr "<b>範圍</b>"
 
-#: ../FindDialog.glade:680
+#: ../FindDialog.glade:706
 msgid "_Find"
 msgstr "搜尋(_F)"
 
-#: ../FindDialog.glade:697
+#: ../FindDialog.glade:723
 msgid "_Replace"
 msgstr "取代(_R)"
 
-#: ../FindDialog.glade:714
+#: ../FindDialog.glade:740
 msgid "Find _All"
 msgstr "全部搜尋(_A)"
 
-#: ../FindDialog.glade:731
+#: ../FindDialog.glade:757
 msgid "Replace All"
 msgstr "全部取代"
 
-#: ../FindDialog.glade:747
+#: ../FindDialog.glade:773
 msgid "_Close"
 msgstr "關閉(_C)"
 
-#: ../FindDialog.glade:819
+#: ../FindDialog.glade:845
 msgid "<b>Opacity</b>"
 msgstr "<b>視窗透明度</b>"
 
-#: ../FindDialog.glade:870
+#: ../FindDialog.glade:896
 msgid "Select directory"
 msgstr "選擇資料夾"
 
-#: ../FindDialog.glade:890
+#: ../FindDialog.glade:916
 msgid "Cancel"
 msgstr "取消"
 
-#: ../FindDialog.glade:906
+#: ../FindDialog.glade:932
 msgid "Ok"
 msgstr "確定"
 
