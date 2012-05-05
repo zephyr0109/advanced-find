@@ -79,8 +79,12 @@ class AdvancedFindWindowHelper:
 		self.find_ui = None
 		self.find_history = []
 		self.replace_history = []
-		self.file_type_history = []
-		self.file_path_history = []
+		self.filter_history = []
+		self.path_history = []
+		self.find_bookmarks = []
+		self.replace_bookmarks = []
+		self.filter_bookmarks = []
+		self.path_bookmarks = []
 		self.current_search_pattern = ""
 		self.current_replace_text = ""
 		self.current_file_pattern = "*"
@@ -118,8 +122,12 @@ class AdvancedFindWindowHelper:
 		
 		self.find_history = self.config_manager.load_list('FindHistory')
 		self.replace_history = self.config_manager.load_list('ReplaceHistory')
-		self.file_type_history = self.config_manager.load_list('FilterHistory')
-		self.file_path_history = self.config_manager.load_list('PathHistory')
+		self.filter_history = self.config_manager.load_list('FilterHistory')
+		self.path_history = self.config_manager.load_list('PathHistory')
+		self.find_bookmarks = self.config_manager.load_list('FindBookmark')
+		self.replace_bookmarks = self.config_manager.load_list('ReplaceBookmark')
+		self.filter_bookmarks = self.config_manager.load_list('FilterBookmark')
+		self.path_bookmarks = self.config_manager.load_list('PathBookmark')
 
 		self._results_view = FindResultView(window, self.result_gui_settings)
 		icon = Gtk.Image.new_from_stock(Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU)
@@ -144,10 +152,19 @@ class AdvancedFindWindowHelper:
 		self.config_manager.update_configure('ResultDisplay', self.result_highlight)
 		self.result_gui_settings.update(self._results_view.get_show_button_option())
 		self.config_manager.update_configure('ResultGUI', self.result_gui_settings)
+		if not self.find_dlg_setting['KEEP_HISTORY']:
+			self.find_history = []
+			self.replace_history = []
+			self.filter_history = []
+			self.path_history = []
 		self.config_manager.update_list('FindHistory', self.find_history)
 		self.config_manager.update_list('ReplaceHistory', self.replace_history)
-		self.config_manager.update_list('FilterHistory', self.file_type_history)
-		self.config_manager.update_list('PathHistory', self.file_path_history)
+		self.config_manager.update_list('FilterHistory', self.filter_history)
+		self.config_manager.update_list('PathHistory', self.path_history)
+		self.config_manager.update_list('FindBookmark', self.find_bookmarks)
+		self.config_manager.update_list('ReplaceBookmark', self.replace_bookmarks)
+		self.config_manager.update_list('FilterBookmark', self.filter_bookmarks)
+		self.config_manager.update_list('PathBookmark', self.path_bookmarks)
 		self.config_manager.update_config_file(self.config_manager.config_file)
 
 		self._window = None
@@ -155,8 +172,12 @@ class AdvancedFindWindowHelper:
 		self.find_ui = None
 		self.find_history = None
 		self.replace_history = None
-		self.file_type_history = None
-		self.file_path_history = None
+		self.filter_history = None
+		self.path_history = None
+		self.find_bookmarks = None
+		self.replace_bookmarks = None
+		self.filter_bookmarks = None
+		self.path_bookmarks = None
 		self._results_view = None
 		
 		'''
