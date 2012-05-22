@@ -49,10 +49,20 @@ class FindResultView(Gtk.HBox):
 		Gtk.HBox.__init__(self)
 		self._window = window
 		self.result_gui_settings = result_gui_settings
+
+		# load color theme of results list		
+		user_formatfile = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME), 'result_format.xml')
+		if os.path.exists(user_formatfile):
+			format_file = user_formatfile
+		else:
+			format_file = os.path.join(os.path.dirname(__file__), "result_format.xml")
+		self.result_format = config_manager.ConfigManager(format_file).load_configure('result_format')
 		
 		# initialize find result treeview
 		self.findResultTreeview = Gtk.TreeView()
 		resultsCellRendererText = Gtk.CellRendererText()
+		if self.result_format['BACKGROUND']:
+			resultsCellRendererText.set_property('cell-background', self.result_format['BACKGROUND'])
 		if not self.result_gui_settings['USE_DEFAULT_FONT']:
 			resultsCellRendererText.set_property('font', self.result_gui_settings['RESULT_FONT'])
 		self.findResultTreeview.append_column(Gtk.TreeViewColumn("line", resultsCellRendererText, markup=1))
@@ -191,12 +201,7 @@ class FindResultView(Gtk.HBox):
 		
 		self.show_buttons()
 
-		user_formatfile = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME), 'result_format.xml')
-		if os.path.exists(user_formatfile):
-			format_file = user_formatfile
-		else:
-			format_file = os.path.join(os.path.dirname(__file__), "result_format.xml")
-		self.result_format = config_manager.ConfigManager(format_file).load_configure('result_format')
+
 		
 	def do_events(self):
 		while Gtk.events_pending():
