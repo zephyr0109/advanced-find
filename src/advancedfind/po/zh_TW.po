@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-06 01:48+0800\n"
+"POT-Creation-Date: 2012-05-29 01:43+0800\n"
 "PO-Revision-Date: 2010-10-17 20:15+0800\n"
 "Last-Translator: swatch <swatch.code@gmail.com>\n"
 "Language-Team: none\n"
@@ -45,47 +45,62 @@ msgstr "設定進階搜尋/取代"
 msgid "Nothing is found."
 msgstr "找不到符合的字詞"
 
-#: ../advancedfind_ui.py:419
+#: ../advancedfind_ui.py:258 ../advancedfind_ui.py:280
+#: ../advancedfind_ui.py:302 ../advancedfind_ui.py:324
+#: ../advancedfind_ui.py:336 ../advancedfind_ui.py:345
+#: ../advancedfind_ui.py:354 ../advancedfind_ui.py:363
+msgid "Remove from bookmarks"
+msgstr "移除書籤"
+
+#: ../advancedfind_ui.py:264 ../advancedfind_ui.py:286
+#: ../advancedfind_ui.py:308 ../advancedfind_ui.py:330
+#: ../advancedfind_ui.py:339 ../advancedfind_ui.py:348
+#: ../advancedfind_ui.py:357 ../advancedfind_ui.py:366 ../FindDialog.glade:129
+#: ../FindDialog.glade:159 ../FindDialog.glade:213 ../FindDialog.glade:270
+msgid "Add to bookmarks"
+msgstr "加入書籤"
+
+#: ../advancedfind_ui.py:476
 msgid "Finding..."
 msgstr "搜尋中…"
 
-#: ../advancedfind_ui.py:464
+#: ../advancedfind_ui.py:521
 msgid "Replacing..."
 msgstr "取代中…"
 
-#: ../advancedfind_ui.py:490
+#: ../advancedfind_ui.py:547
 msgid "Replace in this scope is not supported."
 msgstr "取代功能不支援所選擇的範圍"
 
-#: ../find_result.py:85 ../find_result.py:162
+#: ../find_result.py:95 ../find_result.py:172
 msgid "Next"
 msgstr "下一個"
 
-#: ../find_result.py:88 ../find_result.py:126 ../find_result.py:163
+#: ../find_result.py:98 ../find_result.py:136 ../find_result.py:173
 msgid "Expand All"
 msgstr "全部展開"
 
-#: ../find_result.py:91 ../find_result.py:127 ../find_result.py:164
+#: ../find_result.py:101 ../find_result.py:137 ../find_result.py:174
 msgid "Collapse All"
 msgstr "全部收合"
 
-#: ../find_result.py:94 ../find_result.py:128 ../find_result.py:165
+#: ../find_result.py:104 ../find_result.py:138 ../find_result.py:175
 msgid "Clear Highlight"
 msgstr "清除標示"
 
-#: ../find_result.py:97 ../find_result.py:129 ../find_result.py:166
+#: ../find_result.py:107 ../find_result.py:139 ../find_result.py:176
 msgid "Clear"
 msgstr "清除"
 
-#: ../find_result.py:100 ../find_result.py:130 ../find_result.py:167
+#: ../find_result.py:110 ../find_result.py:140 ../find_result.py:177
 msgid "Stop"
 msgstr "停止"
 
-#: ../find_result.py:132
+#: ../find_result.py:142
 msgid "Markup"
 msgstr "標示"
 
-#: ../find_result.py:157
+#: ../find_result.py:167
 msgid "Show Buttons"
 msgstr "顯示按鈕"
 
@@ -141,15 +156,6 @@ msgstr "取代為 : "
 msgid "Find what : "
 msgstr "搜尋 : "
 
-#: ../FindDialog.glade:128 ../FindDialog.glade:158 ../FindDialog.glade:212
-#: ../FindDialog.glade:269
-msgid ""
-"Bookmark current pattern.\n"
-"Remove current pattern from bookmarks if exists."
-msgstr ""
-"將目前文字存為書籤，\n"
-"若書籤已存在則將之刪除。"
-
 #: ../FindDialog.glade:130 ../FindDialog.glade:160 ../FindDialog.glade:214
 #: ../FindDialog.glade:271
 msgid "Clear history"
@@ -163,7 +169,7 @@ msgstr "..."
 msgid "Choose a folder"
 msgstr "選擇資料夾"
 
-#: ../FindDialog.glade:264
+#: ../FindDialog.glade:265
 msgid ""
 "Use '|' to seperate multiple types.\n"
 "Add '-' before the type to exclude it."
@@ -278,6 +284,13 @@ msgstr "取消"
 #: ../FindDialog.glade:932
 msgid "Ok"
 msgstr "確定"
+
+#~ msgid ""
+#~ "Bookmark current pattern.\n"
+#~ "Remove current pattern from bookmarks if exists."
+#~ msgstr ""
+#~ "將目前文字存為書籤，\n"
+#~ "若書籤已存在則將之刪除。"
 
 #~ msgid "<b>Buttom panel</b>"
 #~ msgstr "<b>底部面板</b>"
