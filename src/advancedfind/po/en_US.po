@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-29 01:43+0800\n"
+"POT-Creation-Date: 2012-05-29 23:34+0800\n"
 "PO-Revision-Date: 2010-10-17 19:33+0800\n"
 "Last-Translator: swatch <swatch.code@gmail.com>\n"
 "Language-Team: none\n"
@@ -46,30 +46,15 @@ msgstr "Advanced Find/Replace Settings"
 msgid "Nothing is found."
 msgstr "Nothing is found."
 
-#: ../advancedfind_ui.py:258 ../advancedfind_ui.py:280
-#: ../advancedfind_ui.py:302 ../advancedfind_ui.py:324
-#: ../advancedfind_ui.py:336 ../advancedfind_ui.py:345
-#: ../advancedfind_ui.py:354 ../advancedfind_ui.py:363
-msgid "Remove from bookmarks"
-msgstr "Remove from bookmarks"
-
-#: ../advancedfind_ui.py:264 ../advancedfind_ui.py:286
-#: ../advancedfind_ui.py:308 ../advancedfind_ui.py:330
-#: ../advancedfind_ui.py:339 ../advancedfind_ui.py:348
-#: ../advancedfind_ui.py:357 ../advancedfind_ui.py:366 ../FindDialog.glade:129
-#: ../FindDialog.glade:159 ../FindDialog.glade:213 ../FindDialog.glade:270
-msgid "Add to bookmarks"
-msgstr "Add to bookmarks"
-
-#: ../advancedfind_ui.py:476
+#: ../advancedfind_ui.py:460
 msgid "Finding..."
 msgstr "Finding"
 
-#: ../advancedfind_ui.py:521
+#: ../advancedfind_ui.py:505
 msgid "Replacing..."
 msgstr "Replacing..."
 
-#: ../advancedfind_ui.py:547
+#: ../advancedfind_ui.py:531
 msgid "Replace in this scope is not supported."
 msgstr "Replace in this scope is not supported."
 
@@ -156,6 +141,11 @@ msgstr "Replace with : "
 #: ../FindDialog.glade:103
 msgid "Find what : "
 msgstr "Find what : "
+
+#: ../FindDialog.glade:129 ../FindDialog.glade:159 ../FindDialog.glade:213
+#: ../FindDialog.glade:270
+msgid "Add to bookmarks"
+msgstr "Add to bookmarks"
 
 #: ../FindDialog.glade:130 ../FindDialog.glade:160 ../FindDialog.glade:214
 #: ../FindDialog.glade:271
@@ -285,6 +275,9 @@ msgstr "Cancel"
 #: ../FindDialog.glade:932
 msgid "Ok"
 msgstr "Ok"
+
+#~ msgid "Remove from bookmarks"
+#~ msgstr "Remove from bookmarks"
 
 #~ msgid ""
 #~ "Bookmark current pattern.\n"

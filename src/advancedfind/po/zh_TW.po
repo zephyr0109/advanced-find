@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: .gnome 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-29 01:43+0800\n"
+"POT-Creation-Date: 2012-05-29 23:34+0800\n"
 "PO-Revision-Date: 2010-10-17 20:15+0800\n"
 "Last-Translator: swatch <swatch.code@gmail.com>\n"
 "Language-Team: none\n"
@@ -45,30 +45,15 @@ msgstr "設定進階搜尋/取代"
 msgid "Nothing is found."
 msgstr "找不到符合的字詞"
 
-#: ../advancedfind_ui.py:258 ../advancedfind_ui.py:280
-#: ../advancedfind_ui.py:302 ../advancedfind_ui.py:324
-#: ../advancedfind_ui.py:336 ../advancedfind_ui.py:345
-#: ../advancedfind_ui.py:354 ../advancedfind_ui.py:363
-msgid "Remove from bookmarks"
-msgstr "移除書籤"
-
-#: ../advancedfind_ui.py:264 ../advancedfind_ui.py:286
-#: ../advancedfind_ui.py:308 ../advancedfind_ui.py:330
-#: ../advancedfind_ui.py:339 ../advancedfind_ui.py:348
-#: ../advancedfind_ui.py:357 ../advancedfind_ui.py:366 ../FindDialog.glade:129
-#: ../FindDialog.glade:159 ../FindDialog.glade:213 ../FindDialog.glade:270
-msgid "Add to bookmarks"
-msgstr "加入書籤"
-
-#: ../advancedfind_ui.py:476
+#: ../advancedfind_ui.py:460
 msgid "Finding..."
 msgstr "搜尋中…"
 
-#: ../advancedfind_ui.py:521
+#: ../advancedfind_ui.py:505
 msgid "Replacing..."
 msgstr "取代中…"
 
-#: ../advancedfind_ui.py:547
+#: ../advancedfind_ui.py:531
 msgid "Replace in this scope is not supported."
 msgstr "取代功能不支援所選擇的範圍"
 
@@ -155,6 +140,11 @@ msgstr "取代為 : "
 #: ../FindDialog.glade:103
 msgid "Find what : "
 msgstr "搜尋 : "
+
+#: ../FindDialog.glade:129 ../FindDialog.glade:159 ../FindDialog.glade:213
+#: ../FindDialog.glade:270
+msgid "Add to bookmarks"
+msgstr "加入書籤"
 
 #: ../FindDialog.glade:130 ../FindDialog.glade:160 ../FindDialog.glade:214
 #: ../FindDialog.glade:271
@@ -284,6 +274,9 @@ msgstr "取消"
 #: ../FindDialog.glade:932
 msgid "Ok"
 msgstr "確定"
+
+#~ msgid "Remove from bookmarks"
+#~ msgstr "移除書籤"
 
 #~ msgid ""
 #~ "Bookmark current pattern.\n"

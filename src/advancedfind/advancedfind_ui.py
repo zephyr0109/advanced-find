@@ -254,14 +254,12 @@ class AdvancedFindUI(object):
 			if text not in self._instance.find_bookmarks:
 				self.findTextComboboxtext.append_text(text)
 				self._instance.find_bookmarks.append(text)
-				object.set_icon_from_stock(icon_pos, Gtk.STOCK_REMOVE)
-				object.set_icon_tooltip_text(icon_pos, _('Remove from bookmarks'))
+				self.set_bookmark_icon(object, True)
 			else:
 				idx = self._instance.find_bookmarks.index(text)
 				self._instance.find_bookmarks.remove(text)
 				self.findTextComboboxtext.remove(idx + len(self._instance.find_history) + 1)
-				object.set_icon_from_stock(icon_pos, Gtk.STOCK_ADD)
-				object.set_icon_tooltip_text(icon_pos, _('Add to bookmarks'))
+				self.set_bookmark_icon(object, False)
 		
 	def replaceEntryIconPress(self, object, icon_pos, event):
 		if icon_pos == 1:	#secondary icon
@@ -276,14 +274,12 @@ class AdvancedFindUI(object):
 			if text not in self._instance.replace_bookmarks:
 				self.replaceTextComboboxtext.append_text(text)
 				self._instance.replace_bookmarks.append(text)
-				object.set_icon_from_stock(icon_pos, Gtk.STOCK_REMOVE)
-				object.set_icon_tooltip_text(icon_pos, _('Remove from bookmarks'))
+				self.set_bookmark_icon(object, True)
 			else:
 				idx = self._instance.replace_bookmarks.index(text)
 				self._instance.replace_bookmarks.remove(text)
 				self.replaceTextComboboxtext.remove(idx + len(self._instance.replace_history) + 1)
-				object.set_icon_from_stock(icon_pos, Gtk.STOCK_ADD)
-				object.set_icon_tooltip_text(icon_pos, _('Add to bookmarks'))
+				self.set_bookmark_icon(object, False)
 		
 	def filterEntryIconPress(self, object, icon_pos, event):
 		if icon_pos == 1:	#secondary icon
@@ -298,14 +294,12 @@ class AdvancedFindUI(object):
 			if text not in self._instance.filter_bookmarks:
 				self.filterComboboxtext.append_text(text)
 				self._instance.filter_bookmarks.append(text)
-				object.set_icon_from_stock(icon_pos, Gtk.STOCK_REMOVE)
-				object.set_icon_tooltip_text(icon_pos, _('Remove from bookmarks'))
+				self.set_bookmark_icon(object, True)
 			else:
 				idx = self._instance.filter_bookmarks.index(text)
 				self._instance.filter_bookmarks.remove(text)
 				self.filterComboboxtext.remove(idx + len(self._instance.filter_history) + 1)
-				object.set_icon_from_stock(icon_pos, Gtk.STOCK_ADD)
-				object.set_icon_tooltip_text(icon_pos, _('Add to bookmarks'))
+				self.set_bookmark_icon(object, False)
 		
 	def pathEntryIconPress(self, object, icon_pos, event):
 		if icon_pos == 1:	#secondary icon
@@ -320,50 +314,40 @@ class AdvancedFindUI(object):
 			if text not in self._instance.path_bookmarks:
 				self.pathComboboxtext.append_text(text)
 				self._instance.path_bookmarks.append(text)
-				object.set_icon_from_stock(icon_pos, Gtk.STOCK_REMOVE)
-				object.set_icon_tooltip_text(icon_pos, _('Remove from bookmarks'))
+				self.set_bookmark_icon(object, True)
 			else:
 				idx = self._instance.path_bookmarks.index(text)
 				self._instance.path_bookmarks.remove(text)
 				self.pathComboboxtext.remove(idx + len(self._instance.path_history) + 1)
-				object.set_icon_from_stock(icon_pos, Gtk.STOCK_ADD)
-				object.set_icon_tooltip_text(icon_pos, _('Add to bookmarks'))
+				self.set_bookmark_icon(object, False)
 				
 	def findTextComboboxtext_changed(self, object):
 		entry = object.get_child()
 		if object.get_active_text() in self._instance.find_bookmarks:
-			entry.set_icon_from_stock(0, Gtk.STOCK_REMOVE)
-			entry.set_icon_tooltip_text(0, _('Remove from bookmarks'))
+			self.set_bookmark_icon(entry, True)
 		else:
-			entry.set_icon_from_stock(0, Gtk.STOCK_ADD)
-			entry.set_icon_tooltip_text(0, _('Add to bookmarks'))
+			self.set_bookmark_icon(entry, False)
 
 	def replaceTextComboboxtext_changed(self, object):
 		entry = object.get_child()
 		if object.get_active_text() in self._instance.replace_bookmarks:
-			entry.set_icon_from_stock(0, Gtk.STOCK_REMOVE)
-			entry.set_icon_tooltip_text(0, _('Remove from bookmarks'))
+			self.set_bookmark_icon(entry, True)
 		else:
-			entry.set_icon_from_stock(0, Gtk.STOCK_ADD)
-			entry.set_icon_tooltip_text(0, _('Add to bookmarks'))
+			self.set_bookmark_icon(entry, False)
 
 	def filterComboboxtext_changed(self, object):
 		entry = object.get_child()
 		if object.get_active_text() in self._instance.filter_bookmarks:
-			entry.set_icon_from_stock(0, Gtk.STOCK_REMOVE)
-			entry.set_icon_tooltip_text(0, _('Remove from bookmarks'))
+			self.set_bookmark_icon(entry, True)
 		else:
-			entry.set_icon_from_stock(0, Gtk.STOCK_ADD)
-			entry.set_icon_tooltip_text(0, _('Add to bookmarks'))
+			self.set_bookmark_icon(entry, False)
 
 	def pathComboboxtext_changed(self, object):
 		entry = object.get_child()
 		if object.get_active_text() in self._instance.path_bookmarks:
-			entry.set_icon_from_stock(0, Gtk.STOCK_REMOVE)
-			entry.set_icon_tooltip_text(0, _('Remove from bookmarks'))
+			self.set_bookmark_icon(entry, True)
 		else:
-			entry.set_icon_from_stock(0, Gtk.STOCK_ADD)
-			entry.set_icon_tooltip_text(0, _('Add to bookmarks'))
+			self.set_bookmark_icon(entry, False)
 		
 	def on_findDialog_focus_in_event_action(self, object, event):
 		#print 'findDialog focus in'
@@ -617,6 +601,14 @@ class AdvancedFindUI(object):
 			self._instance.scopeFlg = 2
 		elif self.currentSelectionRadiobutton.get_active() == True:
 			self._instance.scopeFlg = 3
+			
+	def set_bookmark_icon(self, entry, flg=False):
+		image = Gtk.Image()
+		if flg:
+			image.set_from_file(os.path.join(os.path.dirname(__file__), 'star.png'))
+		else:
+			image.set_from_file(os.path.join(os.path.dirname(__file__), 'star_empty.png'))	
+		entry.set_icon_from_pixbuf(0, image.get_pixbuf())
 
 	# filebrowser integration
 	def get_filebrowser_root(self):

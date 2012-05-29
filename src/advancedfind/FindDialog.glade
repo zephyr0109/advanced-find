@@ -124,7 +124,7 @@
                     <child internal-child="entry">
                       <object class="GtkEntry" id="comboboxtext-entry4">
                         <property name="can_focus">True</property>
-                        <property name="primary_icon_stock">gtk-add</property>
+                        <property name="primary_icon_pixbuf">star_empty.png</property>
                         <property name="secondary_icon_stock">gtk-clear</property>
                         <property name="primary_icon_tooltip_text" translatable="yes">Add to bookmarks</property>
                         <property name="secondary_icon_tooltip_text" translatable="yes">Clear history</property>
@@ -154,7 +154,7 @@
                     <child internal-child="entry">
                       <object class="GtkEntry" id="comboboxtext-entry6">
                         <property name="can_focus">True</property>
-                        <property name="primary_icon_stock">gtk-add</property>
+                        <property name="primary_icon_pixbuf">star_empty.png</property>
                         <property name="secondary_icon_stock">gtk-clear</property>
                         <property name="primary_icon_tooltip_text" translatable="yes">Add to bookmarks</property>
                         <property name="secondary_icon_tooltip_text" translatable="yes">Clear history</property>
@@ -208,7 +208,7 @@
                             <child internal-child="entry">
                               <object class="GtkEntry" id="comboboxtext-entry2">
                                 <property name="can_focus">True</property>
-                                <property name="primary_icon_stock">gtk-add</property>
+                                <property name="primary_icon_pixbuf">star_empty.png</property>
                                 <property name="secondary_icon_stock">gtk-clear</property>
                                 <property name="primary_icon_tooltip_text" translatable="yes">Add to bookmarks</property>
                                 <property name="secondary_icon_tooltip_text" translatable="yes">Clear history</property>
@@ -265,7 +265,7 @@
                             <property name="tooltip_text" translatable="yes">Use '|' to seperate multiple types.
 Add '-' before the type to exclude it.</property>
                             <property name="invisible_char">●</property>
-                            <property name="primary_icon_stock">gtk-add</property>
+                            <property name="primary_icon_pixbuf">star_empty.png</property>
                             <property name="secondary_icon_stock">gtk-clear</property>
                             <property name="primary_icon_tooltip_text" translatable="yes">Add to bookmarks</property>
                             <property name="secondary_icon_tooltip_text" translatable="yes">Clear history</property>

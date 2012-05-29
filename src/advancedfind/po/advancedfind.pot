@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-29 01:43+0800\n"
+"POT-Creation-Date: 2012-05-29 23:34+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,30 +46,15 @@ msgstr ""
 msgid "Nothing is found."
 msgstr ""
 
-#: ../advancedfind_ui.py:258 ../advancedfind_ui.py:280
-#: ../advancedfind_ui.py:302 ../advancedfind_ui.py:324
-#: ../advancedfind_ui.py:336 ../advancedfind_ui.py:345
-#: ../advancedfind_ui.py:354 ../advancedfind_ui.py:363
-msgid "Remove from bookmarks"
-msgstr ""
-
-#: ../advancedfind_ui.py:264 ../advancedfind_ui.py:286
-#: ../advancedfind_ui.py:308 ../advancedfind_ui.py:330
-#: ../advancedfind_ui.py:339 ../advancedfind_ui.py:348
-#: ../advancedfind_ui.py:357 ../advancedfind_ui.py:366 ../FindDialog.glade:129
-#: ../FindDialog.glade:159 ../FindDialog.glade:213 ../FindDialog.glade:270
-msgid "Add to bookmarks"
-msgstr ""
-
-#: ../advancedfind_ui.py:476
+#: ../advancedfind_ui.py:460
 msgid "Finding..."
 msgstr ""
 
-#: ../advancedfind_ui.py:521
+#: ../advancedfind_ui.py:505
 msgid "Replacing..."
 msgstr ""
 
-#: ../advancedfind_ui.py:547
+#: ../advancedfind_ui.py:531
 msgid "Replace in this scope is not supported."
 msgstr ""
 
@@ -155,6 +140,11 @@ msgstr ""
 
 #: ../FindDialog.glade:103
 msgid "Find what : "
+msgstr ""
+
+#: ../FindDialog.glade:129 ../FindDialog.glade:159 ../FindDialog.glade:213
+#: ../FindDialog.glade:270
+msgid "Add to bookmarks"
 msgstr ""
 
 #: ../FindDialog.glade:130 ../FindDialog.glade:160 ../FindDialog.glade:214
