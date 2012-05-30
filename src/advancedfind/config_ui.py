@@ -61,6 +61,9 @@ class ConfigUI(object):
 		self.rootFollowFilebrowserCheckbutton = UI.get_object("rootFollowFilebrowserCheckbutton")
 		self.rootFollowFilebrowserCheckbutton.set_active(self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'])
 		
+		self.keepHistoryCheckbutton = UI.get_object("keepHistoryCheckbutton")
+		self.keepHistoryCheckbutton.set_active(self._instance.find_dlg_setting['KEEP_HISTORY'])
+		
 		self.configWindow.show_all()
 
 		signals = { "on_configWindow_destroy" : self.on_configWindow_destroy,
@@ -68,7 +71,8 @@ class ConfigUI(object):
 					"on_bgColorbutton_color_set" : self.on_bgColorbutton_color_set,
 					"on_useDefaultFontCheckbutton_toggled" : self.on_useDefaultFontCheckbutton_toggled,
 					"on_resultFontbutton_font_set" : self.on_resultFontbutton_font_set,
-					"on_rootFollowFilebrowserCheckbutton_toggled" : self.on_rootFollowFilebrowserCheckbutton_toggled }
+					"on_rootFollowFilebrowserCheckbutton_toggled" : self.on_rootFollowFilebrowserCheckbutton_toggled,
+					"on_keepHistoryCheckbutton_toggled" : self.on_keepHistoryCheckbutton_toggled }
 		
 		UI.connect_signals(signals)
 		
@@ -94,7 +98,9 @@ class ConfigUI(object):
 		
 	def on_rootFollowFilebrowserCheckbutton_toggled(self, widget):
 		self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'] = widget.get_active()
-			
+		
+	def on_keepHistoryCheckbutton_toggled(self, object):
+		self._instance.find_dlg_setting['KEEP_HISTORY'] = object.get_active()
 
 
 if __name__ == '__main__':
