@@ -102,11 +102,11 @@ class AdvancedFindWindowHelper:
 		self.result_highlight_tag.set_property('style', pango.STYLE_ITALIC)
 		#'''
 		
-		user_configfile = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME), 'config.xml')
+		user_configfile = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config'), 'config.xml')
 		if os.path.exists(user_configfile):
 			configfile = user_configfile
 		else:
-			configfile = os.path.join(os.path.dirname(__file__), "config.xml")
+			configfile = os.path.join(os.path.dirname(__file__), "/config/config.xml")
 		self.config_manager = config_manager.ConfigManager(configfile)
 		self.find_options = self.config_manager.load_configure('FindOption')
 		self.config_manager.to_bool(self.find_options)
@@ -120,14 +120,20 @@ class AdvancedFindWindowHelper:
 		self.result_gui_settings = self.config_manager.load_configure('ResultGUI')
 		self.config_manager.to_bool(self.result_gui_settings)
 		
-		self.find_history = self.config_manager.load_list('FindHistory')
-		self.replace_history = self.config_manager.load_list('ReplaceHistory')
-		self.filter_history = self.config_manager.load_list('FilterHistory')
-		self.path_history = self.config_manager.load_list('PathHistory')
-		self.find_bookmarks = self.config_manager.load_list('FindBookmark')
-		self.replace_bookmarks = self.config_manager.load_list('ReplaceBookmark')
-		self.filter_bookmarks = self.config_manager.load_list('FilterBookmark')
-		self.path_bookmarks = self.config_manager.load_list('PathBookmark')
+		user_patterns = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config'), 'patterns.xml')
+		if os.path.exists(user_patterns):
+			patternsfile = user_patterns
+		else:
+			patternsfile = os.path.join(os.path.dirname(__file__), "/config/patterns.xml")
+		self.patterns_manager = config_manager.ConfigManager(patternsfile)
+		self.find_history = self.patterns_manager.load_list('FindHistory')
+		self.replace_history = self.patterns_manager.load_list('ReplaceHistory')
+		self.filter_history = self.patterns_manager.load_list('FilterHistory')
+		self.path_history = self.patterns_manager.load_list('PathHistory')
+		self.find_bookmarks = self.patterns_manager.load_list('FindBookmark')
+		self.replace_bookmarks = self.patterns_manager.load_list('ReplaceBookmark')
+		self.filter_bookmarks = self.patterns_manager.load_list('FilterBookmark')
+		self.path_bookmarks = self.patterns_manager.load_list('PathBookmark')
 
 		self._results_view = FindResultView(window, self.result_gui_settings)
 		icon = Gtk.Image.new_from_stock(Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU)
@@ -152,20 +158,22 @@ class AdvancedFindWindowHelper:
 		self.config_manager.update_configure('ResultDisplay', self.result_highlight)
 		self.result_gui_settings.update(self._results_view.get_show_button_option())
 		self.config_manager.update_configure('ResultGUI', self.result_gui_settings)
+		self.config_manager.update_config_file(self.config_manager.config_file)
+		
 		if not self.find_dlg_setting['KEEP_HISTORY']:
 			self.find_history = []
 			self.replace_history = []
 			self.filter_history = []
 			self.path_history = []
-		self.config_manager.update_list('FindHistory', self.find_history)
-		self.config_manager.update_list('ReplaceHistory', self.replace_history)
-		self.config_manager.update_list('FilterHistory', self.filter_history)
-		self.config_manager.update_list('PathHistory', self.path_history)
-		self.config_manager.update_list('FindBookmark', self.find_bookmarks)
-		self.config_manager.update_list('ReplaceBookmark', self.replace_bookmarks)
-		self.config_manager.update_list('FilterBookmark', self.filter_bookmarks)
-		self.config_manager.update_list('PathBookmark', self.path_bookmarks)
-		self.config_manager.update_config_file(self.config_manager.config_file)
+		self.patterns_manager.update_list('FindHistory', self.find_history)
+		self.patterns_manager.update_list('ReplaceHistory', self.replace_history)
+		self.patterns_manager.update_list('FilterHistory', self.filter_history)
+		self.patterns_manager.update_list('PathHistory', self.path_history)
+		self.patterns_manager.update_list('FindBookmark', self.find_bookmarks)
+		self.patterns_manager.update_list('ReplaceBookmark', self.replace_bookmarks)
+		self.patterns_manager.update_list('FilterBookmark', self.filter_bookmarks)
+		self.patterns_manager.update_list('PathBookmark', self.path_bookmarks)
+		self.patterns_manager.update_config_file(self.patterns_manager.config_file)
 
 		self._window = None
 		self._plugin = None

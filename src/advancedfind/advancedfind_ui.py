@@ -146,13 +146,6 @@ class AdvancedFindUI(object):
 		
 		self.pathComboboxtext = ui.get_object("pathComboboxtext")
 		self.pathComboboxtext.set_entry_text_column(0)
-		'''
-		filebrowser_root = self.get_filebrowser_root()
-		if filebrowser_root != None and self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'] == True:
-			self.pathComboboxtext.get_child().set_text(filebrowser_root)
-		else:
-			self.pathComboboxtext.get_child().set_text(self.selectPathFilechooserdialog.get_filename())
-		#'''
 			
 		try:
 			for path in self._instance.path_history:
@@ -215,11 +208,6 @@ class AdvancedFindUI(object):
 		self.opacityScale.set_value(float(self._instance.find_dlg_setting['OPACITY']))
 		self.opacityScale.set_fill_level(float(self._instance.find_dlg_setting['OPACITY']))
 
-		'''
-		if self._instance.find_options['FOLLOW_CURRENT_DOC'] == True:
-			self.pathComboboxtext.get_child().set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
-		#'''
-			
 	def on_findDialog_destroy_action(self, object):
 		#print 'findDialog destroy'
 		try:
@@ -354,12 +342,14 @@ class AdvancedFindUI(object):
 		object.set_opacity(1)
 		if self.followCurrentDocCheckbutton.get_active() == True:
 			self.pathComboboxtext.get_child().set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
+		'''	
 		else:
 			filebrowser_root = self.get_filebrowser_root()
 			if filebrowser_root != None and self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'] == True:
 				self.pathComboboxtext.get_child().set_text(filebrowser_root)
 			else:
 				self.pathComboboxtext.get_child().set_text(self.selectPathFilechooserdialog.get_filename())
+		#'''
 
 	def on_findDialog_focus_out_event_action(self, object, event):
 		#print 'findDialog focus out'
@@ -605,9 +595,9 @@ class AdvancedFindUI(object):
 	def set_bookmark_icon(self, entry, flg=False):
 		image = Gtk.Image()
 		if flg:
-			image.set_from_file(os.path.join(os.path.dirname(__file__), 'star.png'))
+			image.set_from_file(os.path.join(os.path.dirname(__file__), 'star_y.png'))
 		else:
-			image.set_from_file(os.path.join(os.path.dirname(__file__), 'star_empty.png'))	
+			image.set_from_file(os.path.join(os.path.dirname(__file__), 'star_w.png'))	
 		entry.set_icon_from_pixbuf(0, image.get_pixbuf())
 
 	# filebrowser integration

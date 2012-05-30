@@ -51,11 +51,11 @@ class FindResultView(Gtk.HBox):
 		self.result_gui_settings = result_gui_settings
 
 		# load color theme of results list		
-		user_formatfile = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME), 'result_format.xml')
+		user_formatfile = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config/theme'), 'default.xml')
 		if os.path.exists(user_formatfile):
 			format_file = user_formatfile
 		else:
-			format_file = os.path.join(os.path.dirname(__file__), "result_format.xml")
+			format_file = os.path.join(os.path.dirname(__file__), "/config/theme/default.xml")
 		self.result_format = config_manager.ConfigManager(format_file).load_configure('result_format')
 		
 		# initialize find result treeview
