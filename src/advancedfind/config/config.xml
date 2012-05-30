@@ -11,6 +11,7 @@
 	<FindGUI name="PATH_EXPANDED" value="True"/>
 	<FindGUI name="OPTIONS_EXPANDED" value="True"/>
 	<FindGUI name="OPACITY" value="50.0"/>
+	<FindGUI name="KEEP_HISTORY" value="True"/>
 	<Shortcut name="ACTIVATE" value="&lt;ctrl&gt;&lt;shift&gt;F"/>
 	<Shortcut name="FIND_NEXT" value="F3"/>
 	<Shortcut name="FIND_PREVIOUS" value="&lt;shift&gt;F3"/>

@@ -21,5 +21,5 @@ sudo cp -rv ${PLUGIN_NAME}/locale/* ${LOCALE_DEST}
 
 CONFIG_DEST=~/.local/share/gedit/plugins
 mkdir -p ${CONFIG_DEST}/${PLUGIN_NAME}
-cp -v ${PLUGIN_NAME}/*.xml ${CONFIG_DEST}/${PLUGIN_NAME}
+cp -rv ${PLUGIN_NAME}/config ${CONFIG_DEST}/${PLUGIN_NAME}
 

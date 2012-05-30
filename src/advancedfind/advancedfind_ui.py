@@ -58,6 +58,11 @@ class AdvancedFindUI(object):
 							"on_filterEntry_icon_press" : self.filterEntryIconPress,
 							"on_pathEntry_icon_press" : self.pathEntryIconPress,
 							
+							"findTextComboboxtext_changed_cb" : self.findTextComboboxtext_changed,
+							"replaceTextComboboxtext_changed_cb" : self.replaceTextComboboxtext_changed,
+							"filterComboboxtext_changed_cb" : self.filterComboboxtext_changed,
+							"pathComboboxtext_changed_cb" : self.pathComboboxtext_changed,
+							
 							"on_findButton_clicked" : self.on_findButton_clicked_action,
 							"on_replaceButton_clicked" : self.on_replaceButton_clicked_action,
 							"on_findAllButton_clicked" : self.on_findAllButton_clicked_action,
@@ -106,6 +111,8 @@ class AdvancedFindUI(object):
 		try:
 			for find_text in self._instance.find_history:
 				self.findTextComboboxtext.prepend_text(find_text)
+			for find_text in self._instance.find_bookmarks:
+				self.findTextComboboxtext.append_text(find_text)
 		except:
 			pass
 
@@ -118,6 +125,8 @@ class AdvancedFindUI(object):
 		try:
 			for replace_text in self._instance.replace_history:
 				self.replaceTextComboboxtext.prepend_text(replace_text)
+			for replace_text in self._instance.replace_bookmarks:
+				self.replaceTextComboboxtext.append_text(replace_text)
 		except:
 			pass
 		
@@ -126,8 +135,10 @@ class AdvancedFindUI(object):
 		#self.filterComboboxtext.get_child().set_text("*")
 		#self.filterComboboxtext.prepend_text("*")
 		try:
-			for file_filter in self._instance.file_type_history:
+			for file_filter in self._instance.filter_history:
 				self.filterComboboxtext.prepend_text(file_filter)
+			for file_filter in self._instance.filter_bookmarks:
+				self.filterComboboxtext.append_text(file_filter)
 		except:
 			pass
 			
@@ -135,17 +146,12 @@ class AdvancedFindUI(object):
 		
 		self.pathComboboxtext = ui.get_object("pathComboboxtext")
 		self.pathComboboxtext.set_entry_text_column(0)
-		'''
-		filebrowser_root = self.get_filebrowser_root()
-		if filebrowser_root != None and self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'] == True:
-			self.pathComboboxtext.get_child().set_text(filebrowser_root)
-		else:
-			self.pathComboboxtext.get_child().set_text(self.selectPathFilechooserdialog.get_filename())
-		#'''
 			
 		try:
-			for path in self._instance.file_path_history:
+			for path in self._instance.path_history:
 				self.pathComboboxtext.prepend_text(path)
+			for path in self._instance.path_bookmarks:
+				self.pathComboboxtext.append_text(path)
 		except:
 			pass
 		
@@ -202,11 +208,6 @@ class AdvancedFindUI(object):
 		self.opacityScale.set_value(float(self._instance.find_dlg_setting['OPACITY']))
 		self.opacityScale.set_fill_level(float(self._instance.find_dlg_setting['OPACITY']))
 
-		'''
-		if self._instance.find_options['FOLLOW_CURRENT_DOC'] == True:
-			self.pathComboboxtext.get_child().set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
-		#'''
-			
 	def on_findDialog_destroy_action(self, object):
 		#print 'findDialog destroy'
 		try:
@@ -227,34 +228,128 @@ class AdvancedFindUI(object):
 				self.pathComboboxtext.get_child().set_text(filebrowser_root)
 			else:
 				self.pathComboboxtext.get_child().set_text(self.selectPathFilechooserdialog.get_filename())
-			
+				
 	def findEntryIconPress(self, object, icon_pos, event):
-		self.findTextComboboxtext.get_model().clear()
-		self._instance.find_history = []
+		if icon_pos == 1:	#secondary icon
+			#self.findTextComboboxtext.get_model().clear()
+			for history_pos in range(0, len(self._instance.find_history)):
+				self.findTextComboboxtext.remove(0)
+			self._instance.find_history = []
+		elif icon_pos == 0:	#primary icon
+			text = object.get_text()
+			if not text:
+				return
+			if text not in self._instance.find_bookmarks:
+				self.findTextComboboxtext.append_text(text)
+				self._instance.find_bookmarks.append(text)
+				self.set_bookmark_icon(object, True)
+			else:
+				idx = self._instance.find_bookmarks.index(text)
+				self._instance.find_bookmarks.remove(text)
+				self.findTextComboboxtext.remove(idx + len(self._instance.find_history) + 1)
+				self.set_bookmark_icon(object, False)
 		
 	def replaceEntryIconPress(self, object, icon_pos, event):
-		self.replaceTextComboboxtext.get_model().clear()
-		self._instance.replace_history = []
+		if icon_pos == 1:	#secondary icon
+			#self.replaceTextComboboxtext.get_model().clear()
+			for history_pos in range(0, len(self._instance.replace_history)):
+				self.replaceTextComboboxtext.remove(0)
+			self._instance.replace_history = []
+		elif icon_pos == 0:	#primary icon
+			text = object.get_text()
+			if not text:
+				return
+			if text not in self._instance.replace_bookmarks:
+				self.replaceTextComboboxtext.append_text(text)
+				self._instance.replace_bookmarks.append(text)
+				self.set_bookmark_icon(object, True)
+			else:
+				idx = self._instance.replace_bookmarks.index(text)
+				self._instance.replace_bookmarks.remove(text)
+				self.replaceTextComboboxtext.remove(idx + len(self._instance.replace_history) + 1)
+				self.set_bookmark_icon(object, False)
 		
 	def filterEntryIconPress(self, object, icon_pos, event):
-		self.filterComboboxtext.get_model().clear()
-		self._instance.file_type_history = []
+		if icon_pos == 1:	#secondary icon
+			#self.filterComboboxtext.get_model().clear()
+			for history_pos in range(0, len(self._instance.filter_history)):
+				self.filterComboboxtext.remove(0)
+			self._instance.filter_history = []
+		elif icon_pos == 0:	#primary icon
+			text = object.get_text()
+			if not text:
+				return
+			if text not in self._instance.filter_bookmarks:
+				self.filterComboboxtext.append_text(text)
+				self._instance.filter_bookmarks.append(text)
+				self.set_bookmark_icon(object, True)
+			else:
+				idx = self._instance.filter_bookmarks.index(text)
+				self._instance.filter_bookmarks.remove(text)
+				self.filterComboboxtext.remove(idx + len(self._instance.filter_history) + 1)
+				self.set_bookmark_icon(object, False)
 		
 	def pathEntryIconPress(self, object, icon_pos, event):
-		self.pathComboboxtext.get_model().clear()
-		self._instance.file_path_history = []
+		if icon_pos == 1:	#secondary icon
+			#self.pathComboboxtext.get_model().clear()
+			for history_pos in range(0, len(self._instance.path_history)):
+				self.pathComboboxtext.remove(0)
+			self._instance.path_history = []
+		elif icon_pos == 0:	#primary icon
+			text = object.get_text()
+			if not text:
+				return
+			if text not in self._instance.path_bookmarks:
+				self.pathComboboxtext.append_text(text)
+				self._instance.path_bookmarks.append(text)
+				self.set_bookmark_icon(object, True)
+			else:
+				idx = self._instance.path_bookmarks.index(text)
+				self._instance.path_bookmarks.remove(text)
+				self.pathComboboxtext.remove(idx + len(self._instance.path_history) + 1)
+				self.set_bookmark_icon(object, False)
+				
+	def findTextComboboxtext_changed(self, object):
+		entry = object.get_child()
+		if object.get_active_text() in self._instance.find_bookmarks:
+			self.set_bookmark_icon(entry, True)
+		else:
+			self.set_bookmark_icon(entry, False)
+
+	def replaceTextComboboxtext_changed(self, object):
+		entry = object.get_child()
+		if object.get_active_text() in self._instance.replace_bookmarks:
+			self.set_bookmark_icon(entry, True)
+		else:
+			self.set_bookmark_icon(entry, False)
+
+	def filterComboboxtext_changed(self, object):
+		entry = object.get_child()
+		if object.get_active_text() in self._instance.filter_bookmarks:
+			self.set_bookmark_icon(entry, True)
+		else:
+			self.set_bookmark_icon(entry, False)
+
+	def pathComboboxtext_changed(self, object):
+		entry = object.get_child()
+		if object.get_active_text() in self._instance.path_bookmarks:
+			self.set_bookmark_icon(entry, True)
+		else:
+			self.set_bookmark_icon(entry, False)
 		
 	def on_findDialog_focus_in_event_action(self, object, event):
 		#print 'findDialog focus in'
 		object.set_opacity(1)
 		if self.followCurrentDocCheckbutton.get_active() == True:
 			self.pathComboboxtext.get_child().set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
+		'''	
 		else:
 			filebrowser_root = self.get_filebrowser_root()
 			if filebrowser_root != None and self._instance.find_options['ROOT_FOLLOW_FILEBROWSER'] == True:
 				self.pathComboboxtext.get_child().set_text(filebrowser_root)
 			else:
 				self.pathComboboxtext.get_child().set_text(self.selectPathFilechooserdialog.get_filename())
+		#'''
 
 	def on_findDialog_focus_out_event_action(self, object, event):
 		#print 'findDialog focus out'
@@ -303,20 +398,20 @@ class AdvancedFindUI(object):
 			self.replaceTextComboboxtext.prepend_text(replace_text)
 			
 		if self._instance.scopeFlg == 2: #files in directory
-			if file_pattern != "" and file_pattern not in self._instance.file_type_history:
+			if file_pattern != "" and file_pattern not in self._instance.filter_history:
 				#if len(self.filterComboboxtext.get_model()) == 10:
-				if len(self._instance.file_type_history) == 10:
-					self._instance.file_type_history[0:1] = []
+				if len(self._instance.filter_history) == 10:
+					self._instance.filter_history[0:1] = []
 					self.filterComboboxtext.remove(9)
-				self._instance.file_type_history.append(file_pattern)
+				self._instance.filter_history.append(file_pattern)
 				self.filterComboboxtext.prepend_text(file_pattern)
 			
-			if path != "" and path not in self._instance.file_path_history:
+			if path != "" and path not in self._instance.path_history:
 				#if len(self.pathComboboxtext.get_model()) == 10:
-				if len(self._instance.file_path_history) == 10:
-					self._instance.file_path_history[0:1] = []
+				if len(self._instance.path_history) == 10:
+					self._instance.path_history[0:1] = []
 					self.pathComboboxtext.remove(9)
-				self._instance.file_path_history.append(path)
+				self._instance.path_history.append(path)
 				self.pathComboboxtext.prepend_text(path)
 
 	# button actions       
@@ -496,6 +591,14 @@ class AdvancedFindUI(object):
 			self._instance.scopeFlg = 2
 		elif self.currentSelectionRadiobutton.get_active() == True:
 			self._instance.scopeFlg = 3
+			
+	def set_bookmark_icon(self, entry, flg=False):
+		image = Gtk.Image()
+		if flg:
+			image.set_from_file(os.path.join(os.path.dirname(__file__), 'star_y.png'))
+		else:
+			image.set_from_file(os.path.join(os.path.dirname(__file__), 'star_w.png'))	
+		entry.set_icon_from_pixbuf(0, image.get_pixbuf())
 
 	# filebrowser integration
 	def get_filebrowser_root(self):
