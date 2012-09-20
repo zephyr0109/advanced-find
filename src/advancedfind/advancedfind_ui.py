@@ -52,6 +52,8 @@ class AdvancedFindUI(object):
 							"on_findDialog_focus_in_event": self.on_findDialog_focus_in_event_action,
 							"on_findDialog_focus_out_event" : self.on_findDialog_focus_out_event_action,
 							"on_findDialog_show" : self.on_findDialog_show_action,
+							#"on_findDialog_grab_focus" : self.on_findDialog_focus_in_event_action,
+							#"on_findDialog_grab_broken_event" : self.on_findDialog_focus_out_event_action,
 							
 							"on_findEntry_icon_press" : self.findEntryIconPress,
 							"on_replaceEntry_icon_press" : self.replaceEntryIconPress,
@@ -142,6 +144,7 @@ class AdvancedFindUI(object):
 		except:
 			pass
 			
+		self.pathExpander = ui.get_object("pathExpander")
 		self.selectPathFilechooserdialog = ui.get_object("selectPathFilechooserdialog")
 		
 		self.pathComboboxtext = ui.get_object("pathComboboxtext")
@@ -209,7 +212,6 @@ class AdvancedFindUI(object):
 		self.opacityScale.set_fill_level(float(self._instance.find_dlg_setting['OPACITY']))
 
 	def on_findDialog_destroy_action(self, object):
-		#print 'findDialog destroy'
 		try:
 			self._instance.find_dlg_setting['PATH_EXPANDED'] = self.pathExpander.get_expanded()
 			self._instance.find_dlg_setting['OPTIONS_EXPANDED'] = self.optionsExpander.get_expanded()
@@ -219,7 +221,6 @@ class AdvancedFindUI(object):
 			pass
 			
 	def on_findDialog_show_action(self,object):
-		#print 'findDialog show'
 		if self.followCurrentDocCheckbutton.get_active() == True:
 			self.pathComboboxtext.get_child().set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
 		else:
@@ -336,9 +337,8 @@ class AdvancedFindUI(object):
 			self.set_bookmark_icon(entry, True)
 		else:
 			self.set_bookmark_icon(entry, False)
-		
+			
 	def on_findDialog_focus_in_event_action(self, object, event):
-		#print 'findDialog focus in'
 		object.set_opacity(1)
 		if self.followCurrentDocCheckbutton.get_active() == True:
 			self.pathComboboxtext.get_child().set_text(os.path.dirname(self._instance._window.get_active_document().get_uri_for_display()))
@@ -352,7 +352,6 @@ class AdvancedFindUI(object):
 		#'''
 
 	def on_findDialog_focus_out_event_action(self, object, event):
-		#print 'findDialog focus out'
 		object.set_opacity(self.opacityScale.get_value()/100)
 	
 	'''	
@@ -482,7 +481,7 @@ class AdvancedFindUI(object):
 		#self._instance._results_view.set_sensitive(True)
 		self._instance._results_view.is_busy(False)
 		#self.do_events()
-		self.findDialog.destroy()
+		#self.findDialog.destroy()
 
 	def on_replaceAllButton_clicked_action(self, object):
 		search_pattern = self.findTextComboboxtext.get_active_text()
@@ -527,7 +526,7 @@ class AdvancedFindUI(object):
 		#self._instance._results_view.set_sensitive(True)
 		self._instance._results_view.is_busy(False)
 		#self.do_events()
-		self.findDialog.destroy()
+		#self.findDialog.destroy()
 
 	def on_closeButton_clicked_action(self, object):
 		self.findDialog.destroy()
@@ -591,6 +590,11 @@ class AdvancedFindUI(object):
 			self._instance.scopeFlg = 2
 		elif self.currentSelectionRadiobutton.get_active() == True:
 			self._instance.scopeFlg = 3
+		
+		if self._instance.scopeFlg == 2:
+			self.pathExpander.set_sensitive(True)
+		else:
+			self.pathExpander.set_sensitive(False)
 			
 	def set_bookmark_icon(self, entry, flg=False):
 		image = Gtk.Image()

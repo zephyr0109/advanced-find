@@ -307,7 +307,7 @@ class AdvancedFindWindowHelper:
 		regex = self.create_regex(search_pattern, find_options)
 		if not regex:
 			return
-		
+
 		if doc.get_has_selection():
 			sel_start, sel_end = doc.get_selection_bounds()
 			match = regex.search(unicode(doc.get_text(sel_start, sel_end, True), 'utf-8'))
@@ -328,7 +328,7 @@ class AdvancedFindWindowHelper:
 		view = self._window.get_active_view()
 		start, end = doc.get_bounds()
 		text = unicode(doc.get_text(start, end, True), 'utf-8')
-		around_flg = False
+		#around_flg = False
 		
 		if forward_flg == True:
 			start_pos = doc.get_iter_at_mark(doc.get_insert()).get_offset()

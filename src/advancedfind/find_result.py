@@ -70,6 +70,8 @@ class FindResultView(Gtk.HBox):
 		#self.findResultTreeview.append_column(Gtk.TreeViewColumn("result_start", Gtk.CellRendererText(), text=4))
 		#self.findResultTreeview.append_column(Gtk.TreeViewColumn("result_len", Gtk.CellRendererText(), text=5))
 		self.findResultTreeview.append_column(Gtk.TreeViewColumn("uri", resultsCellRendererText, text=6))
+		for i in range(0, self.findResultTreeview.get_n_columns()):
+			self.findResultTreeview.get_column(i).set_sizing(1)	# 1=autosizing
 		self.findResultTreeview.set_headers_visible(False)
 		self.findResultTreeview.set_rules_hint(True)
 		self.findResultTreemodel = Gtk.TreeStore(int, str, str, object, int, int, str)
@@ -397,6 +399,7 @@ class FindResultView(Gtk.HBox):
 		
 	def on_collapseAllButton_clicked_action(self, object):
 		self.findResultTreeview.collapse_all()
+			
 		
 	def on_clearButton_clicked_action(self, object):
 		self.clear_find_result()
@@ -470,7 +473,13 @@ class FindResultView(Gtk.HBox):
 			doc.remove_tag_by_name('result_highlight', start, end)
 		
 	def clear_find_result(self):
+		tab = self._window.get_active_tab()
+		doc = tab.get_document()
+		curr_iter = doc.get_iter_at_mark(doc.get_insert())
 		self.findResultTreemodel.clear()
+		doc.select_range(curr_iter, curr_iter)
+		view = tab.get_view()
+		view.scroll_to_cursor()		
 		
 	def get_show_button_option(self):
 		return self.result_gui_settings
