@@ -29,6 +29,7 @@ import os.path
 	
 #from gettext import gettext as _
 APP_NAME = 'advancedfind'
+CONFIG_DIR = os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config')
 
 
 class ConfigUI(object):
@@ -51,7 +52,8 @@ class ConfigUI(object):
 		
 		'''
 		self.colorThemeComboboxtext = UI.get_object("colorThemeComboboxtext")
-		for root, dirs, files in os.walk(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config/theme')):
+		#for root, dirs, files in os.walk(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config/theme')):
+		for root, dirs, files in os.walk(os.path.join(CONFIG_DIR, 'theme')):
 			for f in files:
 				if f.endswith('.xml'):
 					self.colorThemeComboboxtext.append_text(f[0:-4])

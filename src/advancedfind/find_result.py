@@ -27,10 +27,12 @@ import os.path
 import urllib
 import re
 import config_manager
+import shutil
 
 
 import gettext
 APP_NAME = 'advancedfind'
+CONFIG_DIR = os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config')
 #LOCALE_DIR = '/usr/share/locale'
 LOCALE_DIR = os.path.join(os.path.dirname(__file__), 'locale')
 if not os.path.exists(LOCALE_DIR):
@@ -51,11 +53,15 @@ class FindResultView(Gtk.HBox):
 		self.result_gui_settings = result_gui_settings
 
 		# load color theme of results list	
-		user_formatfile = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config/theme'), self.result_gui_settings['COLOR_THEME']+'.xml')
-		if os.path.exists(user_formatfile):
-			format_file = user_formatfile
-		else:
-			format_file = os.path.join(os.path.dirname(__file__), "/config/theme/default.xml")
+		user_formatfile = os.path.join(CONFIG_DIR, 'theme/'+self.result_gui_settings['COLOR_THEME']+'.xml')
+		if not os.path.exists(user_formatfile):
+			if not os.path.exists(os.path.dirname(user_formatfile)):
+				os.makedirs(os.path.dirname(user_formatfile))
+			shutil.copy2(os.path.dirname(__file__) + "/config/theme/default.xml", os.path.dirname(user_formatfile))
+		#print os.path.dirname(user_formatfile)
+		format_file = user_formatfile
+		#print format_file
+
 		self.result_format = config_manager.ConfigManager(format_file).load_configure('result_format')
 		config_manager.ConfigManager(format_file).to_bool(self.result_format)
 		

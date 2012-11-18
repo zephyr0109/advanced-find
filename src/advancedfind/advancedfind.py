@@ -31,6 +31,7 @@ import subprocess
 import urllib
 import re
 #import time
+import shutil
 
 
 from advancedfind_ui import AdvancedFindUI
@@ -41,6 +42,7 @@ from config_ui import ConfigUI
 
 import gettext
 APP_NAME = 'advancedfind'
+CONFIG_DIR = os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config')
 #LOCALE_DIR = '/usr/share/locale'
 LOCALE_DIR = os.path.join(os.path.dirname(__file__), 'locale')
 if not os.path.exists(LOCALE_DIR):
@@ -102,11 +104,15 @@ class AdvancedFindWindowHelper:
 		self.result_highlight_tag.set_property('style', pango.STYLE_ITALIC)
 		#'''
 		
-		user_configfile = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config'), 'config.xml')
-		if os.path.exists(user_configfile):
-			configfile = user_configfile
-		else:
-			configfile = os.path.join(os.path.dirname(__file__), "/config/config.xml")
+		user_configfile = os.path.join(CONFIG_DIR, 'config.xml')
+		if not os.path.exists(user_configfile):
+			if not os.path.exists(os.path.dirname(user_configfile)):
+				os.makedirs(os.path.dirname(user_configfile))
+			shutil.copy2(os.path.dirname(__file__) + "/config/config.xml", os.path.dirname(user_configfile))
+		#print os.path.dirname(user_configfile)
+		configfile = user_configfile
+		#print configfile
+
 		self.config_manager = config_manager.ConfigManager(configfile)
 		self.find_options = self.config_manager.load_configure('FindOption')
 		self.config_manager.to_bool(self.find_options)
@@ -120,11 +126,15 @@ class AdvancedFindWindowHelper:
 		self.result_gui_settings = self.config_manager.load_configure('ResultGUI')
 		self.config_manager.to_bool(self.result_gui_settings)
 		
-		user_patterns = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config'), 'patterns.xml')
-		if os.path.exists(user_patterns):
-			patternsfile = user_patterns
-		else:
-			patternsfile = os.path.join(os.path.dirname(__file__), "/config/patterns.xml")
+		user_patterns = os.path.join(CONFIG_DIR, 'patterns.xml')
+		if not os.path.exists(user_patterns):
+			if not os.path.exists(os.path.dirname(user_patterns)):
+				os.makedirs(os.path.dirname(user_patterns))
+			shutil.copy2(os.path.dirname(__file__) + "/config/patterns.xml", os.path.dirname(user_patterns))
+		#print os.path.dirname(user_patterns)
+		patternsfile = user_patterns
+		#print patternsfile
+		
 		self.patterns_manager = config_manager.ConfigManager(patternsfile)
 		self.find_history = self.patterns_manager.load_list('FindHistory')
 		self.replace_history = self.patterns_manager.load_list('ReplaceHistory')
