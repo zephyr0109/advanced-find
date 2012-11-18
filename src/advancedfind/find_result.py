@@ -50,29 +50,37 @@ class FindResultView(Gtk.HBox):
 		self._window = window
 		self.result_gui_settings = result_gui_settings
 
-		# load color theme of results list		
-		user_formatfile = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config/theme'), 'default.xml')
+		# load color theme of results list	
+		user_formatfile = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config/theme'), self.result_gui_settings['COLOR_THEME']+'.xml')
 		if os.path.exists(user_formatfile):
 			format_file = user_formatfile
 		else:
 			format_file = os.path.join(os.path.dirname(__file__), "/config/theme/default.xml")
 		self.result_format = config_manager.ConfigManager(format_file).load_configure('result_format')
+		config_manager.ConfigManager(format_file).to_bool(self.result_format)
 		
 		# initialize find result treeview
 		self.findResultTreeview = Gtk.TreeView()
 		resultsCellRendererText = Gtk.CellRendererText()
 		if self.result_format['BACKGROUND']:
 			resultsCellRendererText.set_property('cell-background', self.result_format['BACKGROUND'])
-		if not self.result_gui_settings['USE_DEFAULT_FONT']:
-			resultsCellRendererText.set_property('font', self.result_gui_settings['RESULT_FONT'])
+		resultsCellRendererText.set_property('font', self.result_format['RESULT_FONT'])
+		
 		self.findResultTreeview.append_column(Gtk.TreeViewColumn("line", resultsCellRendererText, markup=1))
 		self.findResultTreeview.append_column(Gtk.TreeViewColumn("content", resultsCellRendererText, markup=2))
 		#self.findResultTreeview.append_column(Gtk.TreeViewColumn("result_start", Gtk.CellRendererText(), text=4))
 		#self.findResultTreeview.append_column(Gtk.TreeViewColumn("result_len", Gtk.CellRendererText(), text=5))
 		self.findResultTreeview.append_column(Gtk.TreeViewColumn("uri", resultsCellRendererText, text=6))
-		for i in range(0, self.findResultTreeview.get_n_columns()):
-			self.findResultTreeview.get_column(i).set_sizing(1)	# 1=autosizing
-		self.findResultTreeview.set_headers_visible(False)
+
+		self.findResultTreeview.set_grid_lines(int(self.result_format['GRID_PATTERN']))		# 0: None; 1: Horizontal; 2: Vertical; 3: Both
+		self.findResultTreeview.set_headers_visible(self.result_format['SHOW_HEADERS'])
+		if self.result_format['SHOW_HEADERS']:
+			for i in range(0, self.findResultTreeview.get_n_columns()):
+				self.findResultTreeview.get_column(i).set_resizable(True)
+		else:
+			for i in range(0, self.findResultTreeview.get_n_columns()):
+				self.findResultTreeview.get_column(i).set_sizing(1)	# 1=autosizing
+
 		self.findResultTreeview.set_rules_hint(True)
 		self.findResultTreemodel = Gtk.TreeStore(int, str, str, object, int, int, str)
 		self.findResultTreemodel.set_sort_column_id(0, Gtk.SortType.ASCENDING)
