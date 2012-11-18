@@ -1,23 +1,35 @@
 #!/bin/sh
 
 
+# plugin name
 PLUGIN_NAME="advancedfind"
+# plugin install path for all user
+PLUGIN_PATH_ALL=/usr/lib/gedit/plugins/
+# plugin install path for current user
+PLUGIN_PATH_USER=~/.local/share/gedit/plugins/
+# plugin configuarion path for current user
+CONFIG_PATH_USER=~/.local/share/gedit/plugins
+# plugin locale path
+LOCALE_PATH=/usr/share/locale
 
-# gedit plugin directory
-PLUGIN_DEST=~/.local/share/gedit/plugins/
 
-# create it
-#mkdir -p ${PLUGIN_DEST}
+read -p "Are you sure you want to remove ${PLUGIN_NAME} completedly? Root privilege is necessary. (y/n) : " rm_flg
 
-# remove old version
-rm -rf ${PLUGIN_DEST}/${PLUGIN_NAME}*
+if [ "${rm_flg}" == "Y" ] || [ "${rm_flg}" == "y" ]; then
+	# remove plugin
+	echo "Remove plugin files..."
+	rm -rf ${PLUGIN_PATH_USER}/${PLUGIN_NAME}*
+	sudo rm -rf ${PLUGIN_PATH_ALL}/${PLUGIN_NAME}*
 
-# install the plugin
-#cp -rv ${PLUGIN_NAME}* ${PLUGIN_DEST}
+	echo "Remove locale files..."
+	sudo rm ${LOCALE_PATH}/*/LC_MESSAGES/"${PLUGIN_NAME}.mo"
 
-LOCALE_DEST=/usr/share/locale
+	echo "Remove configuration files..."
+	rm -rf ${CONFIG_PATH_USER}/${PLUGIN_NAME}
 
-#sudo cp -rv ${PLUGIN_NAME}/locale/* ${LOCALE_DEST}
-#sudo rm -rf ${LOCALE_DEST}/locale/*/${PLUGIN_NAME}.mo
+	echo "Plugin is removed successfully."
+else
+	echo "Remove action is canceled."
+fi
 
 

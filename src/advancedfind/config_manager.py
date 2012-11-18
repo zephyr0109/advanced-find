@@ -86,10 +86,9 @@ class ConfigManager:
 		f.close
 		
 	def boolean(self, string):
-		#return string.lower() in ['true', 'yes', 't', 'y', 'ok', '1']
-		if string.lower() in ['true', 'yes', 'y', 'ok', '1']:
+		if string.lower() in ['true', 'yes', 'y', 'ok']:
 			return True
-		elif string.lower() in ['false', 'no', 'n', '0']:
+		elif string.lower() in ['false', 'no', 'n', 'cancel']:
 			return False
 		else:
 			return string

@@ -180,6 +180,7 @@
             <child>
               <object class="GtkExpander" id="pathExpander">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <child>
                   <object class="GtkGrid" id="grid3">

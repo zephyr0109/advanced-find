@@ -27,10 +27,12 @@ import os.path
 import urllib
 import re
 import config_manager
+import shutil
 
 
 import gettext
 APP_NAME = 'advancedfind'
+CONFIG_DIR = os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config')
 #LOCALE_DIR = '/usr/share/locale'
 LOCALE_DIR = os.path.join(os.path.dirname(__file__), 'locale')
 if not os.path.exists(LOCALE_DIR):
@@ -50,27 +52,41 @@ class FindResultView(Gtk.HBox):
 		self._window = window
 		self.result_gui_settings = result_gui_settings
 
-		# load color theme of results list		
-		user_formatfile = os.path.join(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config/theme'), 'default.xml')
-		if os.path.exists(user_formatfile):
-			format_file = user_formatfile
-		else:
-			format_file = os.path.join(os.path.dirname(__file__), "/config/theme/default.xml")
+		# load color theme of results list	
+		user_formatfile = os.path.join(CONFIG_DIR, 'theme/'+self.result_gui_settings['COLOR_THEME']+'.xml')
+		if not os.path.exists(user_formatfile):
+			if not os.path.exists(os.path.dirname(user_formatfile)):
+				os.makedirs(os.path.dirname(user_formatfile))
+			shutil.copy2(os.path.dirname(__file__) + "/config/theme/default.xml", os.path.dirname(user_formatfile))
+		#print os.path.dirname(user_formatfile)
+		format_file = user_formatfile
+		#print format_file
+
 		self.result_format = config_manager.ConfigManager(format_file).load_configure('result_format')
+		config_manager.ConfigManager(format_file).to_bool(self.result_format)
 		
 		# initialize find result treeview
 		self.findResultTreeview = Gtk.TreeView()
 		resultsCellRendererText = Gtk.CellRendererText()
 		if self.result_format['BACKGROUND']:
 			resultsCellRendererText.set_property('cell-background', self.result_format['BACKGROUND'])
-		if not self.result_gui_settings['USE_DEFAULT_FONT']:
-			resultsCellRendererText.set_property('font', self.result_gui_settings['RESULT_FONT'])
+		resultsCellRendererText.set_property('font', self.result_format['RESULT_FONT'])
+		
 		self.findResultTreeview.append_column(Gtk.TreeViewColumn("line", resultsCellRendererText, markup=1))
 		self.findResultTreeview.append_column(Gtk.TreeViewColumn("content", resultsCellRendererText, markup=2))
 		#self.findResultTreeview.append_column(Gtk.TreeViewColumn("result_start", Gtk.CellRendererText(), text=4))
 		#self.findResultTreeview.append_column(Gtk.TreeViewColumn("result_len", Gtk.CellRendererText(), text=5))
 		self.findResultTreeview.append_column(Gtk.TreeViewColumn("uri", resultsCellRendererText, text=6))
-		self.findResultTreeview.set_headers_visible(False)
+
+		self.findResultTreeview.set_grid_lines(int(self.result_format['GRID_PATTERN']))		# 0: None; 1: Horizontal; 2: Vertical; 3: Both
+		self.findResultTreeview.set_headers_visible(self.result_format['SHOW_HEADERS'])
+		if self.result_format['SHOW_HEADERS']:
+			for i in range(0, self.findResultTreeview.get_n_columns()):
+				self.findResultTreeview.get_column(i).set_resizable(True)
+		else:
+			for i in range(0, self.findResultTreeview.get_n_columns()):
+				self.findResultTreeview.get_column(i).set_sizing(1)	# 1=autosizing
+
 		self.findResultTreeview.set_rules_hint(True)
 		self.findResultTreemodel = Gtk.TreeStore(int, str, str, object, int, int, str)
 		self.findResultTreemodel.set_sort_column_id(0, Gtk.SortType.ASCENDING)
@@ -397,6 +413,7 @@ class FindResultView(Gtk.HBox):
 		
 	def on_collapseAllButton_clicked_action(self, object):
 		self.findResultTreeview.collapse_all()
+			
 		
 	def on_clearButton_clicked_action(self, object):
 		self.clear_find_result()
@@ -470,7 +487,13 @@ class FindResultView(Gtk.HBox):
 			doc.remove_tag_by_name('result_highlight', start, end)
 		
 	def clear_find_result(self):
+		tab = self._window.get_active_tab()
+		doc = tab.get_document()
+		curr_iter = doc.get_iter_at_mark(doc.get_insert())
 		self.findResultTreemodel.clear()
+		doc.select_range(curr_iter, curr_iter)
+		view = tab.get_view()
+		view.scroll_to_cursor()		
 		
 	def get_show_button_option(self):
 		return self.result_gui_settings
