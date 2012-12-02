@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # plugin name
 PLUGIN_NAME="advancedfind"
