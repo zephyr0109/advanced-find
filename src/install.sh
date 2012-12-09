@@ -2,6 +2,7 @@
 
 # plugin name
 PLUGIN_NAME="advancedfind"
+APP_NAME="advancedfind"
 # plugin install path for all user
 PLUGIN_PATH_ALL=/usr/lib/gedit/plugins
 # plugin install path for current user

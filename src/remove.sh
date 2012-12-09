@@ -3,6 +3,7 @@
 
 # plugin name
 PLUGIN_NAME="advancedfind"
+APP_NAME="advancedfind"
 # plugin install path for all user
 PLUGIN_PATH_ALL=/usr/lib/gedit/plugins/
 # plugin install path for current user
@@ -22,10 +23,10 @@ if [ "${rm_flg}" == "Y" ] || [ "${rm_flg}" == "y" ]; then
 	sudo rm -rf ${PLUGIN_PATH_ALL}/${PLUGIN_NAME}*
 
 	echo "Remove locale files..."
-	sudo rm ${LOCALE_PATH}/*/LC_MESSAGES/"${PLUGIN_NAME}.mo"
+	sudo rm ${LOCALE_PATH}/*/LC_MESSAGES/"${APP_NAME}.mo"
 
 	echo "Remove configuration files..."
-	rm -rf ${CONFIG_PATH_USER}/${PLUGIN_NAME}
+	rm -rf ${CONFIG_PATH_USER}/${APP_NAME}
 
 	echo "Plugin is removed successfully."
 else
