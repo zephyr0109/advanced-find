@@ -487,13 +487,10 @@ class FindResultView(Gtk.HBox):
 			doc.remove_tag_by_name('result_highlight', start, end)
 		
 	def clear_find_result(self):
-		tab = self._window.get_active_tab()
-		doc = tab.get_document()
-		curr_iter = doc.get_iter_at_mark(doc.get_insert())
+		vadj = self._window.get_active_view().get_vadjustment()
+		vadj_value = vadj.get_value()
 		self.findResultTreemodel.clear()
-		doc.select_range(curr_iter, curr_iter)
-		view = tab.get_view()
-		view.scroll_to_cursor()		
+		vadj.set_value(vadj_value)
 		
 	def get_show_button_option(self):
 		return self.result_gui_settings
