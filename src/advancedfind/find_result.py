@@ -487,8 +487,12 @@ class FindResultView(Gtk.HBox):
 			doc.remove_tag_by_name('result_highlight', start, end)
 		
 	def clear_find_result(self):
-		vadj = self._window.get_active_view().get_vadjustment()
-		vadj_value = vadj.get_value()
+		try:
+			vadj = self._window.get_active_view().get_vadjustment()
+			vadj_value = vadj.get_value()
+		except:
+			self.findResultTreemodel.clear()
+			return
 		self.findResultTreemodel.clear()
 		vadj.set_value(vadj_value)
 		
