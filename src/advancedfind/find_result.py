@@ -382,6 +382,8 @@ class FindResultView(Gtk.HBox):
 
 	def on_selectNextButton_clicked_action(self, object):
 		path, column = self.findResultTreeview.get_cursor()
+		if not path:
+			return
 		it = self.findResultTreemodel.get_iter(path)
 		if self.findResultTreemodel.iter_has_child(it):
 			self.findResultTreeview.expand_row(path, True)
