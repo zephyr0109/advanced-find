@@ -226,12 +226,10 @@
                         <child>
                           <object class="GtkButton" id="selectPathButton">
                             <property name="label" translatable="yes">...</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="tooltip_text" translatable="yes">Choose a folder</property>
-                            <property name="use_action_appearance">False</property>
                             <signal name="clicked" handler="on_selectPathButton_clicked" swapped="no"/>
                           </object>
                           <packing>
@@ -264,7 +262,8 @@
                           <object class="GtkEntry" id="comboboxtext-entry">
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">Use '|' to seperate multiple types.
-Add '-' before the type to exclude it.</property>
+Add '-' before the type to exclude it.
+Leaving this field empty is equal to '*', means searching in all file types.</property>
                             <property name="invisible_char">●</property>
                             <property name="primary_icon_pixbuf">star_w.png</property>
                             <property name="secondary_icon_stock">gtk-clear</property>
@@ -338,11 +337,9 @@ Add '-' before the type to exclude it.</property>
                     <child>
                       <object class="GtkCheckButton" id="wrapAroundCheckbutton">
                         <property name="label" translatable="yes">Wrap around</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_wrapAroundCheckbutton_toggled" swapped="no"/>
@@ -357,11 +354,9 @@ Add '-' before the type to exclude it.</property>
                     <child>
                       <object class="GtkCheckButton" id="followCurrentDocCheckbutton">
                         <property name="label" translatable="yes">Directory follows current doc.</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_followCurrentDocCheckbutton_toggled" swapped="no"/>
@@ -376,11 +371,9 @@ Add '-' before the type to exclude it.</property>
                     <child>
                       <object class="GtkCheckButton" id="includeSubfolderCheckbutton">
                         <property name="label" translatable="yes">Directory includes sub-folder</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_includeSubfolderCheckbutton_toggled" swapped="no"/>
@@ -395,11 +388,9 @@ Add '-' before the type to exclude it.</property>
                     <child>
                       <object class="GtkCheckButton" id="regexSearchCheckbutton">
                         <property name="label" translatable="yes">Regular expression</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_regexSearchCheckbutton_toggled" swapped="no"/>
@@ -414,11 +405,9 @@ Add '-' before the type to exclude it.</property>
                     <child>
                       <object class="GtkCheckButton" id="matchWholeWordCheckbutton">
                         <property name="label" translatable="yes">Match whole word</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_matchWholeWordCheckbutton_toggled" swapped="no"/>
@@ -433,11 +422,9 @@ Add '-' before the type to exclude it.</property>
                     <child>
                       <object class="GtkCheckButton" id="matchCaseCheckbutton">
                         <property name="label" translatable="yes">Match case</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_matchCaseCheckbutton_toggled" swapped="no"/>
@@ -491,11 +478,9 @@ Add '-' before the type to exclude it.</property>
                             <child>
                               <object class="GtkRadioButton" id="forwardRadiobutton">
                                 <property name="label" translatable="yes">Forward</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
@@ -510,11 +495,9 @@ Add '-' before the type to exclude it.</property>
                             <child>
                               <object class="GtkRadioButton" id="backwardRadiobutton">
                                 <property name="label" translatable="yes">Backward</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">forwardRadiobutton</property>
@@ -567,11 +550,9 @@ Add '-' before the type to exclude it.</property>
                             <child>
                               <object class="GtkRadioButton" id="currentFileRadiobutton">
                                 <property name="label" translatable="yes">Current Document</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
@@ -586,11 +567,9 @@ Add '-' before the type to exclude it.</property>
                             <child>
                               <object class="GtkRadioButton" id="allFilesRadiobutton">
                                 <property name="label" translatable="yes">All Opened Documents</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">currentFileRadiobutton</property>
@@ -605,11 +584,9 @@ Add '-' before the type to exclude it.</property>
                             <child>
                               <object class="GtkRadioButton" id="allFilesInPathRadiobutton">
                                 <property name="label" translatable="yes">All Documents in Directory</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">currentFileRadiobutton</property>
@@ -624,11 +601,9 @@ Add '-' before the type to exclude it.</property>
                             <child>
                               <object class="GtkRadioButton" id="currentSelectionRadiobutton">
                                 <property name="label" translatable="yes">Current Selected Text</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">currentFileRadiobutton</property>
@@ -705,11 +680,9 @@ Add '-' before the type to exclude it.</property>
                 <child>
                   <object class="GtkButton" id="findButton">
                     <property name="label" translatable="yes">_Find</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="use_underline">True</property>
                     <signal name="clicked" handler="on_findButton_clicked" swapped="no"/>
                   </object>
@@ -722,11 +695,9 @@ Add '-' before the type to exclude it.</property>
                 <child>
                   <object class="GtkButton" id="replaceButton">
                     <property name="label" translatable="yes">_Replace</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="use_underline">True</property>
                     <signal name="clicked" handler="on_replaceButton_clicked" swapped="no"/>
                   </object>
@@ -739,11 +710,9 @@ Add '-' before the type to exclude it.</property>
                 <child>
                   <object class="GtkButton" id="findAllButton">
                     <property name="label" translatable="yes">Find _All</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="use_underline">True</property>
                     <signal name="clicked" handler="on_findAllButton_clicked" swapped="no"/>
                   </object>
@@ -756,11 +725,9 @@ Add '-' before the type to exclude it.</property>
                 <child>
                   <object class="GtkButton" id="replaceAllButton">
                     <property name="label" translatable="yes">Replace All</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
                     <signal name="clicked" handler="on_replaceAllButton_clicked" swapped="no"/>
                   </object>
                   <packing>
@@ -772,11 +739,9 @@ Add '-' before the type to exclude it.</property>
                 <child>
                   <object class="GtkButton" id="closeButton">
                     <property name="label" translatable="yes">_Close</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="use_underline">True</property>
                     <signal name="clicked" handler="on_closeButton_clicked" swapped="no"/>
                   </object>
@@ -915,11 +880,9 @@ Add '-' before the type to exclude it.</property>
             <child>
               <object class="GtkButton" id="selectPathDialogCancelButton">
                 <property name="label" translatable="yes">Cancel</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <signal name="clicked" handler="on_selectPathDialogCancelButton_clicked" swapped="no"/>
               </object>
               <packing>
@@ -931,11 +894,9 @@ Add '-' before the type to exclude it.</property>
             <child>
               <object class="GtkButton" id="selectPathDialogOkButton">
                 <property name="label" translatable="yes">Ok</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <signal name="clicked" handler="on_selectPathDialogOkButton_clicked" swapped="no"/>
               </object>
               <packing>
