@@ -80,11 +80,17 @@ class FindResultView(Gtk.HBox):
 
 		self.findResultTreeview.set_grid_lines(int(self.result_format['GRID_PATTERN']))		# 0: None; 1: Horizontal; 2: Vertical; 3: Both
 		self.findResultTreeview.set_headers_visible(self.result_format['SHOW_HEADERS'])
+		
+		try:
+			column_num = self.findResultTreeview.get_n_columns()
+		except:
+			# For older gtk version.
+			column_num = self.findResultTreeview.get_columns()
 		if self.result_format['SHOW_HEADERS']:
-			for i in range(0, self.findResultTreeview.get_n_columns()):
+			for i in range(0, column_num):
 				self.findResultTreeview.get_column(i).set_resizable(True)
 		else:
-			for i in range(0, self.findResultTreeview.get_n_columns()):
+			for i in range(0, column_num):
 				self.findResultTreeview.get_column(i).set_sizing(1)	# 1=autosizing
 
 		self.findResultTreeview.set_rules_hint(True)
@@ -382,6 +388,8 @@ class FindResultView(Gtk.HBox):
 
 	def on_selectNextButton_clicked_action(self, object):
 		path, column = self.findResultTreeview.get_cursor()
+		if not path:
+			return
 		it = self.findResultTreemodel.get_iter(path)
 		if self.findResultTreemodel.iter_has_child(it):
 			self.findResultTreeview.expand_row(path, True)
@@ -487,13 +495,14 @@ class FindResultView(Gtk.HBox):
 			doc.remove_tag_by_name('result_highlight', start, end)
 		
 	def clear_find_result(self):
-		tab = self._window.get_active_tab()
-		doc = tab.get_document()
-		curr_iter = doc.get_iter_at_mark(doc.get_insert())
+		try:
+			vadj = self._window.get_active_view().get_vadjustment()
+			vadj_value = vadj.get_value()
+		except:
+			self.findResultTreemodel.clear()
+			return
 		self.findResultTreemodel.clear()
-		doc.select_range(curr_iter, curr_iter)
-		view = tab.get_view()
-		view.scroll_to_cursor()		
+		vadj.set_value(vadj_value)
 		
 	def get_show_button_option(self):
 		return self.result_gui_settings

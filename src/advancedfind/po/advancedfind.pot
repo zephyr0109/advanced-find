@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-18 21:14+0800\n"
+"POT-Creation-Date: 2013-02-17 01:07+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../advancedfind.py:150 ../advancedfind.py:218 ../advancedfind.py:669
+#: ../advancedfind.py:150 ../advancedfind.py:218 ../advancedfind.py:661
 #: ../FindDialog.glade:12
 msgid "Advanced Find/Replace"
 msgstr ""
@@ -127,12 +127,12 @@ msgid "Find what : "
 msgstr ""
 
 #: ../FindDialog.glade:129 ../FindDialog.glade:159 ../FindDialog.glade:214
-#: ../FindDialog.glade:271
+#: ../FindDialog.glade:270
 msgid "Add to bookmarks"
 msgstr ""
 
 #: ../FindDialog.glade:130 ../FindDialog.glade:160 ../FindDialog.glade:215
-#: ../FindDialog.glade:272
+#: ../FindDialog.glade:271
 msgid "Clear history"
 msgstr ""
 
@@ -140,120 +140,121 @@ msgstr ""
 msgid "..."
 msgstr ""
 
-#: ../FindDialog.glade:233
+#: ../FindDialog.glade:232
 msgid "Choose a folder"
 msgstr ""
 
-#: ../FindDialog.glade:266
+#: ../FindDialog.glade:264
 msgid ""
 "Use '|' to seperate multiple types.\n"
-"Add '-' before the type to exclude it."
+"Add '-' before the type to exclude it.\n"
+"Leaving this field empty is equal to '*', means searching in all file types."
 msgstr ""
 
-#: ../FindDialog.glade:288
+#: ../FindDialog.glade:287
 msgid "Directory : "
 msgstr ""
 
-#: ../FindDialog.glade:301
+#: ../FindDialog.glade:300
 msgid "Filter : "
 msgstr ""
 
-#: ../FindDialog.glade:316
+#: ../FindDialog.glade:315
 msgid "<b>Path</b>"
 msgstr ""
 
-#: ../FindDialog.glade:340
+#: ../FindDialog.glade:339
 msgid "Wrap around"
 msgstr ""
 
-#: ../FindDialog.glade:359
+#: ../FindDialog.glade:356
 msgid "Directory follows current doc."
 msgstr ""
 
-#: ../FindDialog.glade:378
+#: ../FindDialog.glade:373
 msgid "Directory includes sub-folder"
 msgstr ""
 
-#: ../FindDialog.glade:397
+#: ../FindDialog.glade:390
 msgid "Regular expression"
 msgstr ""
 
-#: ../FindDialog.glade:416
+#: ../FindDialog.glade:407
 msgid "Match whole word"
 msgstr ""
 
-#: ../FindDialog.glade:435
+#: ../FindDialog.glade:424
 msgid "Match case"
 msgstr ""
 
-#: ../FindDialog.glade:458
+#: ../FindDialog.glade:445
 msgid "<b>Options</b>"
 msgstr ""
 
-#: ../FindDialog.glade:493
+#: ../FindDialog.glade:480
 msgid "Forward"
 msgstr ""
 
-#: ../FindDialog.glade:512
+#: ../FindDialog.glade:497
 msgid "Backward"
 msgstr ""
 
-#: ../FindDialog.glade:540
+#: ../FindDialog.glade:523
 msgid "<b>Direction</b>"
 msgstr ""
 
-#: ../FindDialog.glade:569
+#: ../FindDialog.glade:552
 msgid "Current Document"
 msgstr ""
 
-#: ../FindDialog.glade:588
+#: ../FindDialog.glade:569
 msgid "All Opened Documents"
 msgstr ""
 
-#: ../FindDialog.glade:607
+#: ../FindDialog.glade:586
 msgid "All Documents in Directory"
 msgstr ""
 
-#: ../FindDialog.glade:626
+#: ../FindDialog.glade:603
 msgid "Current Selected Text"
 msgstr ""
 
-#: ../FindDialog.glade:651
+#: ../FindDialog.glade:626
 msgid "<b>Scope</b>"
 msgstr ""
 
-#: ../FindDialog.glade:707
+#: ../FindDialog.glade:682
 msgid "_Find"
 msgstr ""
 
-#: ../FindDialog.glade:724
+#: ../FindDialog.glade:697
 msgid "_Replace"
 msgstr ""
 
-#: ../FindDialog.glade:741
+#: ../FindDialog.glade:712
 msgid "Find _All"
 msgstr ""
 
-#: ../FindDialog.glade:758
+#: ../FindDialog.glade:727
 msgid "Replace All"
 msgstr ""
 
-#: ../FindDialog.glade:774
+#: ../FindDialog.glade:741
 msgid "_Close"
 msgstr ""
 
-#: ../FindDialog.glade:846
+#: ../FindDialog.glade:811
 msgid "<b>Opacity</b>"
 msgstr ""
 
-#: ../FindDialog.glade:897
+#: ../FindDialog.glade:862
 msgid "Select directory"
 msgstr ""
 
-#: ../FindDialog.glade:917
+#: ../FindDialog.glade:882
 msgid "Cancel"
 msgstr ""
 
-#: ../FindDialog.glade:933
+#: ../FindDialog.glade:896
 msgid "Ok"
 msgstr ""

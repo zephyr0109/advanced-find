@@ -543,7 +543,7 @@ class AdvancedFindWindowHelper:
 			
 		#d_list = []
 		file_list = []
-		grep_cmd = ['grep', '-l']
+		grep_cmd = ['grep', '-l', '-I']
 		if find_options['MATCH_WHOLE_WORD'] == True:
 			grep_cmd.append('-w')
 		if find_options['MATCH_CASE'] == False:
@@ -551,12 +551,13 @@ class AdvancedFindWindowHelper:
 		if find_options['INCLUDE_SUBFOLDER'] == True:
 			grep_cmd.append('-R')
 
-		pattern_list = re.split('\s*\|\s*', file_pattern)
-		for f_pattern in pattern_list:
-			if f_pattern.startswith('-'):
-				grep_cmd.append('--exclude=' + f_pattern[1:])
-			else:
-				grep_cmd.append('--include=' + f_pattern)
+		if not file_pattern == '': 
+			pattern_list = re.split('\s*\|\s*', file_pattern)
+			for f_pattern in pattern_list:
+				if f_pattern.startswith('-'):
+					grep_cmd.append('--exclude=' + f_pattern[1:])
+				else:
+					grep_cmd.append('--include=' + f_pattern)
 
 		if find_options['REGEX_SEARCH'] == True:
 			grep_cmd = grep_cmd + ['-E', '-e', search_pattern, dir_path]
@@ -569,16 +570,7 @@ class AdvancedFindWindowHelper:
 			print e
 
 		for f in p.stdout:
-			p1 = subprocess.Popen(['file', '--mime', f[:-1]], stdout=subprocess.PIPE)
-			p2 = subprocess.Popen(['grep', 'charset=binary'], stdin=p1.stdout, stdout=subprocess.PIPE)
-			output = p2.communicate()[0]
-			if output:
-				continue
 			file_list.append(f[:-1])
-			'''
-			if self.check_file_pattern(f, unicode(file_pattern, 'utf-8')):
-				file_list.append(f[:-1])
-			#'''
 			
 		
 		'''

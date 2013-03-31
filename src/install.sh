@@ -52,7 +52,7 @@ else
 	exit 0
 fi
 
-read -p "Install optional language support? Rroot privilege is necessary. (y/n) : " lang_flg
+read -p "Install optional language support? Root privilege is necessary. (y/n) : " lang_flg
 if [ "${lang_flg}" == "Y" ] || [ "${lang_flg}" == "y" ]; then
 	LOCALE_DEST=${LOCALE_PATH}
 	sudo cp -rv ${PLUGIN_NAME}/locale/* ${LOCALE_DEST}
