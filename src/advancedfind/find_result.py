@@ -80,11 +80,17 @@ class FindResultView(Gtk.HBox):
 
 		self.findResultTreeview.set_grid_lines(int(self.result_format['GRID_PATTERN']))		# 0: None; 1: Horizontal; 2: Vertical; 3: Both
 		self.findResultTreeview.set_headers_visible(self.result_format['SHOW_HEADERS'])
+		
+		try:
+			column_num = self.findResultTreeview.get_n_columns()
+		except:
+			# For older gtk version.
+			column_num = self.findResultTreeview.get_columns()
 		if self.result_format['SHOW_HEADERS']:
-			for i in range(0, self.findResultTreeview.get_n_columns()):
+			for i in range(0, column_num):
 				self.findResultTreeview.get_column(i).set_resizable(True)
 		else:
-			for i in range(0, self.findResultTreeview.get_n_columns()):
+			for i in range(0, column_num):
 				self.findResultTreeview.get_column(i).set_sizing(1)	# 1=autosizing
 
 		self.findResultTreeview.set_rules_hint(True)
