@@ -85,7 +85,7 @@ class FindResultView(Gtk.HBox):
 			column_num = self.findResultTreeview.get_n_columns()
 		except:
 			# For older gtk version.
-			column_num = self.findResultTreeview.get_columns()
+			column_num = len(self.findResultTreeview.get_columns())
 		if self.result_format['SHOW_HEADERS']:
 			for i in range(0, column_num):
 				self.findResultTreeview.get_column(i).set_resizable(True)
