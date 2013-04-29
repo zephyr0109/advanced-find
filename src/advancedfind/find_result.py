@@ -24,9 +24,9 @@
 
 from gi.repository import Gtk, Gedit, Gio
 import os.path
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import re
-import config_manager
+from . import config_manager
 import shutil
 
 
@@ -58,9 +58,9 @@ class FindResultView(Gtk.HBox):
 			if not os.path.exists(os.path.dirname(user_formatfile)):
 				os.makedirs(os.path.dirname(user_formatfile))
 			shutil.copy2(os.path.dirname(__file__) + "/config/theme/default.xml", os.path.dirname(user_formatfile))
-		#print os.path.dirname(user_formatfile)
+		#print(os.path.dirname(user_formatfile))
 		format_file = user_formatfile
-		#print format_file
+		#print(format_file)
 
 		self.result_format = config_manager.ConfigManager(format_file).load_configure('result_format')
 		config_manager.ConfigManager(format_file).to_bool(self.result_format)
@@ -85,7 +85,7 @@ class FindResultView(Gtk.HBox):
 			column_num = self.findResultTreeview.get_n_columns()
 		except:
 			# For older gtk version.
-			column_num = len(self.findResultTreeview.get_columns())
+			column_num = self.findResultTreeview.get_columns()
 		if self.result_format['SHOW_HEADERS']:
 			for i in range(0, column_num):
 				self.findResultTreeview.get_column(i).set_resizable(True)
@@ -270,7 +270,7 @@ class FindResultView(Gtk.HBox):
 		if not tab:
 			docs = self._window.get_documents()
 			for doc in docs:
-				if urllib.unquote(doc.get_uri_for_display()) == uri:
+				if urllib.parse.unquote(doc.get_uri_for_display()) == uri:
 					tab = Gedit.Tab.get_from_document(doc)
 			
 		# Still nothing? Open the file then
@@ -434,17 +434,17 @@ class FindResultView(Gtk.HBox):
 		idx = self.findResultTreemodel.iter_n_children(None)
 		header = '#' + str(idx) + ' - '
 		if replace_flg == True:
-			mode = self.result_format['MODE_REPLACE'] %{'HEADER' : header, 'PATTERN' : self.to_xml_text(unicode(pattern, 'utf-8')), 'REPLACE_TEXT' : self.to_xml_text(unicode(replace_text, 'utf-8'))}
+			mode = self.result_format['MODE_REPLACE'] %{'HEADER' : header, 'PATTERN' : self.to_xml_text(str(pattern)), 'REPLACE_TEXT' : self.to_xml_text(str(replace_text))}
 			#mode = header + ' Replace ' + pattern + ' with ' + replace_text
 			it = self.findResultTreemodel.append(None, [idx, mode, '', None, 0, 0, ''])
 		else:
-			mode = self.result_format['MODE_FIND'] %{'HEADER' : header, 'PATTERN' : self.to_xml_text(unicode(pattern, 'utf-8'))}
+			mode = self.result_format['MODE_FIND'] %{'HEADER' : header, 'PATTERN' : self.to_xml_text(str(pattern))}
 			#mode = header + ' Search ' + pattern
 			it = self.findResultTreemodel.append(None, [idx, mode, '', None, 0, 0, ''])
 		return it
 	
 	def append_find_result_filename(self, parent_it, filename, tab, uri):
-		filename_str = self.result_format['FILENAME'] % {'FILENAME' : self.to_xml_text(unicode(filename, 'utf-8'))}
+		filename_str = self.result_format['FILENAME'] % {'FILENAME' : self.to_xml_text(str(filename))}
 		#filename_str = filename
 		it = self.findResultTreemodel.append(parent_it, [0, filename_str, '', tab, 0, 0, uri])
 		return it

@@ -28,16 +28,16 @@ import os.path
 import os
 import fnmatch
 import subprocess
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import re
 #import time
 import shutil
 
 
-from advancedfind_ui import AdvancedFindUI
-from find_result import FindResultView
-import config_manager
-from config_ui import ConfigUI
+from .advancedfind_ui import AdvancedFindUI
+from .find_result import FindResultView
+from . import config_manager
+from .config_ui import ConfigUI
 
 
 import gettext
@@ -109,9 +109,9 @@ class AdvancedFindWindowHelper:
 			if not os.path.exists(os.path.dirname(user_configfile)):
 				os.makedirs(os.path.dirname(user_configfile))
 			shutil.copy2(os.path.dirname(__file__) + "/config/config.xml", os.path.dirname(user_configfile))
-		#print os.path.dirname(user_configfile)
+		#print(os.path.dirname(user_configfile))
 		configfile = user_configfile
-		#print configfile
+		#print(configfile)
 
 		self.config_manager = config_manager.ConfigManager(configfile)
 		self.find_options = self.config_manager.load_configure('FindOption')
@@ -259,7 +259,7 @@ class AdvancedFindWindowHelper:
 			
 		try:
 			start, end = doc.get_selection_bounds()
-			search_text = unicode(doc.get_text(start,end,True), 'utf-8')
+			search_text = str(doc.get_text(start,end,True))
 		except:
 			search_text = self.current_search_pattern
 
@@ -287,12 +287,12 @@ class AdvancedFindWindowHelper:
 	def create_regex(self, pattern, find_options):
 		if find_options['REGEX_SEARCH'] == False:
 			try:
-				pattern = re.escape(unicode(r'%s' % pattern, "utf-8"))
+				pattern = re.escape(str(r'%s' % pattern, "utf-8"))
 			except:
 				pattern = re.escape(r'%s' % pattern)
 		else:
 			try:
-				pattern = unicode(r'%s' % pattern, "utf-8")
+				pattern = str(r'%s' % pattern, "utf-8")
 			except:
 				pattern = r'%s' % pattern
 		
@@ -305,7 +305,7 @@ class AdvancedFindWindowHelper:
 		try:
 			regex = re.compile(pattern, re_flg)
 		except:
-			print 'regex compile failed'
+			print('regex compile failed')
 			regex = None
 		
 		return regex
@@ -320,12 +320,12 @@ class AdvancedFindWindowHelper:
 
 		if doc.get_has_selection():
 			sel_start, sel_end = doc.get_selection_bounds()
-			match = regex.search(unicode(doc.get_text(sel_start, sel_end, True), 'utf-8'))
+			match = regex.search(str(doc.get_text(sel_start, sel_end, True)))
 			if match and replace_flg == True:
 				if find_options['REGEX_SEARCH'] == False:
-					replace_text = unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8')
+					replace_text = str(self.find_ui.replaceTextComboboxtext.get_active_text())
 				else:
-					replace_text = match.expand(unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8'))
+					replace_text = match.expand(str(self.find_ui.replaceTextComboboxtext.get_active_text()))
 				doc.delete_selection(False, False)
 				doc.insert_at_cursor(replace_text)
 				replace_flg = False
@@ -337,7 +337,7 @@ class AdvancedFindWindowHelper:
 			
 		view = self._window.get_active_view()
 		start, end = doc.get_bounds()
-		text = unicode(doc.get_text(start, end, True), 'utf-8')
+		text = str(doc.get_text(start, end, True))
 		#around_flg = False
 		
 		if forward_flg == True:
@@ -377,9 +377,9 @@ class AdvancedFindWindowHelper:
 				
 		if replace_flg == True and doc.get_has_selection():
 			if find_options['REGEX_SEARCH'] == False:
-				replace_text = unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8')
+				replace_text = str(self.find_ui.replaceTextComboboxtext.get_active_text())
 			else:
-				replace_text = match.expand(unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8'))
+				replace_text = match.expand(str(self.find_ui.replaceTextComboboxtext.get_active_text()))
 			doc.delete_selection(False, False)
 			doc.insert_at_cursor(replace_text)
 			replace_end = doc.get_iter_at_mark(doc.get_insert())
@@ -409,15 +409,15 @@ class AdvancedFindWindowHelper:
 		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.find_options, True)
 	
 	def find_previous(self, action, data = None):
-		#print 'find previous'
+		#print('find previous')
 		self.advanced_find_in_doc(self._window.get_active_document(), self.current_search_pattern, self.find_options, False)
 		
 	def select_find_next(self, action, data = None):
-		#print self.auto_select_word()
+		#print(self.auto_select_word())
 		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.find_options, True)
 
 	def select_find_previous(self, action, data = None):
-		#print self.auto_select_word()
+		#print(self.auto_select_word())
 		self.advanced_find_in_doc(self._window.get_active_document(), self.auto_select_word(), self.find_options, False)
 		
 	def advanced_find_all_in_doc(self, parent_it, doc, search_pattern, find_options, replace_flg = False, selection_only = False):
@@ -430,7 +430,7 @@ class AdvancedFindWindowHelper:
 
 		self.result_highlight_off(doc)
 		start, end = doc.get_bounds()
-		text = unicode(doc.get_text(start, end, True), 'utf-8')
+		text = str(doc.get_text(start, end, True))
 		
 		start_pos = 0
 		end_pos = end.get_offset()
@@ -438,7 +438,7 @@ class AdvancedFindWindowHelper:
 			try:
 				sel_start, sel_end = doc.get_selection_bounds()
 			except:
-				#print 'No selection is found.'
+				#print('No selection is found.')
 				return
 
 			if sel_start and sel_end:
@@ -452,12 +452,12 @@ class AdvancedFindWindowHelper:
 		if match:
 			if not tree_it:
 				doc_uri = doc.get_uri_for_display()
-				#print doc_uri
+				#print(doc_uri)
 				if doc_uri == None:
 					uri = ''
 				else:
 					tab = Gedit.Tab.get_from_document(doc)
-					uri = urllib.unquote(doc.get_uri_for_display())
+					uri = urllib.parse.unquote(doc.get_uri_for_display())
 				tree_it = self._results_view.append_find_result_filename(parent_it, doc.get_short_name_for_display(), tab, uri)
 			
 			if replace_flg == False:
@@ -484,9 +484,9 @@ class AdvancedFindWindowHelper:
 				doc.begin_user_action()
 				while(match):
 					if find_options['REGEX_SEARCH'] == False:
-						replace_text = unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8')
+						replace_text = str(self.find_ui.replaceTextComboboxtext.get_active_text())
 					else:
-						replace_text = match.expand(unicode(self.find_ui.replaceTextComboboxtext.get_active_text(), 'utf-8'))
+						replace_text = match.expand(str(self.find_ui.replaceTextComboboxtext.get_active_text()))
 					if match.start() == match.end():
 						break
 					replace_start_pos = match.start() + replace_offset
@@ -505,7 +505,7 @@ class AdvancedFindWindowHelper:
 				doc.end_user_action()
 				
 				start, end = doc.get_bounds()
-				text = unicode(doc.get_text(start, end, True), 'utf-8')
+				text = str(doc.get_text(start, end, True))
 
 				for result in results:
 					line_num = doc.get_iter_at_offset(result[0]).get_line()
@@ -529,7 +529,7 @@ class AdvancedFindWindowHelper:
 	'''
 	def check_file_pattern(self, path, pattern_text):
 		pattern_list = re.split('\s*\|\s*', pattern_text)
-		#print os.path.basename(path).strip()
+		#print(os.path.basename(path).strip())
 		for pattern in pattern_list:
 			if fnmatch.fnmatch(os.path.basename(path).strip(), pattern):
 				return True
@@ -563,11 +563,11 @@ class AdvancedFindWindowHelper:
 			grep_cmd = grep_cmd + ['-E', '-e', search_pattern, dir_path]
 		else:
 			grep_cmd = grep_cmd + ['-F', '-e', search_pattern, dir_path]
-		#print grep_cmd
+		#print(grep_cmd)
 
 		p = subprocess.Popen(grep_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		for e in p.stderr:
-			print e
+			print(e)
 
 		for f in p.stdout:
 			file_list.append(f[:-1])
@@ -588,7 +588,7 @@ class AdvancedFindWindowHelper:
 		#'''
 					
 		#mid_time = time.time()
-		#print 'Use ' + str(mid_time-start_time) + ' seconds to find files.'
+		#print('Use ' + str(mid_time-start_time) + ' seconds to find files.')
 		
 		self._results_view.is_busy(True)
 		self._results_view.do_events()
@@ -601,7 +601,7 @@ class AdvancedFindWindowHelper:
 				temp_doc.load(Gio.file_new_for_path(file_path), Gedit.encoding_get_from_charset('utf-8'), 0, 0, False)
 				f_temp = open(file_path, 'r')
 				try:
-					text = unicode(f_temp.read(), 'utf-8')
+					text = str(f_temp.read())
 				except:
 					text = f_temp.read()
 				f_temp.close()
@@ -615,8 +615,8 @@ class AdvancedFindWindowHelper:
 		self._results_view.is_busy(False)
 				
 		#end_time = time.time()						
-		#print 'Use ' + str(end_time-mid_time) + ' seconds to find results.'
-		#print 'Total use ' + str(end_time-start_time) + ' seconds.'
+		#print('Use ' + str(end_time-mid_time) + ' seconds to find results.')
+		#print('Total use ' + str(end_time-start_time) + ' seconds.')
 						
 	def result_highlight_on(self, file_it):
 		if file_it == None:

@@ -25,8 +25,8 @@
 
 from gi.repository import GObject, Gtk, Gedit, PeasGtk
 
-from advancedfind import AdvancedFindWindowHelper
-from config_ui import ConfigUI
+from .advancedfind import AdvancedFindWindowHelper
+from .config_ui import ConfigUI
 
 #class AdvancedFindReplacePlugin(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
 class AdvancedFindReplacePlugin(GObject.Object, Gedit.WindowActivatable):
