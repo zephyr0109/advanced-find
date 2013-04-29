@@ -598,7 +598,7 @@ class AdvancedFindWindowHelper:
 				temp_doc = Gedit.Document()
 				#file_uri = 'file://' + file_path
 				#temp_doc.load(Gio.file_new_for_uri(file_uri), Gedit.encoding_get_from_charset('utf-8'), 0, 0, False)
-				temp_doc.load(Gio.file_new_for_path(file_path), Gedit.encoding_get_from_charset('utf-8'), 0, 0, False)
+				temp_doc.load(Gio.file_new_for_path(bytes.decode(file_path)), Gedit.encoding_get_from_charset('utf-8'), 0, 0, False)
 				f_temp = open(file_path, 'r')
 				try:
 					text = str(f_temp.read())
