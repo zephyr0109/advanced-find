@@ -399,16 +399,22 @@ class FindResultView(Gtk.HBox):
 			
 		if not it1:
 			it1 = self.findResultTreemodel.iter_parent(it)
-			it2 = self.findResultTreemodel.iter_next(it1)
-			if not it2:
-				it2 = self.findResultTreemodel.iter_parent(it1)
-				it3 = self.findResultTreemodel.iter_next(it2)
-				if not it3:
-					return
-				else:
-					path = self.findResultTreemodel.get_path(it3)
+			if not it1:
+				return
 			else:
-		 		path = self.findResultTreemodel.get_path(it2)
+				it2 = self.findResultTreemodel.iter_next(it1)
+				if not it2:
+					it2 = self.findResultTreemodel.iter_parent(it1)
+					if not it2:
+						return
+					else:
+						it3 = self.findResultTreemodel.iter_next(it2)
+						if not it3:
+							return
+						else:
+							path = self.findResultTreemodel.get_path(it3)
+				else:
+			 		path = self.findResultTreemodel.get_path(it2)
 		else:
 			path = self.findResultTreemodel.get_path(it1) 
 		self.findResultTreeview.set_cursor(path, column, False)
