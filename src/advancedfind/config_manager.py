@@ -72,15 +72,18 @@ class ConfigManager:
 		nodes = root.getElementsByTagName(branch)
 		for node in nodes:
 			#node.firstChild.nodeValue = dic[node.getAttribute('name')]
-			node.setAttribute('value', unicode(dic[node.getAttribute('name')]))
+			node.setAttribute('value', str(dic[node.getAttribute('name')]))
 		
 	def update_config_file(self, filename):
 		xml_text = self.dom.toprettyxml('\t', '\n', 'utf-8')
+		
 		lines = xml_text.splitlines(True)
 		newlines = []
 		for line in lines:
 			if line not in ['\n', '\t\n']:
-				newlines.append(line)
+				newlines.append(line.decode('utf-8'))
+		
+		#print("".join(newlines))
 		f = open(filename, 'w+')
 		f.write("".join(newlines))
 		f.close
@@ -94,7 +97,7 @@ class ConfigManager:
 			return string
 		
 	def to_bool(self, dic):
-		for key in dic.keys():
+		for key in list(dic.keys()):
 			dic[key] = self.boolean(dic[key])
 
 	

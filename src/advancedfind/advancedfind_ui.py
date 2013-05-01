@@ -371,10 +371,10 @@ class AdvancedFindUI(object):
 			Gtk.main_iteration()
 			
 	def add_combobox_list(self):
-		find_text = unicode(self.findTextComboboxtext.get_active_text(), 'utf-8')
-		replace_text = unicode(self.replaceTextComboboxtext.get_active_text(), 'utf-8')
-		file_pattern = unicode(self.filterComboboxtext.get_active_text(), 'utf-8')
-		path = unicode(self.pathComboboxtext.get_active_text(), 'utf-8')
+		find_text = self.findTextComboboxtext.get_active_text()
+		replace_text = self.replaceTextComboboxtext.get_active_text()
+		file_pattern = self.filterComboboxtext.get_active_text()
+		path = self.pathComboboxtext.get_active_text()
 		self._instance.current_search_pattern = find_text
 		self._instance.current_replace_text = replace_text
 		self._instance.current_file_pattern = file_pattern
@@ -609,12 +609,12 @@ class AdvancedFindUI(object):
 		base_key = 'org.gnome.gedit.plugins.filebrowser'
 		setting = Gio.Settings.new(base_key)
 		root_str = setting.get_string('virtual-root')
-		#print root_str
+		#print(root_str)
 		if not root_str:
 			return None
 		'''
 		path = Gio.Vfs.get_default().get_file_for_uri(root_str).get_path()
-		print path + '#'
+		print(path + '#')
 		return path
 		#'''
 		#'''

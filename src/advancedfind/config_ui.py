@@ -89,10 +89,10 @@ class ConfigUI(object):
 	
 	'''
 	def on_colorThemeComboboxtext_changed(self, object):
-		print os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config/theme/') + object.get_active_text() + '.xml'
+		print(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config/theme/') + object.get_active_text() + '.xml')
 		
 	def on_colorThemeComboboxtext_popup(self, object):
-		print 'Theme selection popdown.'
+		print('Theme selection popdown.')
 		object.remove_all();
 		for root, dirs, files in os.walk(os.path.expanduser('~/.local/share/gedit/plugins/' + APP_NAME + '/config/theme')):
 			for f in files:
